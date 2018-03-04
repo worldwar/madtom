@@ -1,0 +1,108 @@
+package tw.zhuran.madtom.domain;
+
+import com.google.common.collect.Lists;
+
+import java.util.List;
+
+public class Hand {
+    private List<Piece> wanPieces = Lists.newArrayList();
+    private List<Piece> tongPieces = Lists.newArrayList();
+    private List<Piece> tiaoPieces =Lists.newArrayList();
+    private List<Piece> fengPieces = Lists.newArrayList();
+
+    public List<Piece> getWanPieces() {
+        return wanPieces;
+    }
+
+    public Hand setWanPieces(List<Piece> wanPieces) {
+        this.wanPieces = wanPieces;
+        return this;
+    }
+
+    public List<Piece> getTongPieces() {
+        return tongPieces;
+    }
+
+    public Hand setTongPieces(List<Piece> tongPieces) {
+        this.tongPieces = tongPieces;
+        return this;
+    }
+
+    public List<Piece> getTiaoPieces() {
+        return tiaoPieces;
+    }
+
+    public Hand setTiaoPieces(List<Piece> tiaoPieces) {
+        this.tiaoPieces = tiaoPieces;
+        return this;
+    }
+
+    public List<Piece> getFengPieces() {
+        return fengPieces;
+    }
+
+    public Hand setFengPieces(List<Piece> fengPieces) {
+        this.fengPieces = fengPieces;
+        return this;
+    }
+
+    public boolean complete() {
+        List<Group> pairs = pairs();
+        for (Group group : pairs) {
+            Hand hand = subtract(group);
+            if (hand.well()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean well() {
+        return Pieces.well(wanPieces) && Pieces.well(tongPieces) && Pieces.well(tiaoPieces) && Pieces.well(fengPieces);
+    }
+
+    private boolean grouped(List<Piece> part) {
+        if (part.size() == 2) {
+            return part.get(0).equals(part.get(1));
+        }
+
+        return false;
+    }
+
+    private Hand subtract(Group group) {
+        Hand hand = copy();
+        switch (group.getKind()) {
+            case WAN:
+                Pieces.exclude(hand.wanPieces, group.getPieces());
+                break;
+            case TIAO:
+                Pieces.exclude(hand.tiaoPieces, group.getPieces());
+                break;
+            case TONG:
+                Pieces.exclude(hand.tongPieces, group.getPieces());
+                break;
+            case FENG:
+                Pieces.exclude(hand.fengPieces, group.getPieces());
+                break;
+        }
+        return hand;
+    }
+
+    private List<Group> pairs() {
+        List<Group> pairs = Lists.newArrayList();
+        pairs.addAll(Pieces.pairs(wanPieces));
+        pairs.addAll(Pieces.pairs(fengPieces));
+        pairs.addAll(Pieces.pairs(tiaoPieces));
+        pairs.addAll(Pieces.pairs(tongPieces));
+        return pairs;
+    }
+
+    public Hand copy() {
+        Hand hand = new Hand();
+        hand.wanPieces = Lists.newArrayList(wanPieces);
+        hand.fengPieces = Lists.newArrayList(fengPieces);
+        hand.tiaoPieces = Lists.newArrayList(tiaoPieces);
+        hand.tongPieces = Lists.newArrayList(tongPieces);
+        return hand;
+    }
+}
