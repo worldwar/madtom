@@ -1,5 +1,7 @@
 package tw.zhuran.madtom.domain;
 
+import com.github.underscore.$;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,8 +54,36 @@ public class Trunk {
         actions.add(Actions.chi(piece, group));
     }
 
-    public void peng(Piece piece, Group group) {
-        hand.peng(piece, group);
-        actions.add(Actions.peng(piece, group));
+    public void peng(Piece piece) {
+        hand.peng(piece);
+        actions.add(Actions.peng(piece));
+    }
+
+    public void gang(Piece piece) {
+        hand.gang(piece);
+        actions.add(Actions.gang(piece));
+    }
+
+    public void xugang(Piece piece) {
+        hand.discard(piece);
+        Action action = findPeng(piece);
+        if (action != null) {
+            action.xugang();
+        }
+    }
+
+    public Action findPeng(Piece piece) {
+        List<Action> actions = $.filter(this.actions,
+                action -> action.getType() == ActionType.PENG && action.getPiece().equals(piece));
+        if (actions.size() == 0) {
+            return null;
+        } else {
+            return actions.get(0);
+        }
+    }
+
+    public void angang(Piece piece) {
+        hand.angang(piece);
+        actions.add(Actions.angang(piece));
     }
 }

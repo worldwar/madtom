@@ -34,4 +34,10 @@ public class Action {
     public void setGroup(Group group) {
         this.group = group;
     }
+
+    public void xugang() {
+        if (type == ActionType.PENG) {
+            type = ActionType.XUGANG;
+        }
+    }
 }

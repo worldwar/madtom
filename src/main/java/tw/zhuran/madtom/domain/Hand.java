@@ -121,7 +121,8 @@ public class Hand {
     }
 
     public void discard(Piece piece) {
-
+        List<Piece> suit = suit(piece.getKind());
+        Pieces.exclude(suit, piece);
     }
 
     public void chi(Piece piece, Group group) {
@@ -130,8 +131,8 @@ public class Hand {
         Pieces.exclude(suit, partners);
     }
 
-    public void peng(Piece piece, Group group) {
-        List<Piece> partners = group.partners(piece);
+    public void peng(Piece piece) {
+        List<Piece> partners = Pieces.repeat(piece, 2);
         List<Piece> suit = suit(piece.getKind());
         Pieces.exclude(suit, partners);
     }
@@ -139,5 +140,17 @@ public class Hand {
     public void feed(Piece piece) {
         List<Piece> pieces = suit(piece.getKind());
         Pieces.orderInsert(pieces, piece);
+    }
+
+    public void gang(Piece piece) {
+        List<Piece> pieces = Pieces.repeat(piece, 3);
+        List<Piece> suit = suit(piece.getKind());
+        Pieces.exclude(suit, pieces);
+    }
+
+    public void angang(Piece piece) {
+        List<Piece> pieces = Pieces.repeat(piece, 4);
+        List<Piece> suit = suit(piece.getKind());
+        Pieces.exclude(suit, pieces);
     }
 }

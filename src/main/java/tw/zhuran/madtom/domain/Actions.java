@@ -9,7 +9,15 @@ public class Actions {
         return new Action(ActionType.CHI, piece, group);
     }
 
-    public static Action peng(Piece piece, Group group) {
-        return new Action(ActionType.PENG, piece, group);
+    public static Action peng(Piece piece) {
+        return new Action(ActionType.PENG, piece, Pieces.triple(piece));
+    }
+
+    public static Action gang(Piece piece) {
+        return new Action(ActionType.GANG, piece, Pieces.triple(piece));
+    }
+
+    public static Action angang(Piece piece) {
+        return new Action(ActionType.ANGANG, piece, Pieces.triple(piece));
     }
 }
