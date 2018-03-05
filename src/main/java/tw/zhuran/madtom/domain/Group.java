@@ -39,4 +39,8 @@ public class Group {
         this.kind = kind;
         return this;
     }
+
+    public List<Piece> partners(Piece piece) {
+        return Pieces.subtract(pieces, piece);
+    }
 }

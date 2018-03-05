@@ -4,10 +4,64 @@ import com.github.underscore.$;
 import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 public class Pieces {
+    public static Piece YIWAN = new Piece(Kind.WAN, 1);
+    public static Piece ERWAN = new Piece(Kind.WAN, 2);
+    public static Piece SANWAN = new Piece(Kind.WAN, 3);
+    public static Piece SIWAN = new Piece(Kind.WAN, 4);
+    public static Piece WUWAN = new Piece(Kind.WAN, 5);
+    public static Piece LIUWAN = new Piece(Kind.WAN, 6);
+    public static Piece QIWAN = new Piece(Kind.WAN, 7);
+    public static Piece BAWAN = new Piece(Kind.WAN, 8);
+    public static Piece JIUWAN = new Piece(Kind.WAN, 9);
+    public static Piece YITIAO = new Piece(Kind.TIAO, 1);
+    public static Piece ERTIAO = new Piece(Kind.TIAO, 2);
+    public static Piece SANTIAO = new Piece(Kind.TIAO, 3);
+    public static Piece SITIAO = new Piece(Kind.TIAO, 4);
+    public static Piece WUTIAO = new Piece(Kind.TIAO, 5);
+    public static Piece LIUTIAO = new Piece(Kind.TIAO, 6);
+    public static Piece QITIAO = new Piece(Kind.TIAO, 7);
+    public static Piece BATIAO = new Piece(Kind.TIAO, 8);
+    public static Piece JIUTIAO = new Piece(Kind.TIAO, 9);
+    public static Piece YITONG = new Piece(Kind.TONG, 1);
+    public static Piece ERTONG = new Piece(Kind.TONG, 2);
+    public static Piece SANTONG = new Piece(Kind.TONG, 3);
+    public static Piece SITONG = new Piece(Kind.TONG, 4);
+    public static Piece WUTONG = new Piece(Kind.TONG, 5);
+    public static Piece LIUTONG = new Piece(Kind.TONG, 6);
+    public static Piece QITONG = new Piece(Kind.TONG, 7);
+    public static Piece BATONG = new Piece(Kind.TONG, 8);
+    public static Piece JIUTONG = new Piece(Kind.TONG, 9);
+    public static Piece DONGFENG = new Piece(Kind.FENG, 1);
+    public static Piece NANFENG = new Piece(Kind.FENG, 2);
+    public static Piece XIFENG = new Piece(Kind.FENG, 3);
+    public static Piece BEIFENG = new Piece(Kind.FENG, 4);
+    public static Piece HONGZHONG = new Piece(Kind.FENG, 5);
+    public static Piece FACAI = new Piece(Kind.FENG, 6);
+    public static Piece BAIBAN = new Piece(Kind.FENG, 7);
+
+    public static List<Piece> WAN = Lists.newArrayList(YIWAN, ERWAN, SANWAN, SIWAN, WUWAN, LIUWAN, QIWAN, BAWAN, JIUWAN);
+    public static List<Piece> TIAO = Lists.newArrayList(YITIAO, ERTIAO, SANTIAO, SITIAO, WUTIAO, LIUTIAO, QITIAO, BATIAO, JIUTIAO);
+    public static List<Piece> TONG = Lists.newArrayList(YITONG, ERTONG, SANTONG, SITONG, WUTONG, LIUTONG, QITONG, BATONG, JIUTONG);
+    public static List<Piece> FENG = Lists.newArrayList(DONGFENG, NANFENG, XIFENG, BEIFENG, HONGZHONG, FACAI, BAIBAN);
+
+    public static List<Piece> ALL = new ArrayList<>();
+
+    static {
+        ALL.addAll(WAN);
+        ALL.addAll(TIAO);
+        ALL.addAll(TONG);
+        ALL.addAll(FENG);
+    }
+
+    public static List<Piece> deck() {
+        return $.chain(ALL).map(piece -> repeat(piece, 4)).flatten().value();
+    }
+
     private boolean paired(List<Piece> pieces) {
         return pieces.size() == 2 && pieces.get(0).equals(pieces.get(1));
     }
@@ -44,6 +98,10 @@ public class Pieces {
         ArrayList<Piece> copies = Lists.newArrayList(pieces);
         exclude(copies, sentence);
         return copies;
+    }
+
+    public static List<Piece> subtract(final List<Piece> pieces, Piece piece) {
+        return subtract(pieces, Lists.newArrayList(piece));
     }
 
     private static List<Group> headSentences(List<Piece> pieces) {
@@ -143,5 +201,25 @@ public class Pieces {
 
     public static Group triple(Piece piece) {
         return new Group(Lists.newArrayList(piece, piece, piece), GroupType.TRIPLE, piece.getKind());
+    }
+
+    public static List<Piece> suit(final List<Piece> pieces, final Kind kind) {
+        return $.chain(pieces).filter(piece -> piece.getKind() == kind).sortBy(Piece::getIndex).value();
+    }
+
+    public static List<Piece> repeat(Piece piece, int count) {
+        return Collections.nCopies(count, piece);
+    }
+
+    public static void orderInsert(List<Piece> pieces, Piece piece) {
+        int i = 0;
+        for(Piece p : pieces) {
+            if (p.getIndex() < piece.getIndex()) {
+                i++;
+            } else {
+                break;
+            }
+        }
+        pieces.add(i, piece);
     }
 }

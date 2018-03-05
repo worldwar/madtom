@@ -105,4 +105,39 @@ public class Hand {
         hand.tongPieces = Lists.newArrayList(tongPieces);
         return hand;
     }
+
+    public List<Piece> suit(Kind kind) {
+        switch (kind) {
+            case WAN:
+                return wanPieces;
+            case TIAO:
+                return tiaoPieces;
+            case TONG:
+                return tongPieces;
+            case FENG:
+                return fengPieces;
+        }
+        return null;
+    }
+
+    public void discard(Piece piece) {
+
+    }
+
+    public void chi(Piece piece, Group group) {
+        List<Piece> partners = group.partners(piece);
+        List<Piece> suit = suit(piece.getKind());
+        Pieces.exclude(suit, partners);
+    }
+
+    public void peng(Piece piece, Group group) {
+        List<Piece> partners = group.partners(piece);
+        List<Piece> suit = suit(piece.getKind());
+        Pieces.exclude(suit, partners);
+    }
+
+    public void feed(Piece piece) {
+        List<Piece> pieces = suit(piece.getKind());
+        Pieces.orderInsert(pieces, piece);
+    }
 }
