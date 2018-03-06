@@ -1,5 +1,6 @@
 package tw.zhuran.madtom.domain;
 
+import com.github.underscore.$;
 import com.google.common.collect.Lists;
 
 import java.util.List;
@@ -152,5 +153,18 @@ public class Hand {
         List<Piece> pieces = Pieces.repeat(piece, 4);
         List<Piece> suit = suit(piece.getKind());
         Pieces.exclude(suit, pieces);
+    }
+
+    public boolean chiable(Piece piece) {
+        return chiableSequences(piece).size() > 0;
+    }
+
+    public List<Group> chiableSequences(Piece piece) {
+        List<Group> groups = Pieces.possibleSequences(piece);
+        return $.filter(groups, group -> Pieces.contains(suit(piece.getKind()), group.partners(piece)));
+    }
+
+    public boolean pengable(Piece piece) {
+        return Pieces.contains(suit(piece.getKind()), Pieces.repeat(piece, 2));
     }
 }

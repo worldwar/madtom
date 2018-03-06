@@ -116,6 +116,12 @@ public class Pieces {
     public static  List<Group> possibleSentences(Piece piece) {
         List<Group> sentences = Lists.newArrayList();
         sentences.add(triple(piece));
+        sentences.addAll(possibleSequences(piece));
+        return sentences;
+    }
+
+    public static  List<Group> possibleSequences(Piece piece) {
+        List<Group> sentences = Lists.newArrayList();
         if (piece.getKind() != Kind.FENG) {
             for (int position : $.range(1, 4)) {
                 Group sequence = sequence(piece, position);

@@ -4,7 +4,11 @@ import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
+
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public class HandTest {
@@ -101,5 +105,32 @@ public class HandTest {
         hand.setTongPieces(Lists.newArrayList(yitong, yitong));
         hand.setFengPieces(Lists.newArrayList(dongfeng, dongfeng));
         assertFalse(hand.complete());
+    }
+
+    @Test
+    public void testChiable() {
+        hand.setWanPieces(Lists.newArrayList(yiwan, erwan, sanwan, wuwan, liuwan, bawan, jiuwan));
+        assertTrue(hand.chiable(qiwan));
+        assertFalse(hand.chiable(wuwan));
+        List<Group> groups = hand.chiableSequences(qiwan);
+        assertThat(groups.size(), is(3));
+        assertThat(hand.chiableSequences(erwan), is(Lists.newArrayList(Pieces.sequence(erwan, 2))));
+
+        hand.setFengPieces(Lists.newArrayList(dongfeng, dongfeng, nanfeng));
+        assertFalse(hand.chiable(dongfeng));
+        assertFalse(hand.chiable(xifeng));
+    }
+
+    @Test
+    public void testPengable() {
+        hand.setWanPieces(Lists.newArrayList(yiwan, erwan, erwan));
+        hand.setTiaoPieces(Lists.newArrayList(santiao, santiao, santiao));
+        hand.setFengPieces(Lists.newArrayList(dongfeng, nanfeng, xifeng, xifeng, hongzhong, facai, baiban));
+        assertFalse(hand.pengable(yiwan));
+        assertTrue(hand.pengable(erwan));
+        assertTrue(hand.pengable(santiao));
+        assertFalse(hand.pengable(sitong));
+        assertTrue(hand.pengable(xifeng));
+        assertFalse(hand.pengable(beifeng));
     }
 }

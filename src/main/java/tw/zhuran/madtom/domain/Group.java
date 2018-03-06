@@ -43,4 +43,24 @@ public class Group {
     public List<Piece> partners(Piece piece) {
         return Pieces.subtract(pieces, piece);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Group group = (Group) o;
+
+        if (pieces != null ? !pieces.equals(group.pieces) : group.pieces != null) return false;
+        if (groupType != group.groupType) return false;
+        return kind == group.kind;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = pieces != null ? pieces.hashCode() : 0;
+        result = 31 * result + (groupType != null ? groupType.hashCode() : 0);
+        result = 31 * result + (kind != null ? kind.hashCode() : 0);
+        return result;
+    }
 }
