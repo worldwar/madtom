@@ -134,11 +134,14 @@ public class Pieces {
     }
 
     public static List<Group> pairs(List<Piece> pieces) {
+        return $.map(countLargeThan(pieces, 1), Pieces::pair);
+    }
+
+    public static List<Piece> countLargeThan(List<Piece> pieces, int count) {
         Map<Piece, List<Piece>> value =
                 $.groupBy(pieces, arg -> arg);
         return $.chain(value.entrySet())
-                .filter((entry) -> entry.getValue().size() > 1)
-                .map((entry) -> pair(entry.getKey())).value();
+                .filter((entry) -> entry.getValue().size() > count).map(Map.Entry::getKey).value();
     }
 
     private boolean tripled(List<Piece> pieces) {

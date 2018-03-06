@@ -90,12 +90,7 @@ public class Hand {
     }
 
     private List<Group> pairs() {
-        List<Group> pairs = Lists.newArrayList();
-        pairs.addAll(Pieces.pairs(wanPieces));
-        pairs.addAll(Pieces.pairs(fengPieces));
-        pairs.addAll(Pieces.pairs(tiaoPieces));
-        pairs.addAll(Pieces.pairs(tongPieces));
-        return pairs;
+        return Pieces.pairs(pieces());
     }
 
     public Hand copy() {
@@ -105,6 +100,15 @@ public class Hand {
         hand.tiaoPieces = Lists.newArrayList(tiaoPieces);
         hand.tongPieces = Lists.newArrayList(tongPieces);
         return hand;
+    }
+
+    public List<Piece> pieces() {
+        List<Piece> pieces = Lists.newArrayList();
+        pieces.addAll(wanPieces);
+        pieces.addAll(tiaoPieces);
+        pieces.addAll(tongPieces);
+        pieces.addAll(fengPieces);
+        return pieces;
     }
 
     public List<Piece> suit(Kind kind) {
@@ -166,5 +170,17 @@ public class Hand {
 
     public boolean pengable(Piece piece) {
         return Pieces.contains(suit(piece.getKind()), Pieces.repeat(piece, 2));
+    }
+
+    public boolean gangable(Piece piece) {
+        return Pieces.contains(suit(piece.getKind()), Pieces.repeat(piece, 3));
+    }
+
+    public boolean angangable() {
+        return angangablePieces().size() > 0;
+    }
+
+    public List<Piece> angangablePieces() {
+        return Pieces.countLargeThan(pieces(), 3);
     }
 }

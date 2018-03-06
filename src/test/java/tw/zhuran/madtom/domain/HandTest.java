@@ -133,4 +133,32 @@ public class HandTest {
         assertTrue(hand.pengable(xifeng));
         assertFalse(hand.pengable(beifeng));
     }
+
+    @Test
+    public void testGangable() {
+        hand.setWanPieces(Lists.newArrayList(yiwan, erwan, erwan));
+        hand.setTiaoPieces(Lists.newArrayList(santiao, santiao, santiao));
+        hand.setFengPieces(Lists.newArrayList(dongfeng, nanfeng, xifeng, xifeng, hongzhong, facai, baiban));
+        assertFalse(hand.gangable(yiwan));
+        assertFalse(hand.gangable(erwan));
+        assertTrue(hand.gangable(santiao));
+        assertFalse(hand.gangable(sitong));
+        assertFalse(hand.gangable(xifeng));
+        assertFalse(hand.gangable(beifeng));
+    }
+
+    @Test
+    public void testAngangable() {
+        hand.setWanPieces(Lists.newArrayList(yiwan, erwan, erwan, erwan, erwan));
+        hand.setTiaoPieces(Lists.newArrayList(santiao, santiao, santiao));
+        hand.setFengPieces(Lists.newArrayList(dongfeng, nanfeng,  xifeng, facai, baiban));
+        assertTrue(hand.angangable());
+        assertThat(hand.angangablePieces(), is(Lists.newArrayList(erwan)));
+
+        hand.feed(santiao);
+        List<Piece> pieces = hand.angangablePieces();
+        assertThat(pieces.size(), is(2));
+        assertTrue(pieces.contains(erwan));
+        assertTrue(pieces.contains(santiao));
+    }
 }
