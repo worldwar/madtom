@@ -241,4 +241,28 @@ public class HandTest {
         assertTrue(partners.contains(siwan));
         assertTrue(partners.contains(dongfeng));
     }
+
+    @Test
+    public void testForms() {
+        hand.setWanPieces(Lists.newArrayList(yiwan, yiwan, yiwan, erwan, sanwan, siwan, siwan, siwan, wuwan, wuwan, liuwan, liuwan, qiwan, qiwan));
+        List<Form> forms = hand.forms();
+        assertThat(forms.size(), is(3));
+
+        hand.setWanPieces(Lists.newArrayList(yiwan, yiwan, yiwan, yiwan, sanwan, siwan, siwan, siwan, wuwan, wuwan, liuwan, liuwan, qiwan, qiwan));
+        forms = hand.forms();
+        assertThat(forms.size(), is(0));
+
+        hand.setWanPieces(Lists.newArrayList(yiwan, yiwan, yiwan, yiwan, sanwan, siwan, siwan, siwan, wuwan, wuwan, liuwan, liuwan, qiwan, qiwan));
+        forms = hand.forms();
+        assertThat(forms.size(), is(0));
+    }
+
+    @Test
+    public void testShiftForms() {
+        hand.setWanPieces(Lists.newArrayList(yiwan, yiwan, yiwan, erwan, sanwan, siwan, wuwan, liuwan, qiwan, bawan, jiuwan, jiuwan,jiuwan));
+        hand.setTongPieces(Lists.newArrayList(wutong));
+        hand.setWildcard(wutong);
+        List<Form> forms = hand.shiftForms();
+        assertThat(forms.size(), is(10));
+    }
 }

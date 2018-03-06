@@ -50,18 +50,14 @@ public class Hand {
     }
 
     public boolean complete() {
-        List<Group> pairs = pairs();
-        for (Group group : pairs) {
-            Hand hand = subtract(group);
-            if (hand.well()) {
-                return true;
-            }
-        }
-        return false;
+        return forms().size() > 0;
     }
 
     public boolean finish() {
         List<List<Piece>> combinations = Pieces.combinations(wildcards.size(), partners());
+        if (combinations.size() == 0) {
+            return complete();
+        }
         return $.any(combinations, pieces -> {
             Hand hand = copy();
             hand.shift(pieces);
@@ -218,5 +214,59 @@ public class Hand {
 
     public List<Piece> partners() {
         return $.chain(pieces()).map(piece -> Pieces.partners(piece)).flatten().uniq().value();
+    }
+
+    public List<Form> forms() {
+        List<Form> forms = Lists.newArrayList();
+        List<Group> pairs = pairs();
+        for (Group group : pairs) {
+            Form form = new Form();
+            form.add(group);
+            Hand hand = subtract(group);
+            forms.addAll(hand.forms(form));
+        }
+        return forms;
+    }
+
+    public List<Form> shiftForms() {
+        List<List<Piece>> combinations = Pieces.combinations(wildcards.size(), partners());
+        if (combinations.size() == 0) {
+            return forms();
+        }
+
+        return $.chain(combinations).map(combination -> {
+            Hand hand = copy();
+            hand.shift(combination);
+            Shift shift = new Shift(wildcard, combination);
+            List<Form> forms = hand.forms();
+            $.each(forms, form -> form.setShift(shift));
+            return forms;
+        }).flatten().value();
+    }
+
+    private List<Form> forms(Form form) {
+        if (pieces().size() == 0) {
+            return Lists.newArrayList(form);
+        } else {
+            List<Form> forms = Lists.newArrayList();
+            List<Group> sentences = headSentences();
+            for (Group group : sentences) {
+                Form copy = form.copy();
+                copy.add(group);
+                Hand hand = subtract(group);
+                forms.addAll(hand.forms(copy));
+            }
+            return forms;
+        }
+    }
+
+    public List<Group> headSentences() {
+        for (Kind kind : Kind.values()) {
+            List<Piece> suit = suit(kind);
+            if (suit.size() != 0) {
+                return Pieces.headSentences(suit);
+            }
+        }
+        return Lists.newArrayList();
     }
 }

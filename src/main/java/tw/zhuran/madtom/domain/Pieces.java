@@ -110,7 +110,7 @@ public class Pieces {
         return subtract(pieces, Lists.newArrayList(piece));
     }
 
-    private static List<Group> headSentences(List<Piece> pieces) {
+    public static List<Group> headSentences(List<Piece> pieces) {
         List<Group> sentences = new ArrayList<>();
         if (pieces.size() < 3) {
             return sentences;
@@ -292,5 +292,15 @@ public class Pieces {
 
     public static List<Piece> partners(Piece piece) {
         return $.chain(possibleSentences(piece)).map(group -> group.getPieces()).flatten().uniq().value();
+    }
+
+    public static int count(List<Piece> pieces, Piece piece) {
+        int count = 0;
+        for (Piece p : pieces) {
+            if (p.equals(piece)) {
+                count++;
+            }
+        }
+        return count;
     }
 }
