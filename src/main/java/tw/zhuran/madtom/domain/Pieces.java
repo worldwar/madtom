@@ -210,6 +210,10 @@ public class Pieces {
         return pieces.remove(piece);
     }
 
+    public static void excludeAll(List<Piece> pieces, Piece piece) {
+        while (exclude(pieces,piece)){}
+    }
+
     public static Group pair(Piece piece) {
         return new Group(Lists.newArrayList(piece, piece), GroupType.PAIR, piece.getKind());
     }
@@ -292,6 +296,28 @@ public class Pieces {
 
     public static List<Piece> partners(Piece piece) {
         return $.chain(possibleSentences(piece)).map(group -> group.getPieces()).flatten().uniq().value();
+    }
+
+    public static List<List<Piece>> uniqueCombinations(int i, List<Piece> pool) {
+        return uniqueCombinations(i, Lists.newArrayList(pool), Lists.newArrayList());
+    }
+
+    public static List<List<Piece>> uniqueCombinations(int i, List<Piece> pool, List<Piece> base) {
+        if (i == 0) {
+            List<List<Piece>> r = new ArrayList<>();
+            r.add(base);
+            return r;
+        }
+        if (pool.size() == 0) {
+            return Lists.newArrayList();
+        }
+        List<Piece> uniquePool = $.uniq(pool);
+        List<List<Piece>> result = Lists.newArrayList();
+        for(Piece piece : uniquePool) {
+            result.addAll(uniqueCombinations(i - 1, Pieces.subtract(pool, piece), add(base, piece)));
+            excludeAll(pool, piece);
+        }
+        return result;
     }
 
     public static int count(List<Piece> pieces, Piece piece) {

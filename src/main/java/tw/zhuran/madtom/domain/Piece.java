@@ -56,4 +56,24 @@ public class Piece {
         result = 31 * result + index;
         return result;
     }
+
+    @Override
+    public String toString() {
+        if (kind != Kind.FENG) {
+            String unit = "";
+            switch (kind) {
+                case WAN:
+                    unit = "万";
+                    break;
+                case TIAO:
+                    unit = "条";
+                    break;
+                case TONG:
+                    unit = "筒";
+                    break;
+            }
+            return index + unit;
+        }
+        return "";
+    }
 }

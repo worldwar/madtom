@@ -35,4 +35,16 @@ public class PiecesTest {
         assertThat(permunations.get(2), is(Lists.newArrayList(Pieces.ERWAN, Pieces.YIWAN)));
         assertThat(permunations.get(3), is(Pieces.repeat(Pieces.ERWAN, 2)));
     }
+
+    @Test
+    public void testUniqueCombinations() throws Exception {
+        List<Piece> pool = Lists.newArrayList(Pieces.YIWAN, Pieces.YIWAN, Pieces.YIWAN, Pieces.ERWAN, Pieces.ERWAN, Pieces.ERWAN);
+        List<List<Piece>> uc = Pieces.uniqueCombinations(1, pool);
+        assertThat(uc.size(), is(2));
+
+        uc = Pieces.uniqueCombinations(2, pool);
+        assertThat(uc.size(), is(3));
+        uc = Pieces.uniqueCombinations(3, pool);
+        assertThat(uc.size(), is(4));
+    }
 }

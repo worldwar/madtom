@@ -1,5 +1,6 @@
 package tw.zhuran.madtom.domain;
 
+import com.github.underscore.$;
 import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
@@ -264,5 +265,35 @@ public class HandTest {
         hand.setWildcard(wutong);
         List<Form> forms = hand.shiftForms();
         assertThat(forms.size(), is(9));
+    }
+
+    @Test
+    public void testMostFormsOfHand() {
+        List<List<Piece>> lists = Pieces.uniqueCombinations(14, $
+                .chain(Pieces.WAN).map(piece -> Pieces.repeat(piece, 4)).flatten().value());
+        int forms = 0;
+        int countOfMax = 0;
+        List<Piece> target = Lists.newArrayList();
+        List<List<Piece>> targets = Lists.newArrayList();
+        for (List<Piece> suit : lists) {
+            hand.setWanPieces(suit);
+            int n = hand.forms().size();
+            if (n > forms) {
+                forms = n;
+                target = suit;
+            }
+
+            if (n == 4) {
+                countOfMax++;
+                targets.add(suit);
+            }
+        }
+        System.out.println("个数: " + forms);
+        System.out.println("最大变形个数: " + countOfMax);
+
+        targets.forEach(t -> {
+            t.forEach(System.out::print);
+            System.out.println();
+        });
     }
 }
