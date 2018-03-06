@@ -97,4 +97,42 @@ public class TrunkTest {
         assertThat(action.getGroup().getGroupType(), is(GroupType.TRIPLE));
         assertThat(hand.getWanPieces().size(), is(3));
     }
+
+    @Test
+    public void testXugangable() {
+        trunk.chi(Pieces.SANWAN, Pieces.sequence(Pieces.SANWAN, 3));
+        assertFalse(trunk.xugangable());
+        trunk.discard(Pieces.ERWAN);
+        trunk.peng(Pieces.BATIAO);
+        trunk.discard(Pieces.BAWAN);
+        trunk.feed(Pieces.BATIAO);
+        assertTrue(trunk.xugangable());
+
+        List<Piece> pieces = trunk.xugangablePieces();
+        assertThat(pieces.size(), is(1));
+        assertThat(pieces.get(0), is(Pieces.BATIAO));
+
+        trunk.discard(Pieces.BEIFENG);
+        trunk.feed(Pieces.SITIAO);
+        trunk.discard(Pieces.XIFENG);
+        trunk.peng(Pieces.SITIAO);
+        trunk.discard(Pieces.WUTONG);
+        trunk.feed(Pieces.SITIAO);
+        assertTrue(trunk.xugangable());
+        pieces = trunk.xugangablePieces();
+        assertThat(pieces.size(), is(2));
+        assertTrue(pieces.contains(Pieces.BATIAO));
+        assertTrue(pieces.contains(Pieces.SITIAO));
+
+        trunk.discard(Pieces.BATIAO);
+        trunk.feed(Pieces.JIUTONG);
+        assertTrue(trunk.xugangable());
+        pieces = trunk.xugangablePieces();
+        assertThat(pieces.size(), is(1));
+        assertTrue(pieces.contains(Pieces.SITIAO));
+
+        trunk.xugang(Pieces.SITIAO);
+        trunk.feed(Pieces.JIUTONG);
+        assertFalse(trunk.xugangable());
+    }
 }

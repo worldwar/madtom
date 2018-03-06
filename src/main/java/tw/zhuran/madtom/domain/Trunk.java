@@ -73,8 +73,7 @@ public class Trunk {
     }
 
     public Action findPeng(Piece piece) {
-        List<Action> actions = $.filter(this.actions,
-                action -> action.getType() == ActionType.PENG && action.getPiece().equals(piece));
+        List<Action> actions = $.filter(filterActions(ActionType.PENG), action -> action.getPiece().equals(piece));
         if (actions.size() == 0) {
             return null;
         } else {
@@ -82,8 +81,25 @@ public class Trunk {
         }
     }
 
+    public List<Action> filterActions(ActionType type) {
+        return $.filter(this.actions, action -> action.getType() == type);
+    }
+
     public void angang(Piece piece) {
         hand.angang(piece);
         actions.add(Actions.angang(piece));
+    }
+
+    public boolean xugangable() {
+        return xugangablePieces().size() > 0;
+    }
+
+    public boolean xugangable(Piece piece) {
+        return xugangablePieces().contains(piece);
+    }
+
+    public List<Piece> xugangablePieces() {
+        List<Piece> pieces = hand.pieces();
+        return $.chain(filterActions(ActionType.PENG)).map(Action::getPiece).filter(pieces::contains).value();
     }
 }
