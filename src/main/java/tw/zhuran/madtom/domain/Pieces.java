@@ -94,6 +94,12 @@ public class Pieces {
         return false;
     }
 
+    public static List<Piece> add(final List<Piece> pieces, Piece piece) {
+        ArrayList<Piece> copies = Lists.newArrayList(pieces);
+        copies.add(piece);
+        return copies;
+    }
+
     public static List<Piece> subtract(final List<Piece> pieces, List<Piece> sentence) {
         ArrayList<Piece> copies = Lists.newArrayList(pieces);
         exclude(copies, sentence);
@@ -220,6 +226,10 @@ public class Pieces {
         return Collections.nCopies(count, piece);
     }
 
+    public static <T> List<T> repeatn(T v, int count) {
+        return Collections.nCopies(count, v);
+    }
+
     public static void orderInsert(List<Piece> pieces, Piece piece) {
         int i = 0;
         for(Piece p : pieces) {
@@ -230,5 +240,57 @@ public class Pieces {
             }
         }
         pieces.add(i, piece);
+    }
+
+    public static List<List<Piece>> permutations(int count, List<Piece> pool, List<List<Piece>> middle) {
+        if (count == 0) {
+            return middle;
+        }
+
+        List<List<Piece>> result = Lists.newArrayList();
+        for (List<Piece> permutation : middle) {
+            for (Piece piece : pool) {
+                result.add(add(permutation, piece));
+            }
+        }
+        return permutations(count -1, pool, result);
+    }
+
+    public static List<List<Piece>> permutations(int count, List<Piece> pool) {
+        return permutations(count, pool, repeatn(Lists.newArrayList(), 1));
+    }
+
+    public static List<List<Piece>> permutations(int count) {
+        return permutations(count, Pieces.ALL);
+    }
+
+    public static List<List<Piece>> combinations(int count, List<Piece> pool, List<List<Piece>> middle) {
+        if (count == 0) {
+            return middle;
+        }
+
+        List<List<Piece>> result = Lists.newArrayList();
+        int index = 0;
+        for (Piece piece : pool) {
+            for (List<Piece> permutation : middle) {
+                if (permutation.size() == 0 || pool.indexOf(permutation.get(permutation.size() - 1)) <= index) {
+                    result.add(add(permutation, piece));
+                }
+            }
+            index++;
+        }
+        return combinations(count -1, pool, result);
+    }
+
+    public static List<List<Piece>> combinations(int count, List<Piece> pool) {
+        return combinations(count, pool, repeatn(Lists.newArrayList(), 1));
+    }
+
+    public static List<List<Piece>> combinations(int count) {
+        return combinations(count, Pieces.ALL);
+    }
+
+    public static List<Piece> partners(Piece piece) {
+        return $.chain(possibleSentences(piece)).map(group -> group.getPieces()).flatten().uniq().value();
     }
 }

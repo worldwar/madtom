@@ -75,6 +75,73 @@ public class HandTest {
     }
 
     @Test
+    public void testCompleteWithoutWildcards() throws Exception {
+        hand.setWanPieces(Lists.newArrayList(yiwan, yiwan, yiwan, erwan, sanwan, siwan, wuwan, liuwan, qiwan, bawan, jiuwan, jiuwan,jiuwan,jiuwan));
+        hand.setWildcard(baiban);
+        assertTrue(hand.complete());
+
+        hand.setWanPieces(Lists.newArrayList(yiwan, yiwan, yiwan, erwan, erwan, erwan, sanwan, sanwan, sanwan, wuwan, wuwan, liuwan,jiuwan,jiuwan));
+        assertFalse(hand.complete());
+
+        hand.setWanPieces(Lists.newArrayList(yiwan, yiwan, siwan, wuwan, liuwan, qiwan, bawan, jiuwan, jiuwan,jiuwan,jiuwan));
+        hand.setFengPieces(Lists.newArrayList(dongfeng, nanfeng, xifeng));
+        assertFalse(hand.complete());
+
+        hand.setWanPieces(Lists.newArrayList(yiwan, yiwan, siwan, wuwan, liuwan, qiwan, bawan, jiuwan, jiuwan,jiuwan,jiuwan));
+        hand.setFengPieces(Lists.newArrayList(dongfeng, dongfeng, dongfeng));
+        assertTrue(hand.complete());
+    }
+
+    @Test
+    public void testCompleteWithOneWildcards() throws Exception {
+        hand.setWanPieces(Lists.newArrayList(yiwan, yiwan, yiwan, erwan, erwan, erwan, sanwan, sanwan, sanwan, wuwan, qiwan, bawan,jiuwan,jiuwan));
+        hand.setWildcard(wuwan);
+        assertTrue(hand.finish());
+
+        hand.discard(qiwan);
+        hand.feed(wutong);
+        assertFalse(hand.finish());
+    }
+
+    @Test
+    public void testCompleteWithTwoWildcards() throws Exception {
+        hand.setWanPieces(Lists.newArrayList(yiwan, yiwan, yiwan, erwan, erwan, erwan, sanwan, sanwan, sanwan, wuwan, qiwan,jiuwan,jiuwan));
+        hand.setFengPieces(Lists.newArrayList(dongfeng));
+        hand.setWildcard(jiuwan);
+        assertTrue(hand.finish());
+
+        hand.discard(qiwan);
+        hand.feed(bawan);
+        assertFalse(hand.finish());
+    }
+
+    @Test
+    public void testCompleteWithThreeWildcards() throws Exception {
+        hand.setWanPieces(Lists.newArrayList(yiwan, yiwan, yiwan, erwan, erwan, erwan, sanwan, sanwan, sanwan, wuwan, qiwan));
+        hand.setTongPieces(Lists.newArrayList(batong, jiutong));
+        hand.setFengPieces(Lists.newArrayList(dongfeng));
+        hand.setWildcard(yiwan);
+        assertTrue(hand.finish());
+
+        hand.discard(qiwan);
+        hand.feed(bawan);
+        assertFalse(hand.finish());
+    }
+
+    @Test
+    public void testCompleteWithFourWildcards() throws Exception {
+        hand.setWanPieces(Lists.newArrayList(yiwan, yiwan, yiwan, yiwan, erwan, erwan, erwan, wuwan, liuwan, qiwan));
+        hand.setTongPieces(Lists.newArrayList(yitong, batong, jiutong));
+        hand.setFengPieces(Lists.newArrayList(dongfeng));
+        hand.setWildcard(yiwan);
+        assertTrue(hand.finish());
+
+        hand.discard(qiwan);
+        hand.feed(bawan);
+        assertFalse(hand.finish());
+    }
+
+    @Test
     public void testComplteWhenCountOfPiecesIsNot14() {
         hand.setWanPieces(Lists.newArrayList(yiwan, yiwan, erwan, erwan, sanwan, sanwan, wuwan, wuwan));
         assertTrue(hand.complete());
@@ -160,5 +227,18 @@ public class HandTest {
         assertThat(pieces.size(), is(2));
         assertTrue(pieces.contains(erwan));
         assertTrue(pieces.contains(santiao));
+    }
+
+    @Test
+    public void testPartners() {
+        hand.setWanPieces(Lists.newArrayList(yiwan, erwan, erwan));
+        hand.setFengPieces(Lists.newArrayList(dongfeng));
+        List<Piece> partners = hand.partners();
+        assertThat(partners.size(), is(5));
+        assertTrue(partners.contains(yiwan));
+        assertTrue(partners.contains(erwan));
+        assertTrue(partners.contains(sanwan));
+        assertTrue(partners.contains(siwan));
+        assertTrue(partners.contains(dongfeng));
     }
 }

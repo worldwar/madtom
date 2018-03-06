@@ -6,6 +6,8 @@ import com.google.common.collect.Lists;
 import java.util.List;
 
 public class Hand {
+    private Piece wildcard;
+    private List<Piece> wildcards = Lists.newArrayList();
     private List<Piece> wanPieces = Lists.newArrayList();
     private List<Piece> tongPieces = Lists.newArrayList();
     private List<Piece> tiaoPieces =Lists.newArrayList();
@@ -58,6 +60,19 @@ public class Hand {
         return false;
     }
 
+    public boolean finish() {
+        List<List<Piece>> combinations = Pieces.combinations(wildcards.size(), partners());
+        return $.any(combinations, pieces -> {
+            Hand hand = copy();
+            hand.shift(pieces);
+            return hand.complete();
+        });
+    }
+
+    private void shift(List<Piece> pieces) {
+        $.each(pieces, this::add);
+    }
+
     private boolean well() {
         return Pieces.well(wanPieces) && Pieces.well(tongPieces) && Pieces.well(tiaoPieces) && Pieces.well(fengPieces);
     }
@@ -66,7 +81,6 @@ public class Hand {
         if (part.size() == 2) {
             return part.get(0).equals(part.get(1));
         }
-
         return false;
     }
 
@@ -126,8 +140,12 @@ public class Hand {
     }
 
     public void discard(Piece piece) {
-        List<Piece> suit = suit(piece.getKind());
-        Pieces.exclude(suit, piece);
+        if (piece.equals(wildcard)) {
+            Pieces.exclude(wildcards, piece);
+        } else {
+            List<Piece> suit = suit(piece.getKind());
+            Pieces.exclude(suit, piece);
+        }
     }
 
     public void chi(Piece piece, Group group) {
@@ -143,6 +161,14 @@ public class Hand {
     }
 
     public void feed(Piece piece) {
+        if (piece.equals(wildcard)) {
+            wildcards.add(wildcard);
+        } else {
+            add(piece);
+        }
+    }
+
+    private void add(Piece piece) {
         List<Piece> pieces = suit(piece.getKind());
         Pieces.orderInsert(pieces, piece);
     }
@@ -182,5 +208,15 @@ public class Hand {
 
     public List<Piece> angangablePieces() {
         return Pieces.countLargeThan(pieces(), 3);
+    }
+
+    public void setWildcard(Piece wildcard) {
+        this.wildcard = wildcard;
+        wildcards = $.filter(pieces(), piece -> piece.equals(wildcard));
+        Pieces.exclude(suit(wildcard.getKind()), wildcards);
+    }
+
+    public List<Piece> partners() {
+        return $.chain(pieces()).map(piece -> Pieces.partners(piece)).flatten().uniq().value();
     }
 }
