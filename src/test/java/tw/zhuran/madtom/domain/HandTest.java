@@ -263,6 +263,6 @@ public class HandTest {
         hand.setTongPieces(Lists.newArrayList(wutong));
         hand.setWildcard(wutong);
         List<Form> forms = hand.shiftForms();
-        assertThat(forms.size(), is(10));
+        assertThat(forms.size(), is(9));
     }
 }

@@ -251,10 +251,12 @@ public class Hand {
             List<Form> forms = Lists.newArrayList();
             List<Group> sentences = headSentences();
             for (Group group : sentences) {
-                Form copy = form.copy();
-                copy.add(group);
-                Hand hand = subtract(group);
-                forms.addAll(hand.forms(copy));
+                if (form.addable(group)) {
+                    Form copy = form.copy();
+                    copy.add(group);
+                    Hand hand = subtract(group);
+                    forms.addAll(hand.forms(copy));
+                }
             }
             return forms;
         }

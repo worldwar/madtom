@@ -1,5 +1,6 @@
 package tw.zhuran.madtom.domain;
 
+import com.github.underscore.$;
 import com.google.common.collect.Lists;
 
 import java.util.List;
@@ -25,6 +26,10 @@ public class Form {
 
     public void setShift(Shift shift) {
         this.shift = shift;
+    }
+
+    public boolean addable(Group group) {
+        return group.getGroupType() != GroupType.TRIPLE || !$.include(groups, Pieces.sequence(group.getPieces().get(0), 1));
     }
 
     public void add(Group group) {
