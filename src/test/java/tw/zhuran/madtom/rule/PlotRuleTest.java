@@ -32,4 +32,48 @@ public class PlotRuleTest {
         assertTrue(plots.size() > 0);
         assertTrue($.all(plots, Plot::isHard));
     }
+
+    @Test
+    public void testPengRule() {
+        trunk.init(Lists.newArrayList(Pieces.SANTIAO, Pieces.SANTIAO,
+                Pieces.SITIAO, Pieces.SITIAO, Pieces.SITIAO,
+                Pieces.QITIAO, Pieces.QITIAO,  Pieces.QITIAO,
+                Pieces.JIUTIAO,Pieces.JIUTIAO,Pieces.JIUTIAO,
+                Pieces.YITONG, Pieces.YITONG
+        ));
+        trunk.setWildcard(Pieces.DONGFENG);
+        trunk.feed(Pieces.YITONG);
+        List<Plot> plots = trunk.plots();
+        assertTrue(plots.size() > 0);
+        assertTrue($.all(plots, Plot::isPeng));
+
+        trunk.discard(Pieces.YITONG);
+        trunk.peng(Pieces.YITONG);
+
+        plots = trunk.plots();
+        assertTrue(plots.size() > 0);
+        assertTrue($.all(plots, Plot::isPeng));
+
+        trunk.discard(Pieces.SANTIAO);
+        trunk.gang(Pieces.JIUTIAO);
+        trunk.feed(Pieces.SANTIAO);
+
+        plots = trunk.plots();
+        assertTrue(plots.size() > 0);
+        assertTrue($.all(plots, Plot::isPeng));
+
+        trunk.discard(Pieces.SANTIAO);
+        trunk.feed(Pieces.ERTIAO);
+
+        plots = trunk.plots();
+        assertTrue(plots.size() > 0);
+        assertFalse($.any(plots, Plot::isPeng));
+
+        trunk.discard(Pieces.ERTIAO);
+        trunk.chi(Pieces.ERTIAO, Pieces.sequence(Pieces.ERTIAO, 1));
+
+        plots = trunk.plots();
+        assertTrue(plots.size() > 0);
+        assertFalse($.any(plots, Plot::isPeng));
+    }
 }

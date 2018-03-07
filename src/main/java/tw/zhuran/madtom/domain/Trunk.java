@@ -3,6 +3,7 @@ package tw.zhuran.madtom.domain;
 import com.github.underscore.$;
 import com.google.common.collect.Lists;
 import tw.zhuran.madtom.rule.HardRule;
+import tw.zhuran.madtom.rule.PengRule;
 import tw.zhuran.madtom.rule.PlotRule;
 
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ public class Trunk {
     static {
         plotRules = Lists.newArrayList();
         plotRules.add(HardRule.instance);
+        plotRules.add(PengRule.instance);
 
     }
     public Trunk(Hand hand) {
@@ -129,6 +131,7 @@ public class Trunk {
     public Plot plot(Form form) {
         Plot plot = new Plot();
         plot.setForm(form);
+        plot.setActions(actions);
         $.each(rules(), rule -> rule.apply(plot));
         return plot;
     }
