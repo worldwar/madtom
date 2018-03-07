@@ -20,4 +20,12 @@ public class Actions {
     public static Action angang(Piece piece) {
         return new Action(ActionType.ANGANG, piece, Pieces.triple(piece));
     }
+
+    public static Action hongzhongGang() {
+        return new Action(ActionType.HONGZHONG_GANG, Pieces.HONGZHONG, null);
+    }
+
+    public static Action laiziGang(Piece wildcard) {
+        return new Action(ActionType.LAIZI_GANG, wildcard, null);
+    }
 }

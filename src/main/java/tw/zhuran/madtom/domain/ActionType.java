@@ -6,5 +6,7 @@ public enum ActionType {
     PENG,
     GANG,
     XUGANG,
-    ANGANG
+    ANGANG,
+    HONGZHONG_GANG,
+    LAIZI_GANG
 }

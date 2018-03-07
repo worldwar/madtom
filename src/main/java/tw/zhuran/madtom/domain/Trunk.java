@@ -40,6 +40,10 @@ public class Trunk {
         hand.setFengPieces(Pieces.suit(pieces, Kind.FENG));
     }
 
+    public void setWildcard(Piece piece) {
+        hand.setWildcard(piece);
+    }
+
     public void feed(Piece piece) {
         hand.feed(piece);
     }
@@ -88,6 +92,16 @@ public class Trunk {
     public void angang(Piece piece) {
         hand.angang(piece);
         actions.add(Actions.angang(piece));
+    }
+
+    public void hongzhongGang() {
+        hand.hongzhongGang();
+        actions.add(Actions.hongzhongGang());
+    }
+
+    public void laiziGang() {
+        hand.laiziGang();
+        actions.add(Actions.laiziGang(hand.getWildcard()));
     }
 
     public boolean xugangable() {

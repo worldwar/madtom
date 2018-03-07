@@ -99,6 +99,33 @@ public class TrunkTest {
     }
 
     @Test
+    public void testHongzhongGang() throws Exception {
+        trunk.feed(Pieces.HONGZHONG);
+        trunk.hongzhongGang();
+        Hand hand = trunk.getHand();
+        List<Action> actions = trunk.getActions();
+        Action action = actions.get(0);
+        assertThat(action.getType(), is(ActionType.HONGZHONG_GANG));
+        assertNull(action.getGroup());
+        assertThat(action.getPiece(), is(Pieces.HONGZHONG));
+        assertThat(hand.getHongzhongPieces().size(), is(0));
+    }
+
+    @Test
+    public void testLaiziGang() throws Exception {
+        trunk.setWildcard(Pieces.BAIBAN);
+        trunk.feed(Pieces.BAIBAN);
+        trunk.laiziGang();
+        Hand hand = trunk.getHand();
+        List<Action> actions = trunk.getActions();
+        Action action = actions.get(0);
+        assertThat(action.getType(), is(ActionType.LAIZI_GANG));
+        assertNull(action.getGroup());
+        assertThat(action.getPiece(), is(Pieces.BAIBAN));
+        assertThat(hand.getWildcards().size(), is(0));
+    }
+
+    @Test
     public void testXugangable() {
         trunk.chi(Pieces.SANWAN, Pieces.sequence(Pieces.SANWAN, 3));
         assertFalse(trunk.xugangable());

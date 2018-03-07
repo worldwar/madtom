@@ -8,10 +8,19 @@ import java.util.List;
 public class Hand {
     private Piece wildcard;
     private List<Piece> wildcards = Lists.newArrayList();
+    private List<Piece> hongzhongPieces = Lists.newArrayList();
     private List<Piece> wanPieces = Lists.newArrayList();
     private List<Piece> tongPieces = Lists.newArrayList();
     private List<Piece> tiaoPieces =Lists.newArrayList();
     private List<Piece> fengPieces = Lists.newArrayList();
+
+    public Piece getWildcard() {
+        return wildcard;
+    }
+
+    public List<Piece> getWildcards() {
+        return wildcards;
+    }
 
     public List<Piece> getWanPieces() {
         return wanPieces;
@@ -46,6 +55,15 @@ public class Hand {
 
     public Hand setFengPieces(List<Piece> fengPieces) {
         this.fengPieces = fengPieces;
+        return this;
+    }
+
+    public List<Piece> getHongzhongPieces() {
+        return hongzhongPieces;
+    }
+
+    public Hand setHongzhongPieces(List<Piece> hongzhongPieces) {
+        this.hongzhongPieces = hongzhongPieces;
         return this;
     }
 
@@ -138,6 +156,8 @@ public class Hand {
     public void discard(Piece piece) {
         if (piece.equals(wildcard)) {
             Pieces.exclude(wildcards, piece);
+        } else if (piece.equals(Pieces.HONGZHONG)) {
+            Pieces.exclude(hongzhongPieces, piece);
         } else {
             List<Piece> suit = suit(piece.getKind());
             Pieces.exclude(suit, piece);
@@ -159,6 +179,8 @@ public class Hand {
     public void feed(Piece piece) {
         if (piece.equals(wildcard)) {
             wildcards.add(wildcard);
+        } else if (piece.equals(Pieces.HONGZHONG)) {
+            hongzhongPieces.add(piece);
         } else {
             add(piece);
         }
@@ -179,6 +201,16 @@ public class Hand {
         List<Piece> pieces = Pieces.repeat(piece, 4);
         List<Piece> suit = suit(piece.getKind());
         Pieces.exclude(suit, pieces);
+    }
+
+    public void hongzhongGang() {
+        assert hongzhongPieces.size() > 0;
+        Pieces.exclude(hongzhongPieces, Pieces.HONGZHONG);
+    }
+
+    public void laiziGang() {
+        assert wildcards.size() > 0;
+        Pieces.exclude(wildcards, wildcard);
     }
 
     public boolean chiable(Piece piece) {
