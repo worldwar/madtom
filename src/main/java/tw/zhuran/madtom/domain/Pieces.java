@@ -4,7 +4,6 @@ import com.github.underscore.$;
 import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -226,12 +225,14 @@ public class Pieces {
         return $.chain(pieces).filter(piece -> piece.getKind() == kind).sortBy(Piece::getIndex).value();
     }
 
-    public static List<Piece> repeat(Piece piece, int count) {
-        return Collections.nCopies(count, piece);
-    }
-
-    public static <T> List<T> repeatn(T v, int count) {
-        return Collections.nCopies(count, v);
+    public static <T> List<T> repeat(T v, int count) {
+        if (count == 0) {
+            return Lists.newArrayList();
+        } else {
+            List<T> pieces = repeat(v, count - 1);
+            pieces.add(v);
+            return pieces;
+        }
     }
 
     public static void orderInsert(List<Piece> pieces, Piece piece) {
@@ -261,7 +262,7 @@ public class Pieces {
     }
 
     public static List<List<Piece>> permutations(int count, List<Piece> pool) {
-        return permutations(count, pool, repeatn(Lists.newArrayList(), 1));
+        return permutations(count, pool, repeat(Lists.newArrayList(), 1));
     }
 
     public static List<List<Piece>> permutations(int count) {
@@ -287,7 +288,7 @@ public class Pieces {
     }
 
     public static List<List<Piece>> combinations(int count, List<Piece> pool) {
-        return combinations(count, pool, repeatn(Lists.newArrayList(), 1));
+        return combinations(count, pool, repeat(Lists.newArrayList(), 1));
     }
 
     public static List<List<Piece>> combinations(int count) {
