@@ -1,14 +1,23 @@
 package tw.zhuran.madtom.domain;
 
 import com.github.underscore.$;
+import com.google.common.collect.Lists;
+import tw.zhuran.madtom.rule.HardRule;
+import tw.zhuran.madtom.rule.PlotRule;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Trunk {
+    static List<PlotRule> plotRules;
     private Hand hand = new Hand();
     private List<Action> actions = new ArrayList<>();
 
+    static {
+        plotRules = Lists.newArrayList();
+        plotRules.add(HardRule.instance);
+
+    }
     public Trunk(Hand hand) {
         this.hand = hand;
     }
@@ -115,5 +124,20 @@ public class Trunk {
     public List<Piece> xugangablePieces() {
         List<Piece> pieces = hand.pieces();
         return $.chain(filterActions(ActionType.PENG)).map(Action::getPiece).filter(pieces::contains).value();
+    }
+
+    public Plot plot(Form form) {
+        Plot plot = new Plot();
+        plot.setForm(form);
+        $.each(rules(), rule -> rule.apply(plot));
+        return plot;
+    }
+
+    public List<Plot> plots() {
+        return $.map(hand.shiftForms(), this::plot);
+    }
+
+    private List<PlotRule> rules() {
+        return plotRules;
     }
 }
