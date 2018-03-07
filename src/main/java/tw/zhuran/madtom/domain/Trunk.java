@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import tw.zhuran.madtom.rule.HardRule;
 import tw.zhuran.madtom.rule.PengRule;
 import tw.zhuran.madtom.rule.PlotRule;
+import tw.zhuran.madtom.rule.SuitRule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,7 @@ public class Trunk {
         plotRules = Lists.newArrayList();
         plotRules.add(HardRule.instance);
         plotRules.add(PengRule.instance);
+        plotRules.add(SuitRule.instance);
 
     }
     public Trunk(Hand hand) {

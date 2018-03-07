@@ -99,6 +99,12 @@ public class Pieces {
         return copies;
     }
 
+    public static <T> List<T> add(final List<T> first, final List<T> second) {
+        List<T> copies = Lists.newArrayList(first);
+        copies.addAll(second);
+        return copies;
+    }
+
     public static List<Piece> subtract(final List<Piece> pieces, List<Piece> sentence) {
         ArrayList<Piece> copies = Lists.newArrayList(pieces);
         exclude(copies, sentence);
@@ -329,5 +335,22 @@ public class Pieces {
             }
         }
         return count;
+    }
+
+    public static boolean matchTripleGroup(Action action) {
+        Group group = action.getGroup();
+        return group != null && group.getGroupType() == GroupType.TRIPLE;
+    }
+
+    public static boolean hasGroup(Action action) {
+        return action.getGroup() != null;
+    }
+
+    public static boolean sameKind(List<Group> groups) {
+        if (groups.size() == 0) {
+            return true;
+        }
+        Group first = groups.get(0);
+        return $.all(groups, group -> group.getKind() == first.getKind());
     }
 }

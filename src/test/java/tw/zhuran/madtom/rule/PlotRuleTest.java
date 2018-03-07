@@ -4,10 +4,7 @@ import com.github.underscore.$;
 import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
-import tw.zhuran.madtom.domain.Hand;
-import tw.zhuran.madtom.domain.Pieces;
-import tw.zhuran.madtom.domain.Plot;
-import tw.zhuran.madtom.domain.Trunk;
+import tw.zhuran.madtom.domain.*;
 
 import java.util.List;
 
@@ -89,5 +86,59 @@ public class PlotRuleTest {
         plots = trunk.plots();
         assertTrue(plots.size() > 0);
         assertFalse($.any(plots, Plot::isPeng));
+    }
+
+    @Test
+    public void testSuitRule() {
+        trunk.init(Lists.newArrayList(Pieces.SANTIAO, Pieces.SANTIAO,
+                Pieces.SITIAO, Pieces.SITIAO, Pieces.SITIAO,
+                Pieces.QITIAO, Pieces.QITIAO, Pieces.QITIAO,
+                Pieces.BATIAO, Pieces.BATIAO, Pieces.BATIAO,
+                Pieces.JIUTIAO,Pieces.JIUTIAO,Pieces.JIUTIAO
+        ));
+        trunk.setWildcard(Pieces.DONGFENG);
+        List<Plot> plots = trunk.plots();
+        assertTrue(plots.size() > 0);
+        assertTrue($.all(plots, Plot::isSuit));
+
+        trunk.discard(Pieces.JIUTIAO);
+        trunk.feed(Pieces.DONGFENG);
+        plots = trunk.plots();
+        assertTrue(plots.size() > 0);
+        assertTrue($.all(plots, Plot::isSuit));
+
+        trunk.laiziGang();
+        trunk.feed(Pieces.JIUTIAO);
+        plots = trunk.plots();
+        assertTrue(plots.size() > 0);
+        assertTrue($.all(plots, Plot::isSuit));
+
+        trunk.discard(Pieces.JIUTIAO);
+        trunk.feed(Pieces.YIWAN);
+        trunk.discard(Pieces.JIUTIAO);
+        trunk.feed(Pieces.YIWAN);
+        trunk.discard(Pieces.JIUTIAO);
+        trunk.feed(Pieces.DONGFENG);
+        plots = trunk.plots();
+        assertTrue(plots.size() > 0);
+        assertFalse($.any(plots, Plot::isSuit));
+
+        trunk.laiziGang();
+        trunk.feed(Pieces.SANTIAO);
+        plots = trunk.plots();
+        assertTrue(plots.size() > 0);
+        assertFalse($.any(plots, Plot::isSuit));
+
+        trunk.discard(Pieces.SITIAO);
+        trunk.peng(Pieces.SITIAO);
+        plots = trunk.plots();
+        assertTrue(plots.size() > 0);
+        assertFalse($.any(plots, Plot::isSuit));
+
+        trunk.discard(Pieces.QITIAO);
+        trunk.peng(Pieces.YIWAN);
+        plots = trunk.plots();
+        assertTrue(plots.size() > 0);
+        assertFalse($.any(plots, Plot::isSuit));
     }
 }
