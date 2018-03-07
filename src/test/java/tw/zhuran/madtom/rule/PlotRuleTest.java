@@ -27,10 +27,24 @@ public class PlotRuleTest {
                 Pieces.WUTIAO, Pieces.WUTIAO, Pieces.WUTIAO,
                 Pieces.LIUTIAO, Pieces.LIUTIAO, Pieces.LIUTIAO,
                 Pieces.QITIAO, Pieces.QITIAO,  Pieces.QITIAO));
-        trunk.setWildcard(Pieces.DONGFENG);
+        trunk.setWildcard(Pieces.ERTIAO);
         List<Plot> plots = trunk.plots();
         assertTrue(plots.size() > 0);
         assertTrue($.all(plots, Plot::isHard));
+
+        trunk.discard(Pieces.SANTIAO);
+        trunk.feed(Pieces.ERTIAO);
+
+        plots = trunk.plots();
+        assertTrue(plots.size() > 0);
+        assertTrue($.any(plots, Plot::isHard));
+        assertFalse($.all(plots, Plot::isHard));
+
+        trunk.discard(Pieces.SANTIAO);
+        trunk.feed(Pieces.YITIAO);
+        plots = trunk.plots();
+        assertTrue(plots.size() > 0);
+        assertFalse($.any(plots, Plot::isHard));
     }
 
     @Test

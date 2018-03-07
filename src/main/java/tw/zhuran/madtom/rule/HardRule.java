@@ -3,7 +3,7 @@ package tw.zhuran.madtom.rule;
 import tw.zhuran.madtom.domain.Plot;
 
 public class HardRule implements PlotRule {
-    public static HardRule instance = new HardRule();
+    public static final HardRule instance = new HardRule();
 
     @Override
     public void apply(Plot plot) {
