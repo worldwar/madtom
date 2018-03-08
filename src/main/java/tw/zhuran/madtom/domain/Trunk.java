@@ -2,10 +2,7 @@ package tw.zhuran.madtom.domain;
 
 import com.github.underscore.$;
 import com.google.common.collect.Lists;
-import tw.zhuran.madtom.rule.HardRule;
-import tw.zhuran.madtom.rule.PengRule;
-import tw.zhuran.madtom.rule.PlotRule;
-import tw.zhuran.madtom.rule.SuitRule;
+import tw.zhuran.madtom.rule.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +17,9 @@ public class Trunk {
         plotRules.add(HardRule.instance);
         plotRules.add(PengRule.instance);
         plotRules.add(SuitRule.instance);
-
+        plotRules.add(FengRule.instance);
     }
+
     public Trunk(Hand hand) {
         this.hand = hand;
     }

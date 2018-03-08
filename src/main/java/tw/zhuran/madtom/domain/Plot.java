@@ -1,5 +1,7 @@
 package tw.zhuran.madtom.domain;
 
+import com.github.underscore.$;
+
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +22,18 @@ public class Plot {
     private List<Group> groups;
     private Form form;
     private List<Action> actions;
+
+    public List<Group> handGroups() {
+        return form.getGroups();
+    }
+
+    public List<Group> actionGroups() {
+        return $.chain(actions).filter(Pieces::hasGroup).map(Action::getGroup).value();
+    }
+
+    public List<Group> allGroups() {
+        return Pieces.add(handGroups(), actionGroups());
+    }
 
     public PlotType getType() {
         return type;

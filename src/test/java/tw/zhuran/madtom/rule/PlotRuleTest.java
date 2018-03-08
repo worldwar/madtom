@@ -141,4 +141,40 @@ public class PlotRuleTest {
         assertTrue(plots.size() > 0);
         assertFalse($.any(plots, Plot::isSuit));
     }
+
+    @Test
+    public void testFengRule() {
+        trunk.init(Lists.newArrayList(Pieces.DONGFENG, Pieces.DONGFENG,
+                Pieces.NANFENG, Pieces.NANFENG, Pieces.NANFENG,
+                Pieces.XIFENG, Pieces.XIFENG, Pieces.XIFENG,
+                Pieces.BEIFENG, Pieces.BEIFENG, Pieces.BEIFENG,
+                Pieces.YIWAN, Pieces.YIWAN, Pieces.YIWAN
+        ));
+        trunk.setWildcard(Pieces.WUTONG);
+        List<Plot> plots = trunk.plots();
+        assertTrue(plots.size() > 0);
+        assertFalse($.any(plots, Plot::isFeng));
+
+        trunk.discard(Pieces.YIWAN);
+        trunk.peng(Pieces.DONGFENG);
+        trunk.discard(Pieces.YIWAN);
+        trunk.peng(Pieces.NANFENG);
+        trunk.discard(Pieces.YIWAN);
+        trunk.feed(Pieces.NANFENG);
+
+        plots = trunk.plots();
+        assertTrue(plots.size() > 0);
+        assertTrue($.all(plots, Plot::isFeng));
+
+        trunk.discard(Pieces.NANFENG);
+        trunk.feed(Pieces.ERWAN);
+        trunk.discard(Pieces.NANFENG);
+        trunk.feed(Pieces.ERWAN);
+        trunk.discard(Pieces.XIFENG);
+        trunk.peng(Pieces.ERWAN);
+
+        plots = trunk.plots();
+        assertTrue(plots.size() > 0);
+        assertFalse($.any(plots, Plot::isFeng));
+    }
 }
