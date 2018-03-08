@@ -1,6 +1,10 @@
 package tw.zhuran.madtom.domain;
 
+import com.github.underscore.$;
+
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Deck {
@@ -9,6 +13,20 @@ public class Deck {
     private int cuttedWall;
     private int start;
     private int end;
+
+    public Deck(int size) {
+        List<Piece> deck = Pieces.deck();
+        Collections.shuffle(deck);
+        List<List<Pillar>> pillarsList = $.chain(deck).chunk(2).map(list -> new Pillar(list)).chunk(deck.size() / 2 / size)
+                .value();
+
+        int index = 1;
+        for (List<Pillar> pillars : pillarsList) {
+            walls.put(index, new Wall(pillars));
+            index++;
+        }
+        this.size = size;
+    }
 
     public Wall wall(int index) {
         return walls.get(index);
@@ -30,10 +48,10 @@ public class Deck {
         }
     }
 
-    public void cut(int index) {
-        Wall wall = walls.get(index);
+    public void cut(int startWall, int index) {
+        Wall wall = walls.get(startWall);
         wall.cut(index);
-        cuttedWall = index;
+        cuttedWall = startWall;
         start = index;
         end = index;
     }

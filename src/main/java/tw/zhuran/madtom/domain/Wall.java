@@ -44,7 +44,7 @@ public class Wall {
 
     public Piece gangAfford(int point) {
         int index = end - (point - 1);
-        Pillar pillar = pillars.get(end);
+        Pillar pillar = pillars.get(index);
         Piece piece = pillar.afford();
         if (pillar.empty()) {
             if (index == end) {
@@ -76,6 +76,7 @@ public class Wall {
         for (int i = index; i < end; i++) {
             pillars.get(i).suck(pillars.get(i + 1));
         }
+
         tailForward();
     }
 
@@ -103,7 +104,7 @@ public class Wall {
 
     public Pillar advance() {
         if (gangAffordable()) {
-            Pillar pillar = pillars.get(0).copy();
+            Pillar pillar = pillars.get(0).suck();
             pack(0);
             return pillar;
         } else {

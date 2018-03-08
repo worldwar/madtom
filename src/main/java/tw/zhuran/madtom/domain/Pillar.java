@@ -8,6 +8,10 @@ public class Pillar {
     private Piece top;
     private Piece bottom;
 
+    public Pillar() {
+
+    }
+
     public Pillar(List<Piece> pieces) {
         top = pieces.get(0);
         bottom = pieces.get(1);
@@ -38,6 +42,12 @@ public class Pillar {
         this.bottom = pillar.bottom;
         pillar.top = null;
         pillar.bottom = null;
+    }
+
+    public Pillar suck() {
+        Pillar pillar = new Pillar();
+        pillar.suck(this);
+        return pillar;
     }
 
     public Pillar copy() {
