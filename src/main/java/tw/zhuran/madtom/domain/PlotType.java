@@ -7,5 +7,5 @@ public enum PlotType {
     SUIT,
     FENG,
     JIANG,
-    GLOBAL
+    BEG
 }

@@ -12,6 +12,7 @@ import static org.junit.Assert.*;
 public class PlotRuleTest {
 
     private Trunk trunk;
+
     @Before
     public void before() {
         trunk = new Trunk(new Hand());
@@ -23,7 +24,7 @@ public class PlotRuleTest {
                 Pieces.SITIAO, Pieces.SITIAO, Pieces.SITIAO,
                 Pieces.WUTIAO, Pieces.WUTIAO, Pieces.WUTIAO,
                 Pieces.LIUTIAO, Pieces.LIUTIAO, Pieces.LIUTIAO,
-                Pieces.QITIAO, Pieces.QITIAO,  Pieces.QITIAO));
+                Pieces.QITIAO, Pieces.QITIAO, Pieces.QITIAO));
         trunk.setWildcard(Pieces.ERTIAO);
         List<Plot> plots = trunk.plots();
         assertTrue(plots.size() > 0);
@@ -48,8 +49,8 @@ public class PlotRuleTest {
     public void testPengRule() {
         trunk.init(Lists.newArrayList(Pieces.SANTIAO, Pieces.SANTIAO,
                 Pieces.SITIAO, Pieces.SITIAO, Pieces.SITIAO,
-                Pieces.QITIAO, Pieces.QITIAO,  Pieces.QITIAO,
-                Pieces.JIUTIAO,Pieces.JIUTIAO,Pieces.JIUTIAO,
+                Pieces.QITIAO, Pieces.QITIAO, Pieces.QITIAO,
+                Pieces.JIUTIAO, Pieces.JIUTIAO, Pieces.JIUTIAO,
                 Pieces.YITONG, Pieces.YITONG
         ));
         trunk.setWildcard(Pieces.DONGFENG);
@@ -94,7 +95,7 @@ public class PlotRuleTest {
                 Pieces.SITIAO, Pieces.SITIAO, Pieces.SITIAO,
                 Pieces.QITIAO, Pieces.QITIAO, Pieces.QITIAO,
                 Pieces.BATIAO, Pieces.BATIAO, Pieces.BATIAO,
-                Pieces.JIUTIAO,Pieces.JIUTIAO,Pieces.JIUTIAO
+                Pieces.JIUTIAO, Pieces.JIUTIAO, Pieces.JIUTIAO
         ));
         trunk.setWildcard(Pieces.DONGFENG);
         List<Plot> plots = trunk.plots();
@@ -213,5 +214,75 @@ public class PlotRuleTest {
         plots = trunk.plots();
         assertTrue(plots.size() > 0);
         assertFalse($.any(plots, Plot::isJiang));
+    }
+
+    @Test
+    public void testBegRuleWithoutAngang() {
+        trunk.init(Lists.newArrayList(Pieces.ERWAN, Pieces.ERWAN,
+                Pieces.WUWAN, Pieces.WUWAN, Pieces.WUWAN,
+                Pieces.ERTIAO, Pieces.ERTIAO, Pieces.ERTIAO,
+                Pieces.BATIAO, Pieces.BATIAO, Pieces.BATIAO,
+                Pieces.ERTONG, Pieces.ERTONG, Pieces.ERTONG
+        ));
+        trunk.setWildcard(Pieces.DONGFENG);
+        List<Plot> plots = trunk.plots();
+        assertTrue(plots.size() > 0);
+        assertFalse($.any(plots, Plot::isBeg));
+
+        trunk.discard(Pieces.WUWAN);
+        trunk.peng(Pieces.ERWAN);
+        trunk.discard(Pieces.ERTONG);
+        trunk.feed(Pieces.ERTONG);
+
+        plots = trunk.plots();
+        assertTrue(plots.size() > 0);
+        assertFalse($.any(plots, Plot::isBeg));
+
+        trunk.discard(Pieces.ERTONG);
+        trunk.gang(Pieces.ERTIAO);
+        trunk.feed(Pieces.XIFENG);
+        trunk.discard(Pieces.XIFENG);
+        trunk.gang(Pieces.BATIAO);
+        trunk.feed(Pieces.XIFENG);
+        trunk.discard(Pieces.XIFENG);
+        trunk.peng(Pieces.ERTONG);
+        trunk.discard(Pieces.WUWAN);
+        trunk.feed(Pieces.WUWAN);
+
+        plots = trunk.plots();
+        assertTrue(plots.size() > 0);
+        assertTrue($.all(plots, Plot::isBeg));
+    }
+
+    @Test
+    public void testBegRuleWithAngang() {
+        trunk.init(Lists.newArrayList(Pieces.ERWAN, Pieces.ERWAN,
+                Pieces.WUWAN, Pieces.WUWAN, Pieces.WUWAN,
+                Pieces.ERTIAO, Pieces.ERTIAO, Pieces.ERTIAO,
+                Pieces.BATIAO, Pieces.BATIAO, Pieces.BATIAO,
+                Pieces.ERTONG, Pieces.ERTONG, Pieces.ERTONG
+        ));
+        trunk.setWildcard(Pieces.DONGFENG);
+        List<Plot> plots = trunk.plots();
+        assertTrue(plots.size() > 0);
+        assertFalse($.any(plots, Plot::isBeg));
+
+        trunk.discard(Pieces.ERWAN);
+        trunk.feed(Pieces.WUWAN);
+        trunk.angang(Pieces.WUWAN);
+        trunk.feed(Pieces.ERTIAO);
+        trunk.angang(Pieces.ERTIAO);
+        trunk.feed(Pieces.FACAI);
+        trunk.discard(Pieces.FACAI);
+        trunk.peng(Pieces.ERTONG);
+        trunk.discard(Pieces.ERTONG);
+        trunk.feed(Pieces.ERWAN);
+        trunk.discard(Pieces.ERWAN);
+        trunk.peng(Pieces.BATIAO);
+        trunk.discard(Pieces.BATIAO);
+        trunk.feed(Pieces.ERWAN);
+        plots = trunk.plots();
+        assertTrue(plots.size() > 0);
+        assertFalse($.any(plots, Plot::isBeg));
     }
 }

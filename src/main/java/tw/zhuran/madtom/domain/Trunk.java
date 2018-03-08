@@ -19,6 +19,7 @@ public class Trunk {
         plotRules.add(SuitRule.instance);
         plotRules.add(FengRule.instance);
         plotRules.add(JiangRule.instance);
+        plotRules.add(BegRule.instance);
     }
 
     public Trunk(Hand hand) {

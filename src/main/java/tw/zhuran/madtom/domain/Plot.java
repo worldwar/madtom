@@ -12,7 +12,7 @@ public class Plot {
     private boolean suit;
     private boolean feng;
     private boolean jiang;
-    private boolean global;
+    private boolean beg;
     private boolean bottom;
     private boolean rush;
     private boolean fire;
@@ -123,12 +123,12 @@ public class Plot {
         this.jiang = jiang;
     }
 
-    public boolean isGlobal() {
-        return global;
+    public boolean isBeg() {
+        return beg;
     }
 
-    public void setGlobal(boolean global) {
-        this.global = global;
+    public void setBeg(boolean beg) {
+        this.beg = beg;
     }
 
     public boolean isBottom() {
