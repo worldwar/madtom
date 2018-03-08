@@ -35,6 +35,13 @@ public class Plot {
         return Pieces.add(handGroups(), actionGroups());
     }
 
+    public void trigger(TriggerType triggerType) {
+        self = Pieces.self(triggerType);
+        bottom = triggerType == TriggerType.BOTTOM;
+        rush = triggerType == TriggerType.RUSH;
+        fire = triggerType == TriggerType.FIRE;
+    }
+
     public PlotType getType() {
         return type;
     }

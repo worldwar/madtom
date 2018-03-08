@@ -357,4 +357,8 @@ public class Pieces {
     public static boolean isJiang(Piece piece) {
         return piece.getKind() != Kind.FENG && (piece.getIndex() == 2 || piece.getIndex() == 5 || piece.getIndex() == 8);
     }
+
+    public static boolean self(TriggerType triggerType) {
+        return triggerType == TriggerType.SELF || triggerType == TriggerType.FIRE || triggerType == TriggerType.BOTTOM;
+    }
 }

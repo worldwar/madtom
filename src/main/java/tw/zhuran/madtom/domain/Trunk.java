@@ -11,6 +11,7 @@ public class Trunk {
     static List<PlotRule> plotRules;
     private Hand hand = new Hand();
     private List<Action> actions = new ArrayList<>();
+    private TriggerType triggerType = TriggerType.CAPTURE;
 
     static {
         plotRules = Lists.newArrayList();
@@ -44,6 +45,14 @@ public class Trunk {
 
     public void setActions(List<Action> actions) {
         this.actions = actions;
+    }
+
+    public TriggerType getTriggerType() {
+        return triggerType;
+    }
+
+    public void setTriggerType(TriggerType triggerType) {
+        this.triggerType = triggerType;
     }
 
     public void init(List<Piece> pieces) {
@@ -134,6 +143,7 @@ public class Trunk {
         Plot plot = new Plot();
         plot.setForm(form);
         plot.setActions(actions);
+        plot.trigger(triggerType);
         $.each(rules(), rule -> rule.apply(plot));
         return plot;
     }

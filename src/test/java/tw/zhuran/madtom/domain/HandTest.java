@@ -3,6 +3,7 @@ package tw.zhuran.madtom.domain;
 import com.github.underscore.$;
 import com.google.common.collect.Lists;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.List;
@@ -298,6 +299,7 @@ public class HandTest {
     }
 
     @Test
+    @Ignore
     public void testMostFormsOfHandWithOneWildcard() {
         List<List<Piece>> lists = Pieces.uniqueCombinations(13, $
                 .chain(Pieces.WAN).map(piece -> Pieces.repeat(piece, 4)).flatten().value());
@@ -330,6 +332,7 @@ public class HandTest {
     }
 
     @Test
+    @Ignore
     public void testMostFormsOfHandWithTwoWildcard() {
         List<List<Piece>> lists = Pieces.uniqueCombinations(12, $
                 .chain(Pieces.WAN).map(piece -> Pieces.repeat(piece, 4)).flatten().value());
