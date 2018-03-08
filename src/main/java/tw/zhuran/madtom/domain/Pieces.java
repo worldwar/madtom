@@ -353,4 +353,8 @@ public class Pieces {
         Group first = groups.get(0);
         return $.all(groups, group -> group.getKind() == first.getKind());
     }
+
+    public static boolean isJiang(Piece piece) {
+        return piece.getKind() != Kind.FENG && (piece.getIndex() == 2 || piece.getIndex() == 5 || piece.getIndex() == 8);
+    }
 }

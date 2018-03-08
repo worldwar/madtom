@@ -177,4 +177,41 @@ public class PlotRuleTest {
         assertTrue(plots.size() > 0);
         assertFalse($.any(plots, Plot::isFeng));
     }
+
+    @Test
+    public void testJiangRule() {
+        trunk.init(Lists.newArrayList(Pieces.ERWAN, Pieces.ERWAN,
+                Pieces.WUWAN, Pieces.WUWAN, Pieces.WUWAN,
+                Pieces.ERTIAO, Pieces.ERTIAO, Pieces.ERTIAO,
+                Pieces.BATIAO, Pieces.BATIAO, Pieces.BATIAO,
+                Pieces.ERTONG, Pieces.ERTONG, Pieces.ERTONG
+        ));
+        trunk.setWildcard(Pieces.DONGFENG);
+        List<Plot> plots = trunk.plots();
+        assertTrue(plots.size() > 0);
+        assertTrue($.all(plots, Plot::isJiang));
+
+        trunk.discard(Pieces.ERTONG);
+        trunk.peng(Pieces.ERWAN);
+
+        plots = trunk.plots();
+        assertTrue(plots.size() > 0);
+        assertTrue($.all(plots, Plot::isJiang));
+
+        trunk.discard(Pieces.ERTONG);
+        trunk.feed(Pieces.SANTONG);
+        trunk.discard(Pieces.ERTONG);
+        trunk.feed(Pieces.SANTONG);
+
+        plots = trunk.plots();
+        assertTrue(plots.size() > 0);
+        assertFalse($.any(plots, Plot::isJiang));
+
+        trunk.discard(Pieces.WUWAN);
+        trunk.peng(Pieces.SANTONG);
+
+        plots = trunk.plots();
+        assertTrue(plots.size() > 0);
+        assertFalse($.any(plots, Plot::isJiang));
+    }
 }
