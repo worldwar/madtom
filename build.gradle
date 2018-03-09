@@ -9,3 +9,9 @@ dependencies {
     compile 'com.github.javadev:underscore:1.30'
     testCompile 'junit:junit:4.12'
 }
+
+compileJava.options.encoding = 'UTF-8'
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}

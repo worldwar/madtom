@@ -35,7 +35,7 @@ public class DeckTest {
         assertFalse(startWall.affordable());
         assertTrue(nextWall.affordable());
 
-        $.times(4, () -> deck.deal());
+        $.times(8, () -> deck.deal());
         assertFalse(nextWall.affordable());
     }
 }

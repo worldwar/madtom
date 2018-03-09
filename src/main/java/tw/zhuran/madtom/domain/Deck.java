@@ -47,8 +47,8 @@ public class Deck {
         Wall wall = walls.get(startWall);
         wall.cut(index);
         cuttedWall = startWall;
-        start = index;
-        end = index;
+        start = startWall;
+        end = startWall;
     }
 
     public Piece afford() {
