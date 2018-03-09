@@ -1,6 +1,7 @@
 package tw.zhuran.madtom.domain;
 
 import com.github.underscore.$;
+import com.google.common.base.Supplier;
 import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
@@ -237,6 +238,16 @@ public class Pieces {
         } else {
             List<T> pieces = repeat(v, count - 1);
             pieces.add(v);
+            return pieces;
+        }
+    }
+
+    public static <T> List<T> multiple(Supplier<T> supplier, int count) {
+        if (count == 0) {
+            return Lists.newArrayList();
+        } else {
+            List<T> pieces = multiple(supplier, count - 1);
+            pieces.add(supplier.get());
             return pieces;
         }
     }

@@ -65,6 +65,10 @@ public class Deck {
         return piece;
     }
 
+    public List<Piece> deal() {
+        return Pieces.multiple(this::afford, 4);
+    }
+
     public Piece gangAfford(int point) {
         Wall wall = wall(end);
         if (wall.gangAffordable(point)) {
