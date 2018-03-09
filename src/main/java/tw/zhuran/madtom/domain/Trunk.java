@@ -163,4 +163,57 @@ public class Trunk {
     public void deal(List<Piece> pieces) {
         $.each(pieces, piece -> hand.feed(piece));
     }
+
+    public boolean opened() {
+        return $.any(actions, Pieces::opened);
+    }
+
+    public List<Plot> activePlots(Piece piece, TriggerType triggerType) {
+        List<Plot> plots = Lists.newArrayList();
+        if (!opened()) {
+            return plots;
+        }
+
+        if (hand.getHongzhongPieces().size() != 0) {
+            return plots;
+        }
+
+        Hand copy = hand.copy();
+        hand.feed(piece);
+        this.triggerType = triggerType;
+        if (plots.size() != 0) {
+            plots = $.filter(plots, plot -> plot.featured() || plot.getShifts().size() <= 1);
+            plots = $.filter(plots, plot -> plot.isFeng() || plot.isJiang() || plot.isPeng() || plot.isSuit() || Pieces.isJiang(plot.pair().getPieces().get(0)));
+        } else {
+            if (feng()) {
+                Plot plot = new Plot();
+                plot.setFeng(true);
+                plot.trigger(triggerType);
+                plots.add(plot);
+            } else if (jiang()){
+                Plot plot = new Plot();
+                plot.setJiang(true);
+                plot.trigger(triggerType);
+                plots.add(plot);
+            }
+        }
+        hand = copy;
+        return plots;
+    }
+
+    public List<Group> actionGroups() {
+        return $.chain(actions).filter(Pieces::hasGroup).map(Action::getGroup).value();
+    }
+
+    public boolean feng() {
+        return $.all(hand.pieces(), p -> p.getKind() == Kind.FENG) && $.all(actionGroups(), group -> group.getKind() == Kind.FENG);
+    }
+
+    public boolean jiang() {
+        return $.all(hand.pieces(), Pieces::isJiang) && $.all(groupActions(), action -> Pieces.isJiang(action.getPiece()));
+    }
+
+    public List<Action> groupActions() {
+        return $.filter(actions, Pieces::hasGroup);
+    }
 }

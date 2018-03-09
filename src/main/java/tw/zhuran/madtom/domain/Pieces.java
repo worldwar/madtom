@@ -347,6 +347,11 @@ public class Pieces {
         return group != null && group.getGroupType() == GroupType.TRIPLE;
     }
 
+
+    public static boolean matchTripleGroup(Group group) {
+        return group != null && group.getGroupType() == GroupType.TRIPLE;
+    }
+
     public static boolean hasGroup(Action action) {
         return action.getGroup() != null;
     }
@@ -373,5 +378,9 @@ public class Pieces {
             wildcard = wildcard.circularNext();
         }
         return wildcard;
+    }
+
+    public static boolean opened(Action action) {
+        return hasGroup(action) && action.getType() != ActionType.ANGANG;
     }
 }

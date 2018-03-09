@@ -43,6 +43,18 @@ public class Plot {
         fire = triggerType == TriggerType.FIRE;
     }
 
+    public boolean featured() {
+        return peng || suit || feng || jiang || beg || bottom || rush || fire;
+    }
+
+    public Group pair() {
+        List<Group> pairs = $.filter(form.getGroups(), group -> group.getGroupType() == GroupType.PAIR);
+        if (pairs.size() > 0) {
+            return pairs.get(0);
+        }
+        return null;
+    }
+
     public PlotType getType() {
         return type;
     }
