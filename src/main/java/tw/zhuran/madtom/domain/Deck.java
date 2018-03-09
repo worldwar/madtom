@@ -2,6 +2,8 @@ package tw.zhuran.madtom.domain;
 
 import com.github.underscore.$;
 import tw.zhuran.madtom.util.F;
+import tw.zhuran.madtom.util.NaturalTurner;
+import tw.zhuran.madtom.util.ReverseNaturalTurner;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -10,10 +12,8 @@ import java.util.Map;
 
 public class Deck {
     private Map<Integer, Wall> walls = new HashMap<>();
-    private int size;
-    private int cuttedWall;
-    private int start;
-    private int end;
+    private ReverseNaturalTurner head;
+    private NaturalTurner tail;
 
     public Deck(int size) {
         List<Piece> deck = Pieces.deck();
@@ -21,42 +21,26 @@ public class Deck {
         List<List<Pillar>> pillarsList = $.chain(deck).chunk(2).map(list -> new Pillar(list)).chunk(deck.size() / 2 / size)
                 .value();
         walls = F.index($.map(pillarsList, Wall::new));
-        this.size = size;
-    }
-
-    public Wall wall(int index) {
-        return walls.get(index);
-    }
-
-    public int next(int index) {
-        if (index == 1) {
-            return size;
-        } else {
-            return index - 1;
-        }
-    }
-
-    public int previous(int index) {
-        if (index == size) {
-            return 1;
-        } else {
-            return index + 1;
-        }
+        head = new ReverseNaturalTurner(size);
+        tail = new NaturalTurner(size);
     }
 
     public void cut(int startWall, int index) {
         Wall wall = walls.get(startWall);
         wall.cut(index);
-        cuttedWall = startWall;
-        start = startWall;
-        end = startWall;
+        head.turnTo(startWall);
+        tail.turnTo(startWall);
+    }
+
+    public Wall wall(Integer index) {
+        return walls.get(index);
     }
 
     public Piece afford() {
-        Wall wall = wall(start);
+        Wall wall = wall(head.current());
         Piece piece = wall.afford();
         if (!wall.affordable()) {
-            forward();
+            head.turnNext();
         }
         return piece;
     }
@@ -66,15 +50,15 @@ public class Deck {
     }
 
     public Piece gangAfford(int point) {
-        Wall wall = wall(end);
+        Wall wall = wall(tail.current());
         if (wall.gangAffordable(point)) {
             Piece piece = wall.gangAfford(point);
             if (!wall.gangAffordable()) {
-                tailForward();
+                tail.turnNext();
             }
             return piece;
         } else {
-            Wall previousWall = wall(previous(end));
+            Wall previousWall = wall(tail.next());
             Piece piece = previousWall.gangAfford(point - wall.tailLength());
             Pillar edge = previousWall.pillar(previousWall.length() - 1);
             if (edge.empty()) {
@@ -83,13 +67,5 @@ public class Deck {
             }
             return piece;
         }
-    }
-
-    private void forward() {
-        start = next(start);
-    }
-
-    private void tailForward() {
-        end = previous(end);
     }
 }
