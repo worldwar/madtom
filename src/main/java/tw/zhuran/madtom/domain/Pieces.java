@@ -1,8 +1,8 @@
 package tw.zhuran.madtom.domain;
 
 import com.github.underscore.$;
-import com.google.common.base.Supplier;
 import com.google.common.collect.Lists;
+import tw.zhuran.madtom.util.F;
 
 import java.util.*;
 
@@ -67,7 +67,7 @@ public class Pieces {
     }
 
     public static List<Piece> deck() {
-        return $.chain(ALL).map(piece -> repeat(piece, 4)).flatten().value();
+        return $.chain(ALL).map(piece -> F.repeat(piece, 4)).flatten().value();
     }
 
     private boolean paired(List<Piece> pieces) {
@@ -105,12 +105,6 @@ public class Pieces {
     public static List<Piece> add(final List<Piece> pieces, Piece piece) {
         ArrayList<Piece> copies = Lists.newArrayList(pieces);
         copies.add(piece);
-        return copies;
-    }
-
-    public static <T> List<T> add(final List<T> first, final List<T> second) {
-        List<T> copies = Lists.newArrayList(first);
-        copies.addAll(second);
         return copies;
     }
 
@@ -244,42 +238,12 @@ public class Pieces {
         return SUITS.get(kind);
     }
 
-    public static <T> List<T> repeat(T v, int count) {
-        if (count == 0) {
-            return Lists.newArrayList();
-        } else {
-            List<T> pieces = repeat(v, count - 1);
-            pieces.add(v);
-            return pieces;
-        }
-    }
-
-    public static <T> List<T> multiple(Supplier<T> supplier, int count) {
-        List<T> result = Lists.newArrayList();
-        if (count == 0) {
-            return result;
-        } else {
-            result.add(supplier.get());
-            result.addAll(multiple(supplier, count - 1));
-            return result;
-        }
-    }
 
     public static void times(Runnable runnable, int count) {
         if (count != 0) {
             runnable.run();
             times(runnable, count - 1);
         }
-    }
-
-    public static <T> Map<Integer, T> index(List<T> list) {
-        int index = 1;
-        Map<Integer, T> result = new HashMap<>();
-        for (T v : list) {
-            result.put(index, v);
-            index++;
-        }
-        return result;
     }
 
     public static void orderInsert(List<Piece> pieces, Piece piece) {
@@ -309,7 +273,7 @@ public class Pieces {
     }
 
     public static List<List<Piece>> permutations(int count, List<Piece> pool) {
-        return permutations(count, pool, repeat(Lists.newArrayList(), 1));
+        return permutations(count, pool, F.repeat(Lists.newArrayList(), 1));
     }
 
     public static List<List<Piece>> permutations(int count) {
@@ -335,7 +299,7 @@ public class Pieces {
     }
 
     public static List<List<Piece>> combinations(int count, List<Piece> pool) {
-        return combinations(count, pool, repeat(Lists.newArrayList(), 1));
+        return combinations(count, pool, F.repeat(Lists.newArrayList(), 1));
     }
 
     public static List<List<Piece>> combinations(int count) {

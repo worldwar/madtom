@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import tw.zhuran.madtom.util.F;
 
 import java.util.List;
 
@@ -271,7 +272,7 @@ public class HandTest {
     @Test
     public void testMostFormsOfHand() {
         List<List<Piece>> lists = Pieces.uniqueCombinations(14, $
-                .chain(Pieces.WAN).map(piece -> Pieces.repeat(piece, 4)).flatten().value());
+                .chain(Pieces.WAN).map(piece -> F.repeat(piece, 4)).flatten().value());
         int forms = 0;
         int countOfMax = 0;
         List<Piece> target = Lists.newArrayList();
@@ -302,7 +303,7 @@ public class HandTest {
     @Ignore
     public void testMostFormsOfHandWithOneWildcard() {
         List<List<Piece>> lists = Pieces.uniqueCombinations(13, $
-                .chain(Pieces.WAN).map(piece -> Pieces.repeat(piece, 4)).flatten().value());
+                .chain(Pieces.WAN).map(piece -> F.repeat(piece, 4)).flatten().value());
         int forms = 0;
         int countOfMax = 0;
         List<Piece> target = Lists.newArrayList();
@@ -335,14 +336,14 @@ public class HandTest {
     @Ignore
     public void testMostFormsOfHandWithTwoWildcard() {
         List<List<Piece>> lists = Pieces.uniqueCombinations(12, $
-                .chain(Pieces.WAN).map(piece -> Pieces.repeat(piece, 4)).flatten().value());
+                .chain(Pieces.WAN).map(piece -> F.repeat(piece, 4)).flatten().value());
         int forms = 0;
         int countOfMax = 0;
         List<Piece> target = Lists.newArrayList();
         List<List<Piece>> targets = Lists.newArrayList();
         for (List<Piece> suit : lists) {
             hand.setWanPieces(suit);
-            hand.setFengPieces(Pieces.repeat(Pieces.DONGFENG, 2));
+            hand.setFengPieces(F.repeat(Pieces.DONGFENG, 2));
             hand.setWildcard(Pieces.DONGFENG);
             int n = hand.shiftForms().size();
             if (n > forms) {

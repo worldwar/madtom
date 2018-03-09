@@ -1,6 +1,7 @@
 package tw.zhuran.madtom.domain;
 
 import com.github.underscore.$;
+import tw.zhuran.madtom.util.F;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -19,7 +20,7 @@ public class Deck {
         Collections.shuffle(deck);
         List<List<Pillar>> pillarsList = $.chain(deck).chunk(2).map(list -> new Pillar(list)).chunk(deck.size() / 2 / size)
                 .value();
-        walls = Pieces.index($.map(pillarsList, Wall::new));
+        walls = F.index($.map(pillarsList, Wall::new));
         this.size = size;
     }
 
@@ -61,7 +62,7 @@ public class Deck {
     }
 
     public List<Piece> deal() {
-        return Pieces.multiple(this::afford, 4);
+        return F.multiple(this::afford, 4);
     }
 
     public Piece gangAfford(int point) {

@@ -2,6 +2,7 @@ package tw.zhuran.madtom.domain;
 
 import com.google.common.collect.Lists;
 import org.junit.Test;
+import tw.zhuran.madtom.util.F;
 
 import java.util.List;
 
@@ -17,23 +18,23 @@ public class PiecesTest {
 
         combinations = Pieces.combinations(2, pool);
         assertThat(combinations.size(), is(3));
-        assertThat(combinations.get(0), is(Pieces.repeat(Pieces.YIWAN, 2)));
+        assertThat(combinations.get(0), is(F.repeat(Pieces.YIWAN, 2)));
         assertThat(combinations.get(1), is(pool));
-        assertThat(combinations.get(2), is(Pieces.repeat(Pieces.ERWAN, 2)));
+        assertThat(combinations.get(2), is(F.repeat(Pieces.ERWAN, 2)));
     }
 
     @Test
-    public void testPermunations() throws Exception {
+    public void testPermutations() throws Exception {
         List<Piece> pool = Lists.newArrayList(Pieces.YIWAN, Pieces.ERWAN);
-        List<List<Piece>> permunations = Pieces.permutations(1, pool);
-        assertThat(permunations.size(), is(2));
+        List<List<Piece>> permutations = Pieces.permutations(1, pool);
+        assertThat(permutations.size(), is(2));
 
-        permunations = Pieces.permutations(2, pool);
-        assertThat(permunations.size(), is(4));
-        assertThat(permunations.get(0), is(Pieces.repeat(Pieces.YIWAN, 2)));
-        assertThat(permunations.get(1), is(pool));
-        assertThat(permunations.get(2), is(Lists.newArrayList(Pieces.ERWAN, Pieces.YIWAN)));
-        assertThat(permunations.get(3), is(Pieces.repeat(Pieces.ERWAN, 2)));
+        permutations = Pieces.permutations(2, pool);
+        assertThat(permutations.size(), is(4));
+        assertThat(permutations.get(0), is(F.repeat(Pieces.YIWAN, 2)));
+        assertThat(permutations.get(1), is(pool));
+        assertThat(permutations.get(2), is(Lists.newArrayList(Pieces.ERWAN, Pieces.YIWAN)));
+        assertThat(permutations.get(3), is(F.repeat(Pieces.ERWAN, 2)));
     }
 
     @Test

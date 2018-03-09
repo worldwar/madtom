@@ -1,6 +1,7 @@
 package tw.zhuran.madtom.domain;
 
 import com.github.underscore.$;
+import tw.zhuran.madtom.util.F;
 
 import java.util.List;
 import java.util.Map;
@@ -32,7 +33,7 @@ public class Plot {
     }
 
     public List<Group> allGroups() {
-        return Pieces.add(handGroups(), actionGroups());
+        return F.add(handGroups(), actionGroups());
     }
 
     public void trigger(TriggerType triggerType) {

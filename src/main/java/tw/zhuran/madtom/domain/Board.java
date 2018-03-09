@@ -1,6 +1,7 @@
 package tw.zhuran.madtom.domain;
 
 import com.github.underscore.$;
+import tw.zhuran.madtom.util.F;
 
 import java.util.List;
 import java.util.Map;
@@ -16,7 +17,7 @@ public class Board {
     public Board(int players) {
         this.players = players;
         deck = new Deck(players);
-        trunks = Pieces.index(Pieces.multiple(Trunk::new, 4));
+        trunks = F.index(F.multiple(Trunk::new, 4));
     }
 
     public void setDealer(int dealer) {
