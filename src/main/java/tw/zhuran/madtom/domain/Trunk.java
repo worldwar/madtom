@@ -23,6 +23,10 @@ public class Trunk {
         plotRules.add(BegRule.instance);
     }
 
+    public Trunk() {
+
+    }
+
     public Trunk(Hand hand) {
         this.hand = hand;
     }
@@ -154,5 +158,9 @@ public class Trunk {
 
     private List<PlotRule> rules() {
         return plotRules;
+    }
+
+    public void deal(List<Piece> pieces) {
+        $.each(pieces, piece -> hand.feed(piece));
     }
 }

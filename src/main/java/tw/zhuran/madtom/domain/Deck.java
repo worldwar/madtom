@@ -19,12 +19,7 @@ public class Deck {
         Collections.shuffle(deck);
         List<List<Pillar>> pillarsList = $.chain(deck).chunk(2).map(list -> new Pillar(list)).chunk(deck.size() / 2 / size)
                 .value();
-
-        int index = 1;
-        for (List<Pillar> pillars : pillarsList) {
-            walls.put(index, new Wall(pillars));
-            index++;
-        }
+        walls = Pieces.index($.map(pillarsList, Wall::new));
         this.size = size;
     }
 
@@ -59,7 +54,7 @@ public class Deck {
     public Piece afford() {
         Wall wall = wall(start);
         Piece piece = wall.afford();
-        if (wall.affordable()) {
+        if (!wall.affordable()) {
             forward();
         }
         return piece;

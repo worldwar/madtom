@@ -4,9 +4,7 @@ import com.github.underscore.$;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Lists;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Pieces {
     public static Piece YIWAN = new Piece(Kind.WAN, 1);
@@ -48,6 +46,7 @@ public class Pieces {
     public static List<Piece> TIAO = Lists.newArrayList(YITIAO, ERTIAO, SANTIAO, SITIAO, WUTIAO, LIUTIAO, QITIAO, BATIAO, JIUTIAO);
     public static List<Piece> TONG = Lists.newArrayList(YITONG, ERTONG, SANTONG, SITONG, WUTONG, LIUTONG, QITONG, BATONG, JIUTONG);
     public static List<Piece> FENG = Lists.newArrayList(DONGFENG, NANFENG, XIFENG, BEIFENG, HONGZHONG, FACAI, BAIBAN);
+    public static EnumMap<Kind, List<Piece>> SUITS = new EnumMap<>(Kind.class);
 
     public static List<Piece> ALL = new ArrayList<>();
 
@@ -56,6 +55,15 @@ public class Pieces {
         ALL.addAll(TIAO);
         ALL.addAll(TONG);
         ALL.addAll(FENG);
+
+        SUITS.put(Kind.WAN, WAN);
+        SUITS.put(Kind.TIAO, TIAO);
+        SUITS.put(Kind.TONG, TONG);
+        SUITS.put(Kind.FENG, FENG);
+    }
+
+    public static Piece piece(Kind kind, int index) {
+        return suit(kind).get(index);
     }
 
     public static List<Piece> deck() {
@@ -232,6 +240,10 @@ public class Pieces {
         return $.chain(pieces).filter(piece -> piece.getKind() == kind).sortBy(Piece::getIndex).value();
     }
 
+    public static List<Piece> suit(final Kind kind) {
+        return SUITS.get(kind);
+    }
+
     public static <T> List<T> repeat(T v, int count) {
         if (count == 0) {
             return Lists.newArrayList();
@@ -243,13 +255,31 @@ public class Pieces {
     }
 
     public static <T> List<T> multiple(Supplier<T> supplier, int count) {
+        List<T> result = Lists.newArrayList();
         if (count == 0) {
-            return Lists.newArrayList();
+            return result;
         } else {
-            List<T> pieces = multiple(supplier, count - 1);
-            pieces.add(supplier.get());
-            return pieces;
+            result.add(supplier.get());
+            result.addAll(multiple(supplier, count - 1));
+            return result;
         }
+    }
+
+    public static void times(Runnable runnable, int count) {
+        if (count != 0) {
+            runnable.run();
+            times(runnable, count - 1);
+        }
+    }
+
+    public static <T> Map<Integer, T> index(List<T> list) {
+        int index = 1;
+        Map<Integer, T> result = new HashMap<>();
+        for (T v : list) {
+            result.put(index, v);
+            index++;
+        }
+        return result;
     }
 
     public static void orderInsert(List<Piece> pieces, Piece piece) {
@@ -371,5 +401,13 @@ public class Pieces {
 
     public static boolean self(TriggerType triggerType) {
         return triggerType == TriggerType.SELF || triggerType == TriggerType.FIRE || triggerType == TriggerType.BOTTOM;
+    }
+
+    public static Piece wildcard(Piece piece) {
+        Piece wildcard = piece.circularNext();
+        if (wildcard == Pieces.HONGZHONG) {
+            wildcard = wildcard.circularNext();
+        }
+        return wildcard;
     }
 }

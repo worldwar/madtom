@@ -35,6 +35,12 @@ public class Piece {
         return new Piece(kind, index + 1);
     }
 
+    public Piece circularNext() {
+        int circularSize = Pieces.suit(kind).size();
+        int nextIndex = (index + 1) % circularSize;
+        return Pieces.piece(kind, nextIndex);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o)
