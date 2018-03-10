@@ -56,4 +56,16 @@ public class Board {
         wildcard = Pieces.wildcard(piece);
         $.each(trunks.values(), (trunk) -> trunk.setWildcard(wildcard));
     }
+
+    public int score(Plot plot, Trunk winner, Trunk loser, boolean capture) {
+        int score = plot.base() * winner.score() * loser.score();
+        if (capture) {
+            if (plot.featured()) {
+                score = score * 3 / 2;
+            } else {
+                score = score * 2;
+            }
+        }
+        return score;
+    }
 }

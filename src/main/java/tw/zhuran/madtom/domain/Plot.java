@@ -1,6 +1,7 @@
 package tw.zhuran.madtom.domain;
 
 import com.github.underscore.$;
+import com.google.common.collect.Lists;
 import tw.zhuran.madtom.util.F;
 
 import java.util.List;
@@ -47,12 +48,32 @@ public class Plot {
         return peng || suit || feng || jiang || beg || bottom || rush || fire;
     }
 
+    public int featuredCount() {
+        return $.filter(Lists.newArrayList(peng, suit, feng, jiang, beg, bottom, rush, fire), state -> state).size();
+    }
+
     public Group pair() {
         List<Group> pairs = $.filter(form.getGroups(), group -> group.getGroupType() == GroupType.PAIR);
         if (pairs.size() > 0) {
             return pairs.get(0);
         }
         return null;
+    }
+
+    public int base() {
+        int base = 1;
+        if (featured()) {
+            int featuredCount = featuredCount();
+            if (self) {
+                base *= 15 * featuredCount;;
+            } else {
+                base = 10 * featuredCount;
+            }
+        }
+        if (hard) {
+            base *= 2;
+        }
+        return base;
     }
 
     public PlotType getType() {

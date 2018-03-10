@@ -3,6 +3,7 @@ package tw.zhuran.madtom.domain;
 import com.github.underscore.$;
 import com.google.common.collect.Lists;
 import tw.zhuran.madtom.rule.*;
+import tw.zhuran.madtom.util.F;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -201,6 +202,14 @@ public class Trunk {
         return plots;
     }
 
+    public Plot bestPlot(Piece piece, TriggerType triggerType) {
+        List<Plot> plots = activePlots(piece, triggerType);
+        if (plots.size() == 0) {
+            return null;
+        }
+        return $.max(plots, plot -> plot.base());
+    }
+
     public List<Group> actionGroups() {
         return $.chain(actions).filter(Pieces::hasGroup).map(Action::getGroup).value();
     }
@@ -215,5 +224,15 @@ public class Trunk {
 
     public List<Action> groupActions() {
         return $.filter(actions, Pieces::hasGroup);
+    }
+
+    public int score() {
+        int exponent = 0;
+        if (opened()) {
+            exponent++;
+        }
+        exponent += $.filter(actions, action -> Actions.genericPublicGang(action.getType())).size();
+        exponent += $.filter(actions, action -> action.getType() == ActionType.ANGANG).size() * 2;
+        return F.power(2, exponent);
     }
 }

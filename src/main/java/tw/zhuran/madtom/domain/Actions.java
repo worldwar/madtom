@@ -28,4 +28,11 @@ public class Actions {
     public static Action laiziGang(Piece wildcard) {
         return new Action(ActionType.LAIZI_GANG, wildcard, null);
     }
+
+    public static boolean genericPublicGang(ActionType type) {
+        return type == ActionType.GANG ||
+                type == ActionType.XUGANG ||
+                type == ActionType.HONGZHONG_GANG ||
+                type == ActionType.LAIZI_GANG;
+    }
 }

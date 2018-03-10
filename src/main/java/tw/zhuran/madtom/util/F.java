@@ -44,4 +44,11 @@ public class F {
         }
         return result;
     }
+
+    public static int power(int base, int p) {
+        if (p == 0) {
+            return 1;
+        }
+        return base * power(base, p - 1);
+    }
 }
