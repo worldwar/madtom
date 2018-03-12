@@ -75,6 +75,10 @@ public class Trunk {
         hand.feed(piece);
     }
 
+    public boolean discardable(Piece piece) {
+        return hand.discardable(piece);
+    }
+
     public void discard(Piece piece) {
         hand.discard(piece);
         actions.add(Actions.discard(piece));
@@ -114,6 +118,10 @@ public class Trunk {
 
     public List<Action> filterActions(ActionType type) {
         return $.filter(this.actions, action -> action.getType() == type);
+    }
+
+    public boolean angangable(Piece piece) {
+        return angangable(piece);
     }
 
     public void angang(Piece piece) {
@@ -234,5 +242,13 @@ public class Trunk {
         exponent += $.filter(actions, action -> Actions.genericPublicGang(action.getType())).size();
         exponent += $.filter(actions, action -> action.getType() == ActionType.ANGANG).size() * 2;
         return F.power(2, exponent);
+    }
+
+    public boolean hongzhongGangable() {
+        return hand.hongzhongGangable();
+    }
+
+    public boolean laiziGangable() {
+        return hand.laiziGangable();
     }
 }

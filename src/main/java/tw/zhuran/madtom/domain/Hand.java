@@ -154,6 +154,10 @@ public class Hand {
         return null;
     }
 
+    public boolean discardable(Piece piece) {
+        return !(piece.equals(wildcard) || piece.equals(Pieces.HONGZHONG)) && $.any(pieces(), piece::equals);
+    }
+
     public void discard(Piece piece) {
         if (piece.equals(wildcard)) {
             Pieces.exclude(wildcards, piece);
@@ -235,6 +239,10 @@ public class Hand {
         return angangablePieces().size() > 0;
     }
 
+    public boolean angangable(Piece piece) {
+        return angangablePieces().contains(piece);
+    }
+
     public List<Piece> angangablePieces() {
         return Pieces.countLargeThan(pieces(), 3);
     }
@@ -303,5 +311,13 @@ public class Hand {
             }
         }
         return Lists.newArrayList();
+    }
+
+    public boolean hongzhongGangable() {
+        return hongzhongPieces.size() > 0;
+    }
+
+    public boolean laiziGangable() {
+        return wildcards.size() > 0;
     }
 }

@@ -1,6 +1,8 @@
 package tw.zhuran.madtom.domain;
 
 import com.github.underscore.$;
+import tw.zhuran.madtom.state.BoardStateManager;
+import tw.zhuran.madtom.state.BoardStateType;
 import tw.zhuran.madtom.util.F;
 import tw.zhuran.madtom.util.NaturalTurner;
 
@@ -13,6 +15,7 @@ public class Board {
     private int players;
     private Piece wildcard;
     private NaturalTurner turner;
+    private BoardStateManager stateManager = new BoardStateManager(this);
 
     public Board(int players) {
         this.players = players;
@@ -30,6 +33,7 @@ public class Board {
         Pieces.times(this::dealNext, 3 * players);
         Pieces.times(this::lastDealNext, players);
         dispatch();
+        stateManager.init(BoardStateType.FREE);
     }
 
     public Trunk trunk() {
@@ -67,5 +71,44 @@ public class Board {
             }
         }
         return score;
+    }
+
+    public void perform(Action action) {
+        stateManager.perform(action);
+    }
+
+    public void execute(Action action) {
+        Trunk trunk = trunk();
+        Piece piece = action.getPiece();
+        Group group = action.getGroup();
+        switch (action.getType()) {
+            case DISCARD:
+                trunk.discard(piece);
+                break;
+            case CHI:
+                trunk.chi(piece, group);
+                break;
+            case PENG:
+                trunk.peng(piece);
+                break;
+            case GANG:
+                trunk.gang(piece);
+                break;
+            case XUGANG:
+                trunk.xugang(piece);
+                break;
+            case ANGANG:
+                trunk.angang(piece);
+                break;
+            case HONGZHONG_GANG:
+                trunk.hongzhongGang();
+                break;
+            case LAIZI_GANG:
+                trunk.laiziGang();
+        }
+    }
+
+    public BoardStateType state() {
+        return stateManager.currentState();
     }
 }
