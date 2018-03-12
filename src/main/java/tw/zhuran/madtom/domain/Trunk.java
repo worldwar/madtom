@@ -10,6 +10,7 @@ import java.util.List;
 
 public class Trunk {
     static List<PlotRule> plotRules;
+    private int player;
     private Hand hand = new Hand();
     private List<Action> actions = new ArrayList<>();
     private TriggerType triggerType = TriggerType.CAPTURE;
@@ -24,8 +25,8 @@ public class Trunk {
         plotRules.add(BegRule.instance);
     }
 
-    public Trunk() {
-
+    public Trunk(int player) {
+        this.player = player;
     }
 
     public Trunk(Hand hand) {
@@ -36,6 +37,9 @@ public class Trunk {
         init(pieces);
     }
 
+    public int player() {
+        return player;
+    }
     public Hand getHand() {
         return hand;
     }
@@ -84,14 +88,26 @@ public class Trunk {
         actions.add(Actions.discard(piece));
     }
 
+    public boolean chiable(Piece piece) {
+        return hand.chiable(piece);
+    }
+
     public void chi(Piece piece, Group group) {
         hand.chi(piece, group);
         actions.add(Actions.chi(piece, group));
     }
 
+    public boolean pengable(Piece piece) {
+        return hand.pengable(piece);
+    }
+
     public void peng(Piece piece) {
         hand.peng(piece);
         actions.add(Actions.peng(piece));
+    }
+
+    public boolean gangable(Piece piece) {
+        return hand.gangable(piece);
     }
 
     public void gang(Piece piece) {
@@ -121,7 +137,7 @@ public class Trunk {
     }
 
     public boolean angangable(Piece piece) {
-        return angangable(piece);
+        return hand.angangable(piece);
     }
 
     public void angang(Piece piece) {

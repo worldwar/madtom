@@ -30,6 +30,10 @@ public class StateManager<A, T, X extends State<A, T>> {
         return null;
     }
 
+    public void setState(T type) {
+        current = state(type);
+    }
+
     public T currentState() {
         return current.type();
     }

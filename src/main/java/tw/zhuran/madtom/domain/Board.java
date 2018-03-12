@@ -1,17 +1,20 @@
 package tw.zhuran.madtom.domain;
 
 import com.github.underscore.$;
+import tw.zhuran.madtom.rule.Rules;
+import tw.zhuran.madtom.rule.WaitRule;
 import tw.zhuran.madtom.state.BoardStateManager;
 import tw.zhuran.madtom.state.BoardStateType;
 import tw.zhuran.madtom.util.F;
 import tw.zhuran.madtom.util.NaturalTurner;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Board {
     private Deck deck;
-    private Map<Integer, Trunk> trunks;
+    private Map<Integer, Trunk> trunks = new HashMap<>();
     private int players;
     private Piece wildcard;
     private NaturalTurner turner;
@@ -20,7 +23,10 @@ public class Board {
     public Board(int players) {
         this.players = players;
         deck = new Deck(players);
-        trunks = F.index(F.multiple(Trunk::new, 4));
+        $.each(F.list($.range(1, 5)), index -> {
+            Trunk trunk = new Trunk(index);
+            trunks.put(index, trunk);
+        });
         this.turner = new NaturalTurner(players);
     }
 
@@ -75,6 +81,22 @@ public class Board {
 
     public void perform(Action action) {
         stateManager.perform(action);
+        if (stateManager.currentState() == BoardStateType.WAIT) {
+            boolean shouldWait = shouldWait(action);
+            if (!shouldWait) {
+                dispatch();
+                turnNext();
+            }
+        }
+    }
+
+    private boolean shouldWait(Action action) {
+        List<WaitRule> waitRules = Rules.discardWaitRules();
+        return $.any(waitRules, rule -> rule.shouldWait(this, action));
+    }
+
+    private void turnNext() {
+        turner.turnNext();
     }
 
     public void execute(Action action) {
@@ -110,5 +132,31 @@ public class Board {
 
     public BoardStateType state() {
         return stateManager.currentState();
+    }
+
+    public List<Trunk> otherTrunks() {
+        int player = turner.current();
+        return $.chain(trunks.entrySet()).filter(entry -> entry.getKey() != player).map(entry -> entry.getValue()).value();
+    }
+
+    public boolean winnable(Trunk winner, Trunk loser, Action action) {
+        int score = score(winner, loser, action);
+        return score >= 16;
+    }
+
+    private int score(Trunk trunk, Trunk player, Action action) {
+        if (action.getType() == ActionType.DISCARD) {
+            Plot plot = trunk.bestPlot(action.getPiece(), TriggerType.CAPTURE);
+            if (plot != null) {
+                return score(plot, trunk, player, true);
+            } else {
+                return 0;
+            }
+        }
+        return 0;
+    }
+
+    public Trunk nextTrunk() {
+        return trunks.get(turner.next());
     }
 }

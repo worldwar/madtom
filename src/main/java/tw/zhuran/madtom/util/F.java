@@ -1,8 +1,10 @@
 package tw.zhuran.madtom.util;
 
+import com.github.underscore.$;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Lists;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,5 +52,13 @@ public class F {
             return 1;
         }
         return base * power(base, p - 1);
+    }
+
+    public static <T> List<T> list(T[] array) {
+        return Arrays.asList(array);
+    }
+
+    public static List<Integer> list(int[] array) {
+        return $.map(array, x -> x);
     }
 }
