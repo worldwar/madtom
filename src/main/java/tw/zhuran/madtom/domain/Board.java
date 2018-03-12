@@ -1,6 +1,7 @@
 package tw.zhuran.madtom.domain;
 
 import com.github.underscore.$;
+import tw.zhuran.madtom.event.Event;
 import tw.zhuran.madtom.rule.Rules;
 import tw.zhuran.madtom.rule.WaitRule;
 import tw.zhuran.madtom.state.BoardStateManager;
@@ -79,13 +80,16 @@ public class Board {
         return score;
     }
 
-    public void perform(Action action) {
-        stateManager.perform(action);
+    public void perform(Event event) {
+        stateManager.perform(event);
         if (stateManager.currentState() == BoardStateType.WAIT) {
-            boolean shouldWait = shouldWait(action);
-            if (!shouldWait) {
-                dispatch();
-                turnNext();
+            Action action = event.getAction();
+            if (action != null) {
+                boolean shouldWait = shouldWait(action);
+                if (!shouldWait) {
+                    dispatch();
+                    turnNext();
+                }
             }
         }
     }

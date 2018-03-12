@@ -3,6 +3,8 @@ package tw.zhuran.madtom.state;
 import org.junit.Before;
 import org.junit.Test;
 import tw.zhuran.madtom.domain.*;
+import tw.zhuran.madtom.event.Event;
+import tw.zhuran.madtom.event.EventType;
 
 import java.util.List;
 
@@ -27,11 +29,14 @@ public class StateTest {
     @Test
     public void shouldSwitchToWaitAfterDiscard() {
         board.cut(1, 1);
+        board.setDealer(2);
         Trunk trunk = board.trunk();
         Hand hand = trunk.getHand();
         List<Piece> pieces = hand.pieces();
         Piece piece = pieces.get(0);
-        board.perform(Actions.discard(piece));
+        Action discard = Actions.discard(piece);
+        Event event = new Event(EventType.ACTION, discard, 2);
+        board.perform(event);
         assertThat(board.state(), is(BoardStateType.WAIT));
     }
 }

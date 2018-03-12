@@ -13,8 +13,13 @@ public class PengWaitRule implements WaitRule {
 
     @Override
     public boolean shouldWait(Board board, Action action) {
+        return waiters(board, action).size() > 0;
+    }
+
+    @Override
+    public List<Integer> waiters(Board board, Action action) {
         List<Trunk> trunks = board.otherTrunks();
         Piece piece = action.getPiece();
-        return $.any(trunks, trunk -> trunk.pengable(piece) || trunk.gangable(piece));
+        return $.chain(trunks).filter(trunk -> trunk.pengable(piece) || trunk.gangable(piece)).map(Trunk::player).value();
     }
 }

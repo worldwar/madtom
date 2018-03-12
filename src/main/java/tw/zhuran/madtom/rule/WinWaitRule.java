@@ -12,8 +12,13 @@ public class WinWaitRule implements WaitRule{
 
     @Override
     public boolean shouldWait(Board board, Action action) {
+        return waiters(board, action).size() > 0;
+    }
+
+    @Override
+    public List<Integer> waiters(Board board, Action action) {
         Trunk player = board.trunk();
         List<Trunk> trunks = board.otherTrunks();
-        return $.any(trunks, trunk -> board.winnable(trunk, player, action));
+        return $.chain(trunks).filter(trunk -> board.winnable(trunk, player, action)).map(Trunk::player).value();
     }
 }

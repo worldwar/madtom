@@ -1,6 +1,7 @@
 package tw.zhuran.madtom.state;
 
 import tw.zhuran.madtom.domain.*;
+import tw.zhuran.madtom.event.Event;
 
 public class FreeBoardState extends BoardState {
     public FreeBoardState(Board owner) {
@@ -8,7 +9,11 @@ public class FreeBoardState extends BoardState {
     }
 
     @Override
-    public BoardStateType perform(Action action) {
+    public BoardStateType perform(Event event) {
+        Action action = event.getAction();
+        if (action == null) {
+            return this.type();
+        }
         ActionType type = action.getType();
         Trunk trunk = owner.trunk();
         Piece piece = action.getPiece();
