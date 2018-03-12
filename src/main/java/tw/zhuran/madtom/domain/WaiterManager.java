@@ -88,20 +88,59 @@ public class WaiterManager {
     }
 
     public boolean shouldWait() {
-        boolean shouldWaitWin;
         if (winners.size() > 0) {
-            Confirmation confirmation = winners.get(0);
-            if (confirmation.state == ConfirmState.CONFIRMED) {
-                return false;
+            int firstWinIndex = -1;
+            int index = 0;
+            for (Confirmation confirmation : winners) {
+                if (confirmation.state == ConfirmState.CONFIRMED) {
+                    firstWinIndex = index;
+                    break;
+                }
+                index++;
+            }
+            if (firstWinIndex == -1) {
+                firstWinIndex = index;
+            }
+            List<Confirmation> slice = winners.subList(0, firstWinIndex);
+            boolean anyUnconfirmed = $.any(slice, confirmation -> confirmation.state == ConfirmState.UNCONFIRM);
+
+            if (firstWinIndex != winners.size()) {
+                return anyUnconfirmed;
+            } else {
+                if (anyUnconfirmed) {
+                    return true;
+                }
             }
         }
-        shouldWaitWin = $.any(winners, winner -> winner.state == ConfirmState.UNCONFIRM);
-        if (shouldWaitWin) {
+
+        boolean shouldFinishWaitGang = $.any(gangWaiters, waiter -> waiter.state == ConfirmState.CONFIRMED);
+        boolean shouldWaitGang = $.any(gangWaiters, waiter -> waiter.state == ConfirmState.UNCONFIRM);
+
+        if (shouldFinishWaitGang) {
+            return false;
+        }
+
+        if (shouldWaitGang) {
             return true;
         }
+
+        boolean shouldFinishWaitPeng = $.any(pengWaiters, waiter -> waiter.state == ConfirmState.CONFIRMED);
         boolean shouldWaitPeng = $.any(pengWaiters, waiter -> waiter.state == ConfirmState.UNCONFIRM);
-        boolean shouldWaitGang = $.any(gangWaiters, waiter -> waiter.state == ConfirmState.UNCONFIRM);
-        return shouldWaitPeng || shouldWaitGang || $.any(chiWaiters, wait -> wait.state == ConfirmState.UNCONFIRM);
+
+        if (shouldFinishWaitPeng) {
+            return false;
+        }
+
+        if (shouldWaitPeng) {
+            return true;
+        }
+
+        boolean shouldWaitchi = $.any(chiWaiters, waiter -> waiter.state == ConfirmState.UNCONFIRM);
+
+        if (shouldWaitchi) {
+            return true;
+        }
+        return false;
     }
 
     public Event activeEvent() {
@@ -133,7 +172,6 @@ public class WaiterManager {
     public Event activeEvent(List<Confirmation> waiters, EventType eventType, Action action) {
         Optional<Confirmation> option = $.find(waiters, waiter -> waiter.state == ConfirmState.CONFIRMED);
         if (option.isPresent()) {
-//                return new Event(eventType, , option.get().player);
             return new Event(eventType, action, option.get().player);
         }
         return null;
@@ -157,6 +195,30 @@ public class WaiterManager {
     private Confirmation findPlayer(List<Confirmation> waiters, int player) {
         Optional<Confirmation> o = $.find(waiters, waiter -> waiter.player == player);
         return o.orNull();
+    }
+
+    public WaiterManager setWinners(List<Integer> winners) {
+        this.winners = initConfirmation(winners);
+        return this;
+    }
+
+    public WaiterManager setPengWaiters(List<Integer> pengWaiters) {
+        this.pengWaiters = initConfirmation(pengWaiters);
+        return this;
+    }
+
+    public WaiterManager setGangWaiters(List<Integer> gangWaiters) {
+        this.gangWaiters = initConfirmation(gangWaiters);
+        return this;
+    }
+
+    public WaiterManager setChiWaiters(List<Integer> chiWaiters) {
+        this.chiWaiters = initConfirmation(chiWaiters);
+        return this;
+    }
+
+    public void setWaitAction(Action action) {
+        this.waitAction = action;
     }
 
     class Confirmation {
