@@ -125,4 +125,24 @@ public class Wall {
     public int length() {
         return length;
     }
+
+    public int remainPillars() {
+        if (cutted) {
+            int remainPillars = length - (start - end) + 1;
+
+            if (!affordable()) {
+                remainPillars--;
+            }
+            if (!gangAffordable()) {
+                remainPillars--;
+            }
+            return remainPillars;
+        } else {
+            if (affordable()) {
+                return end - start + 1;
+            } else {
+                return 0;
+            }
+        }
+    }
 }

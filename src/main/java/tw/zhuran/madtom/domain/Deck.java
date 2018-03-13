@@ -76,4 +76,8 @@ public class Deck {
             return piece;
         }
     }
+
+    public int remainPillars() {
+        return $.foldl(walls.values(), (a, b) -> a + b.remainPillars(), 0);
+    }
 }

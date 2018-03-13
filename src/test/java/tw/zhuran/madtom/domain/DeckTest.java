@@ -38,4 +38,24 @@ public class DeckTest {
         $.times(8, () -> deck.deal());
         assertFalse(nextWall.affordable());
     }
+
+    @Test
+    public void testRemainPillars() {
+        assertThat(deck.remainPillars(), is(68));
+        deck.cut(2, 16);
+        deck.deal();
+        assertThat(deck.remainPillars(), is(66));
+        deck.afford();
+        assertThat(deck.remainPillars(), is(66));
+        deck.afford();
+        assertThat(deck.remainPillars(), is(65));
+        deck.gangAfford(3);
+        assertThat(deck.remainPillars(), is(65));
+        deck.gangAfford(5);
+        assertThat(deck.remainPillars(), is(65));
+        deck.afford();
+        assertThat(deck.remainPillars(), is(65));
+        deck.gangAfford(5);
+        assertThat(deck.remainPillars(), is(64));
+    }
 }
