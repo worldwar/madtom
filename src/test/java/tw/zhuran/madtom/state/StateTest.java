@@ -50,6 +50,45 @@ public class StateTest {
     }
 
     @Test
+    public void shouldSwitchToOpenAfterThePengWaiterConfirm() {
+        board.setDealer(2);
+        board.cut(1, 1);
+        Action discard = Actions.discard(Pieces.ERWAN);
+        Event event = new Event(EventType.ACTION, discard, 2);
+        board.perform(event);
+        Action peng = Actions.peng(Pieces.ERWAN);
+        event = new Event(EventType.ACTION, peng, 3);
+        board.perform(event);
+        assertThat(board.state(), is(BoardStateType.OPEN));
+    }
+
+    @Test
+    public void shouldSwitchToOpenAfterTheChiWaiterConfirm() {
+        board.setDealer(2);
+        board.cut(1, 1);
+        Action discard = Actions.discard(Pieces.YIWAN);
+        Event event = new Event(EventType.ACTION, discard, 2);
+        board.perform(event);
+        Action chi = Actions.chi(Pieces.YIWAN, Pieces.sequence(Pieces.YIWAN, 1));
+        event = new Event(EventType.ACTION, chi, 3);
+        board.perform(event);
+        assertThat(board.state(), is(BoardStateType.OPEN));
+    }
+
+    @Test
+    public void shouldStayWaitAfterTheChiWaiterConfirmWhenThereArePengWaiterUnconfirm() {
+        board.setDealer(2);
+        board.cut(1, 1);
+        Action discard = Actions.discard(Pieces.WUWAN);
+        Event event = new Event(EventType.ACTION, discard, 2);
+        board.perform(event);
+        Action chi = Actions.chi(Pieces.WUWAN, Pieces.sequence(Pieces.WUWAN, 1));
+        event = new Event(EventType.ACTION, chi, 3);
+        board.perform(event);
+        assertThat(board.state(), is(BoardStateType.WAIT));
+    }
+
+    @Test
     public void shouldSwitchToWaitAfterDiscardIfThereAreNoChiWaiters() {
         board.setDealer(2);
         board.cut(1, 1);

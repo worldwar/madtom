@@ -9,6 +9,10 @@ public class FreeBoardState extends BoardState {
         super(owner, BoardStateType.FREE);
     }
 
+    public FreeBoardState(Board owner, BoardStateType type) {
+        super(owner, type);
+    }
+
     @Override
     public BoardStateType perform(Event event) {
         Action action = event.getAction();
@@ -22,9 +26,17 @@ public class FreeBoardState extends BoardState {
         ActionType type = action.getType();
         if (Actions.free(type)) {
             owner.execute(action);
+            if (Actions.genericGang(type) && type != ActionType.XUGANG) {
+                owner.gangAfford();
+                return BoardStateType.FREE;
+            }
             if (owner.shouldWait(action)) {
                 return BoardStateType.WAIT;
             } else {
+                if (type == ActionType.XUGANG) {
+                    owner.gangAfford();
+                    return BoardStateType.FREE;
+                }
                 return BoardStateType.DISPATCH;
             }
         }

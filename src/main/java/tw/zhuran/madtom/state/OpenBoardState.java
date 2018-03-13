@@ -2,28 +2,19 @@ package tw.zhuran.madtom.state;
 
 import tw.zhuran.madtom.domain.*;
 import tw.zhuran.madtom.event.Event;
+import tw.zhuran.madtom.event.EventType;
 
-public class OpenBoardState extends BoardState {
+public class OpenBoardState extends FreeBoardState {
     public OpenBoardState(Board owner) {
         super(owner, BoardStateType.OPEN);
     }
 
     @Override
     public BoardStateType perform(Event event) {
-        Action action = event.getAction();
-        if (action == null) {
-            return this.type();
+        if (event.getEventType() == EventType.WIN) {
+            return this.type;
         }
-        ActionType type = action.getType();
-        if (Actions.free(type)) {
-            owner.execute(action);
-            if (owner.shouldWait(action)) {
-                return BoardStateType.WAIT;
-            } else {
-                return BoardStateType.DISPATCH;
-            }
-        }
-        return this.type;
+        return super.perform(event);
     }
 
     @Override

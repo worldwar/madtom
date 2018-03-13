@@ -36,6 +36,10 @@ public class Actions {
                 type == ActionType.LAIZI_GANG;
     }
 
+    public static boolean genericGang(ActionType type) {
+        return type == ActionType.ANGANG || genericPublicGang(type);
+    }
+
     public static boolean intercept(ActionType actionType) {
         return actionType == ActionType.CHI || actionType == ActionType.PENG || actionType == ActionType.GANG;
     }
