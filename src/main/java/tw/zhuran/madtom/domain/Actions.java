@@ -35,4 +35,12 @@ public class Actions {
                 type == ActionType.HONGZHONG_GANG ||
                 type == ActionType.LAIZI_GANG;
     }
+
+    public static boolean intercept(ActionType actionType) {
+        return actionType == ActionType.CHI || actionType == ActionType.PENG || actionType == ActionType.GANG;
+    }
+
+    public static boolean free(ActionType actionType) {
+        return actionType == ActionType.DISCARD || actionType == ActionType.XUGANG || actionType == ActionType.ANGANG || actionType == ActionType.HONGZHONG_GANG || actionType == ActionType.LAIZI_GANG;
+    }
 }

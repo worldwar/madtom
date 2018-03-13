@@ -8,6 +8,7 @@ import tw.zhuran.madtom.state.BoardStateManager;
 import tw.zhuran.madtom.state.BoardStateType;
 import tw.zhuran.madtom.util.F;
 import tw.zhuran.madtom.util.NaturalTurner;
+import tw.zhuran.madtom.util.R;
 
 import java.util.HashMap;
 import java.util.List;
@@ -55,6 +56,11 @@ public class Board {
 
     public void dispatch() {
         trunk().feed(deck.afford());
+    }
+
+    public void gangAfford() {
+        int dice = R.dice();
+        deck.gangAfford(dice);
     }
 
     public void lastDealNext() {
@@ -138,6 +144,10 @@ public class Board {
         return score >= 16;
     }
 
+    public boolean winnable(int player) {
+        return true;
+    }
+
     private int score(Trunk trunk, Trunk player, Action action) {
         if (action.getType() == ActionType.DISCARD) {
             Plot plot = trunk.bestPlot(action.getPiece(), TriggerType.CAPTURE);
@@ -156,5 +166,17 @@ public class Board {
 
     public void setDeck(Deck deck) {
         this.deck = deck;
+    }
+
+    public void intercept(Event event) {
+        Action action = event.getAction();
+        if (action != null) {
+            if (Actions.intercept(action.getType())) {
+                turner.turnTo(event.getPlayer());
+                execute(action);
+            } else if (action.getType() == ActionType.XUGANG) {
+                gangAfford();
+            }
+        }
     }
 }

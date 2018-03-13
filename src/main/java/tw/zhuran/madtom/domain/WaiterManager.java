@@ -20,6 +20,7 @@ public class WaiterManager {
     private List<Confirmation> chiWaiters = Lists.newArrayList();
     private boolean timeout;
     private Action waitAction;
+    private Event waitEvent;
     private Action chiAction;
 
     public WaiterManager(Board board) {
@@ -27,13 +28,15 @@ public class WaiterManager {
         reset();
     }
 
-    public void findWaiters(Action action) {
+    public void findWaiters(Event event) {
+        Action action = event.getAction();
         reset();
         winners = initConfirmation(WinWaitRule.instance.waiters(board, action));
         pengWaiters = initConfirmation(PengWaitRule.instance.waiters(board, action));
         gangWaiters = initConfirmation(GangWaitRule.instance.waiters(board, action));
         chiWaiters = initConfirmation(ChiWaitRule.instance.waiters(board, action));
         this.waitAction = action;
+        this.waitEvent = event;
     }
 
     private List<Confirmation> initConfirmation(List<Integer> waiters) {
@@ -148,6 +151,10 @@ public class WaiterManager {
         Event event = activeEvent(winners, EventType.WIN, null);
         if (event != null) {
             return event;
+        }
+
+        if (waitAction.getType() == ActionType.XUGANG) {
+            return waitEvent;
         }
 
         event = activeEvent(pengWaiters, EventType.ACTION, Actions.peng(waitAction.getPiece()));
