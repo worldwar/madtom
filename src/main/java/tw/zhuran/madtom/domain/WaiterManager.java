@@ -6,6 +6,7 @@ import com.google.common.collect.Lists;
 import tw.zhuran.madtom.event.Event;
 import tw.zhuran.madtom.event.EventType;
 import tw.zhuran.madtom.rule.ChiWaitRule;
+import tw.zhuran.madtom.rule.GangWaitRule;
 import tw.zhuran.madtom.rule.PengWaitRule;
 import tw.zhuran.madtom.rule.WinWaitRule;
 
@@ -30,7 +31,7 @@ public class WaiterManager {
         reset();
         winners = initConfirmation(WinWaitRule.instance.waiters(board, action));
         pengWaiters = initConfirmation(PengWaitRule.instance.waiters(board, action));
-        gangWaiters = initConfirmation(PengWaitRule.instance.waiters(board, action));
+        gangWaiters = initConfirmation(GangWaitRule.instance.waiters(board, action));
         chiWaiters = initConfirmation(ChiWaitRule.instance.waiters(board, action));
         this.waitAction = action;
     }

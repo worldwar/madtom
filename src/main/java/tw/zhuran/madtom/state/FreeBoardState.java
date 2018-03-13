@@ -25,7 +25,11 @@ public class FreeBoardState extends BoardState {
                 (type == ActionType.LAIZI_GANG && trunk.laiziGangable())
             ) {
             owner.execute(action);
-            return BoardStateType.WAIT;
+            if (owner.shouldWait(action)) {
+                return BoardStateType.WAIT;
+            } else {
+                return BoardStateType.DISPATCH;
+            }
         }
         return this.type;
     }

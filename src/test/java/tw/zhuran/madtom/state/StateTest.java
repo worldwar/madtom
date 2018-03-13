@@ -6,8 +6,6 @@ import tw.zhuran.madtom.domain.*;
 import tw.zhuran.madtom.event.Event;
 import tw.zhuran.madtom.event.EventType;
 
-import java.util.List;
-
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
@@ -15,9 +13,12 @@ public class StateTest {
 
     private Board board;
 
+    private Deck deck;
     @Before
     public void before() {
         board = new Board(4);
+        deck = new Deck(Pieces.deck(), 4);
+        board.setDeck(deck);
     }
 
     @Test
@@ -27,16 +28,44 @@ public class StateTest {
     }
 
     @Test
-    public void shouldSwitchToWaitAfterDiscard() {
-        board.cut(1, 1);
+    public void shouldSwitchToWaitAfterDiscardIfThereArePengWaiters() {
         board.setDealer(2);
-        Trunk trunk = board.trunk();
-        Hand hand = trunk.getHand();
-        List<Piece> pieces = hand.pieces();
-        Piece piece = pieces.get(0);
-        Action discard = Actions.discard(piece);
+        board.cut(1, 1);
+        Action discard = Actions.discard(Pieces.ERWAN);
         Event event = new Event(EventType.ACTION, discard, 2);
         board.perform(event);
         assertThat(board.state(), is(BoardStateType.WAIT));
+    }
+
+    @Test
+    public void shouldSwitchToFreeAfterThePengWaiterPass() {
+        board.setDealer(2);
+        board.cut(1, 1);
+        Action discard = Actions.discard(Pieces.ERWAN);
+        Event event = new Event(EventType.ACTION, discard, 2);
+        board.perform(event);
+        event = new Event(EventType.PASS, null, 3);
+        board.perform(event);
+        assertThat(board.state(), is(BoardStateType.FREE));
+    }
+
+    @Test
+    public void shouldSwitchToWaitAfterDiscardIfThereAreNoChiWaiters() {
+        board.setDealer(2);
+        board.cut(1, 1);
+        Action discard = Actions.discard(Pieces.YIWAN);
+        Event event = new Event(EventType.ACTION, discard, 2);
+        board.perform(event);
+        assertThat(board.state(), is(BoardStateType.WAIT));
+    }
+
+    @Test
+    public void shouldSwitchToFreeAfterDiscardIfThereAreNoWaiters() {
+        board.setDealer(2);
+        board.cut(4, 16);
+        Action discard = Actions.discard(Pieces.BAIBAN);
+        Event event = new Event(EventType.ACTION, discard, 2);
+        board.perform(event);
+        assertThat(board.state(), is(BoardStateType.FREE));
     }
 }

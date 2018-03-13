@@ -3,6 +3,7 @@ package tw.zhuran.madtom.util;
 import com.google.common.collect.Lists;
 import tw.zhuran.madtom.domain.Board;
 import tw.zhuran.madtom.state.BoardState;
+import tw.zhuran.madtom.state.DispatchBoardState;
 import tw.zhuran.madtom.state.FreeBoardState;
 import tw.zhuran.madtom.state.WaitBoardState;
 
@@ -13,6 +14,7 @@ public class States {
         List<BoardState> states = Lists.newArrayList();
         states.add(new FreeBoardState(board));
         states.add(new WaitBoardState(board));
+        states.add(new DispatchBoardState(board));
         return states;
     }
 }

@@ -25,6 +25,14 @@ public class Deck {
         tail = new NaturalTurner(size);
     }
 
+    public Deck(List<Piece> deck, int size) {
+        List<List<Pillar>> pillarsList = $.chain(deck).chunk(2).map(list -> new Pillar(list)).chunk(deck.size() / 2 / size)
+                .value();
+        walls = F.index($.map(pillarsList, Wall::new));
+        head = new ReverseNaturalTurner(size);
+        tail = new NaturalTurner(size);
+    }
+
     public void cut(int startWall, int index) {
         Wall wall = walls.get(startWall);
         wall.cut(index);

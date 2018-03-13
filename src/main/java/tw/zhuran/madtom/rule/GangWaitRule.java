@@ -8,8 +8,8 @@ import tw.zhuran.madtom.domain.Trunk;
 
 import java.util.List;
 
-public class PengWaitRule implements WaitRule {
-    public static final PengWaitRule instance = new PengWaitRule();
+public class GangWaitRule implements WaitRule {
+    public static final GangWaitRule instance = new GangWaitRule();
 
     @Override
     public boolean shouldWait(Board board, Action action) {
@@ -20,6 +20,6 @@ public class PengWaitRule implements WaitRule {
     public List<Integer> waiters(Board board, Action action) {
         List<Trunk> trunks = board.otherTrunks();
         Piece piece = action.getPiece();
-        return $.chain(trunks).filter(trunk -> trunk.pengable(piece)).map(Trunk::player).value();
+        return $.chain(trunks).filter(trunk -> trunk.gangable(piece)).map(Trunk::player).value();
     }
 }

@@ -9,6 +9,7 @@ public class Rules {
 
     static {
         waitRules.add(WinWaitRule.instance);
+        waitRules.add(GangWaitRule.instance);
         waitRules.add(PengWaitRule.instance);
         waitRules.add(ChiWaitRule.instance);
     }

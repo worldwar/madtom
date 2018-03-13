@@ -82,24 +82,14 @@ public class Board {
 
     public void perform(Event event) {
         stateManager.perform(event);
-        if (stateManager.currentState() == BoardStateType.WAIT) {
-            Action action = event.getAction();
-            if (action != null) {
-                boolean shouldWait = shouldWait(action);
-                if (!shouldWait) {
-                    dispatch();
-                    turnNext();
-                }
-            }
-        }
     }
 
-    private boolean shouldWait(Action action) {
+    public boolean shouldWait(Action action) {
         List<WaitRule> waitRules = Rules.discardWaitRules();
         return $.any(waitRules, rule -> rule.shouldWait(this, action));
     }
 
-    private void turnNext() {
+    public void turnNext() {
         turner.turnNext();
     }
 
@@ -162,5 +152,9 @@ public class Board {
 
     public Trunk nextTrunk() {
         return trunks.get(turner.next());
+    }
+
+    public void setDeck(Deck deck) {
+        this.deck = deck;
     }
 }

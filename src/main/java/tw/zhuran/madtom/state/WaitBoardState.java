@@ -1,5 +1,6 @@
 package tw.zhuran.madtom.state;
 
+import tw.zhuran.madtom.domain.Action;
 import tw.zhuran.madtom.domain.Board;
 import tw.zhuran.madtom.domain.WaiterManager;
 import tw.zhuran.madtom.event.Event;
@@ -21,8 +22,24 @@ public class WaitBoardState extends BoardState {
             Event activeEvent = waiterManager.activeEvent();
             if (activeEvent != null) {
                 owner.execute(activeEvent.getAction());
+                switch (activeEvent.getEventType()) {
+                    case ACTION:
+                        return BoardStateType.OPEN;
+                    case WIN:
+                        return BoardStateType.CLOSE;
+                }
+            } else {
+                return BoardStateType.DISPATCH;
             }
         }
         return this.type();
+    }
+
+    @Override
+    public void begin(Event event) {
+        Action action = event.getAction();
+        if (action != null) {
+            waiterManager.findWaiters(action);
+        }
     }
 }

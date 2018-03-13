@@ -19,7 +19,14 @@ public class StateManager<A, T, X extends State<A, T>> {
 
     public void perform(A action) {
         T type = current.perform(action);
+        if (current.type() == type) {
+            return;
+        }
         current = state(type);
+        if (current.instant()) {
+            perform(action);
+        }
+        current.begin(action);
     }
 
     private X state(T s) {

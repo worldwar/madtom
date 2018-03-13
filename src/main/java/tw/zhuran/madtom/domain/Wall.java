@@ -37,8 +37,14 @@ public class Wall {
     }
 
     private void forward() {
-        if (start < length - 1 && start < end - 1) {
-            start++;
+        if (cutted) {
+            if (start < length - 1) {
+                start++;
+            }
+        } else {
+            if (start < end) {
+                start++;
+            }
         }
     }
 
