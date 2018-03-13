@@ -13,6 +13,7 @@ public class States {
         states.add(new OpenBoardState(board));
         states.add(new WaitBoardState(board));
         states.add(new DispatchBoardState(board));
+        states.add(new BottomBoardState(board));
         return states;
     }
 }

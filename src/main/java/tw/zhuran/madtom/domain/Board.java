@@ -56,6 +56,9 @@ public class Board {
 
     public void dispatch() {
         trunk().feed(deck.afford());
+        if (bottom()) {
+            trunk().setTriggerType(TriggerType.BOTTOM);
+        }
     }
 
     public void gangAfford() {
@@ -148,6 +151,10 @@ public class Board {
         return true;
     }
 
+    public boolean currentWinnable() {
+        return winnable(turner.current());
+    }
+
     private int score(Trunk trunk, Trunk player, Action action) {
         if (action.getType() == ActionType.DISCARD) {
             Plot plot = trunk.bestPlot(action.getPiece(), TriggerType.CAPTURE);
@@ -178,5 +185,18 @@ public class Board {
                 gangAfford();
             }
         }
+    }
+
+    public boolean bottom() {
+        int remainPillars = deck.remainPillars();
+        return remainPillars <= 10 && remainPillars > 8;
+    }
+
+    public void settle() {
+
+    }
+
+    public void draw() {
+
     }
 }
