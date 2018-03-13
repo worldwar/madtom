@@ -40,4 +40,38 @@ public class Action {
             type = ActionType.XUGANG;
         }
     }
+
+    @Override
+    public String toString() {
+        StringBuilder build = new StringBuilder();
+        switch (type) {
+            case DISCARD:
+                build.append("打");
+                break;
+            case PENG:
+                build.append("碰");
+                break;
+            case GANG:
+                build.append("杠");
+                break;
+            case XUGANG:
+                build.append("蓄杠");
+                break;
+            case ANGANG:
+                build.append("暗杠");
+                break;
+            case HONGZHONG_GANG:
+                build.append("红中杠");
+                break;
+            case LAIZI_GANG:
+                build.append("赖子杠");
+                break;
+        }
+
+        build.append(" " + piece);
+        if (group != null) {
+            build.append(" " + Pieces.string(group.getPieces()));
+        }
+        return build.toString();
+    }
 }

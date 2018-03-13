@@ -79,7 +79,17 @@ public class Piece {
                     break;
             }
             return index + unit;
+        } else {
+            switch (index) {
+                case 1: return "东风";
+                case 2: return "南风";
+                case 3: return "西风";
+                case 4: return "北风";
+                case 5: return "红中";
+                case 6: return "发财";
+                case 7: return "白板";
+            }
         }
-        return "";
+        return "X";
     }
 }

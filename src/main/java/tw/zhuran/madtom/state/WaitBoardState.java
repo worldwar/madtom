@@ -47,4 +47,13 @@ public class WaitBoardState extends BoardState {
             waiterManager.findWaiters(event);
         }
     }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("state: Wait\n");
+        builder.append(waiterManager.toString() + "\n");
+        return builder.toString();
+
+    }
 }

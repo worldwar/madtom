@@ -44,4 +44,9 @@ public class StateManager<A, T, X extends State<A, T>> {
     public T currentState() {
         return current.type();
     }
+
+    @Override
+    public String toString() {
+        return current.toString();
+    }
 }

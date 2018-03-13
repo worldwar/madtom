@@ -9,6 +9,7 @@ import tw.zhuran.madtom.rule.ChiWaitRule;
 import tw.zhuran.madtom.rule.GangWaitRule;
 import tw.zhuran.madtom.rule.PengWaitRule;
 import tw.zhuran.madtom.rule.WinWaitRule;
+import tw.zhuran.madtom.util.F;
 
 import java.util.List;
 
@@ -229,6 +230,16 @@ public class WaiterManager {
         this.waitAction = action;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("win waiter: " + F.string(winners, ";") + "\n");
+        builder.append("gang waiter: " + F.string(gangWaiters, ";") + "\n");
+        builder.append("peng waiter: " + F.string(pengWaiters, ";") + "\n");
+        builder.append("chi waiter: " + F.string(chiWaiters, ";"));
+        return builder.toString();
+    }
+
     class Confirmation {
         public Confirmation(int player, ConfirmState state) {
             this.player = player;
@@ -237,6 +248,11 @@ public class WaiterManager {
 
         public int player;
         public ConfirmState state;
+
+        @Override
+        public String toString() {
+            return player + " " +state.toString();
+        }
     }
 
     enum ConfirmState {

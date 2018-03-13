@@ -267,4 +267,16 @@ public class Trunk {
     public boolean laiziGangable() {
         return hand.laiziGangable();
     }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("hand: " + Pieces.string(hand.pieces()) + "\n");
+        builder.append("wildcard: " + Pieces.string(hand.getWildcards()) + "\n");
+        builder.append("hongzhong: " + Pieces.string(hand.getHongzhongPieces()) + "\n");
+        builder.append("=========\n");
+        List<Action> a = $.filter(this.actions, action -> action.getType() != ActionType.DISCARD);
+        builder.append(Actions.string(a) + "\n");
+        return builder.toString();
+    }
 }

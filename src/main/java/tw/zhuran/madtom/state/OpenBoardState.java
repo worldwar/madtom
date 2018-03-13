@@ -21,4 +21,13 @@ public class OpenBoardState extends FreeBoardState {
     public boolean instant() {
         return false;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("state: Open\n");
+        builder.append("current: " + owner.turn() + "\n");
+        builder.append(owner.trunk().toString() + "\n");
+        return builder.toString();
+    }
 }

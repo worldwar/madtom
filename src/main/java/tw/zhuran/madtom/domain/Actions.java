@@ -1,5 +1,9 @@
 package tw.zhuran.madtom.domain;
 
+import com.github.underscore.$;
+
+import java.util.List;
+
 public class Actions {
     public static Action discard(Piece piece) {
         return new Action(ActionType.DISCARD, piece, null);
@@ -19,6 +23,10 @@ public class Actions {
 
     public static Action angang(Piece piece) {
         return new Action(ActionType.ANGANG, piece, Pieces.triple(piece));
+    }
+
+    public static Action xugang(Piece piece) {
+        return new Action(ActionType.XUGANG, piece, Pieces.triple(piece));
     }
 
     public static Action hongzhongGang() {
@@ -55,5 +63,9 @@ public class Actions {
             return TriggerType.RUSH;
         }
         return TriggerType.SELF;
+    }
+
+    public static String string(List<Action> actions) {
+        return $.foldl(actions, (a, b) -> a + b + "\n", "");
     }
 }

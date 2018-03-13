@@ -1,6 +1,6 @@
 package tw.zhuran.madtom.domain;
 
-import com.github.underscore.$;
+import com.github.underscore.*;
 import com.google.common.collect.Lists;
 import tw.zhuran.madtom.util.F;
 
@@ -382,5 +382,13 @@ public class Pieces {
 
     public static boolean opened(Action action) {
         return hasGroup(action) && action.getType() != ActionType.ANGANG;
+    }
+
+    public static String string(List<Piece> pieces) {
+        return $.foldl(pieces, (a, b) -> a + b, "");
+    }
+
+    public static Piece find(String name) {
+        return $.find(Pieces.ALL, piece -> piece.toString().equals(name)).orNull();
     }
 }

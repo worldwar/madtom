@@ -230,4 +230,9 @@ public class Board {
     public void draw() {
         result = Results.draw();
     }
+
+    @Override
+    public String toString() {
+        return stateManager.toString();
+    }
 }

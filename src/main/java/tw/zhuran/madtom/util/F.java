@@ -61,4 +61,8 @@ public class F {
     public static List<Integer> list(int[] array) {
         return $.map(array, x -> x);
     }
+
+    public static <T> String string(List<T> list, String splitter) {
+        return $.foldl(list, (a, b) -> a + b + splitter, "");
+    }
 }
