@@ -2,6 +2,7 @@ package tw.zhuran.madtom.domain;
 
 import com.github.underscore.$;
 import tw.zhuran.madtom.event.Event;
+import tw.zhuran.madtom.event.EventType;
 import tw.zhuran.madtom.rule.Rules;
 import tw.zhuran.madtom.rule.WaitRule;
 import tw.zhuran.madtom.state.BoardStateManager;
@@ -9,6 +10,7 @@ import tw.zhuran.madtom.state.BoardStateType;
 import tw.zhuran.madtom.util.F;
 import tw.zhuran.madtom.util.NaturalTurner;
 import tw.zhuran.madtom.util.R;
+import tw.zhuran.madtom.util.Results;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +23,7 @@ public class Board {
     private Piece wildcard;
     private NaturalTurner turner;
     private BoardStateManager stateManager = new BoardStateManager(this);
+    private Result result;
 
     public Board(int players) {
         this.players = players;
@@ -102,6 +105,10 @@ public class Board {
         turner.turnNext();
     }
 
+    public int turn() {
+        return turner.current();
+    }
+
     public void execute(Action action) {
         Trunk trunk = trunk();
         Piece piece = action.getPiece();
@@ -138,7 +145,10 @@ public class Board {
     }
 
     public List<Trunk> otherTrunks() {
-        int player = turner.current();
+        return otherTrunks(turn());
+    }
+
+    public List<Trunk> otherTrunks(int player) {
         return $.chain(trunks.entrySet()).filter(entry -> entry.getKey() != player).map(entry -> entry.getValue()).value();
     }
 
@@ -177,7 +187,9 @@ public class Board {
 
     public void intercept(Event event) {
         Action action = event.getAction();
-        if (action != null) {
+        if (event.getEventType() == EventType.WIN) {
+            result = makeResult(event);
+        } else if (action != null) {
             if (Actions.intercept(action.getType())) {
                 turner.turnTo(event.getPlayer());
                 execute(action);
@@ -185,6 +197,25 @@ public class Board {
                 gangAfford();
             }
         }
+    }
+
+    private Result makeResult(Event event) {
+        int winner = event.getPlayer();
+        List<Trunk> trunks = otherTrunks(winner);
+        Trunk winnerTrunk = trunks.get(winner);
+        Score score = new Score();
+        Action action = event.getAction();
+        Plot plot = winnerTrunk.bestPlot(action.getPiece(), Actions.triggerType(action.getType()));
+        assert plot != null;
+
+        int winnerPoint = 0;
+        for (Trunk trunk : trunks) {
+            int point = score(winnerTrunk, trunk, action);
+            score.put(trunk.player(), -point);
+            winnerPoint += point;
+        }
+        score.put(winner, winnerPoint);
+        return Results.win(winner, plot, score);
     }
 
     public boolean bottom() {
@@ -197,6 +228,6 @@ public class Board {
     }
 
     public void draw() {
-
+        result = Results.draw();
     }
 }

@@ -47,4 +47,13 @@ public class Actions {
     public static boolean free(ActionType actionType) {
         return actionType == ActionType.DISCARD || actionType == ActionType.XUGANG || actionType == ActionType.ANGANG || actionType == ActionType.HONGZHONG_GANG || actionType == ActionType.LAIZI_GANG;
     }
+
+    public static TriggerType triggerType(ActionType actionType) {
+        if (actionType == ActionType.DISCARD) {
+            return TriggerType.CAPTURE;
+        } else if (actionType == ActionType.XUGANG) {
+            return TriggerType.RUSH;
+        }
+        return TriggerType.SELF;
+    }
 }

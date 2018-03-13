@@ -148,7 +148,7 @@ public class WaiterManager {
     }
 
     public Event activeEvent() {
-        Event event = activeEvent(winners, EventType.WIN, null);
+        Event event = activeEvent(winners, EventType.WIN, waitAction);
         if (event != null) {
             return event;
         }

@@ -15,10 +15,16 @@ public class FreeBoardState extends BoardState {
 
     @Override
     public BoardStateType perform(Event event) {
+        if (event.getPlayer() != owner.turn()) {
+            return this.type;
+        }
         Action action = event.getAction();
         if (event.getEventType() == EventType.WIN) {
-            owner.winnable(event.getPlayer());
-            return BoardStateType.CLOSE;
+            if (owner.currentWinnable()) {
+                owner.settle();
+                return BoardStateType.CLOSE;
+            }
+            return this.type;
         }
         if (action == null) {
             return this.type();
