@@ -210,6 +210,7 @@ public class Trunk {
         Hand copy = hand.copy();
         hand.feed(piece);
         this.triggerType = triggerType;
+        plots = plots();
         if (plots.size() != 0) {
             plots = $.filter(plots, plot -> plot.featured() || plot.getShifts().size() <= 1);
             plots = $.filter(plots, plot -> plot.isFeng() || plot.isJiang() || plot.isPeng() || plot.isSuit() || Pieces.isJiang(plot.pair().getPieces().get(0)));
