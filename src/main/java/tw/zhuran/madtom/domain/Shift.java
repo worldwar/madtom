@@ -21,4 +21,8 @@ public class Shift {
     public boolean hard() {
         return $.all(pieces, piece -> piece.equals(wildcard));
     }
+
+    public int size() {
+        return pieces.size();
+    }
 }

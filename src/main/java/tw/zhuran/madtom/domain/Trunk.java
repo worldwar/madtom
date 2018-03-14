@@ -212,17 +212,21 @@ public class Trunk {
         this.triggerType = triggerType;
         plots = plots();
         if (plots.size() != 0) {
-            plots = $.filter(plots, plot -> plot.featured() || plot.getShifts().size() <= 1);
+            plots = $.filter(plots, plot -> plot.featured() || plot.countOfWildcards() <= 1);
             plots = $.filter(plots, plot -> plot.isFeng() || plot.isJiang() || plot.isPeng() || plot.isSuit() || Pieces.isJiang(plot.pair().getPieces().get(0)));
         } else {
             if (feng()) {
                 Plot plot = new Plot();
                 plot.setFeng(true);
+                plot.setHard(hand.getWildcard().getKind() == Kind.FENG);
+                plot.setHand(hand);
                 plot.trigger(triggerType);
                 plots.add(plot);
             } else if (jiang()){
                 Plot plot = new Plot();
                 plot.setJiang(true);
+                plot.setHard(Pieces.isJiang(hand.getWildcard()));
+                plot.setHand(hand);
                 plot.trigger(triggerType);
                 plots.add(plot);
             }

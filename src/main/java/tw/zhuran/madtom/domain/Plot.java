@@ -5,7 +5,6 @@ import com.google.common.collect.Lists;
 import tw.zhuran.madtom.util.F;
 
 import java.util.List;
-import java.util.Map;
 
 public class Plot {
     private boolean self;
@@ -20,9 +19,9 @@ public class Plot {
     private boolean fire;
 
     private PlotType type;
-    private List<Map<Piece, Piece>> shifts;
     private List<Group> groups;
     private Form form;
+    private Hand hand;
     private List<Action> actions;
 
     public List<Group> handGroups() {
@@ -82,14 +81,6 @@ public class Plot {
 
     public void setType(PlotType type) {
         this.type = type;
-    }
-
-    public List<Map<Piece, Piece>> getShifts() {
-        return shifts;
-    }
-
-    public void setShifts(List<Map<Piece, Piece>> shifts) {
-        this.shifts = shifts;
     }
 
     public List<Group> getGroups() {
@@ -194,5 +185,29 @@ public class Plot {
 
     public void setFire(boolean fire) {
         this.fire = fire;
+    }
+
+    public Hand getHand() {
+        return hand;
+    }
+
+    public Plot setHand(Hand hand) {
+        this.hand = hand;
+        return this;
+    }
+
+    public Shift shift() {
+        if (form != null) {
+            return form.getShift();
+        }
+        return new Shift(null);
+    }
+
+    public int countOfWildcards() {
+        if (form != null) {
+            return form.getShift().size();
+        } else {
+            return hand.getWildcards().size();
+        }
     }
 }
