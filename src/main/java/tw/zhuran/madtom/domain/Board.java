@@ -44,6 +44,7 @@ public class Board {
         Pieces.times(this::dealNext, 3 * players);
         Pieces.times(this::lastDealNext, players);
         dispatch();
+        declareWildcard();
         stateManager.init(BoardStateType.FREE);
     }
 
@@ -66,7 +67,7 @@ public class Board {
 
     public void gangAfford() {
         int dice = R.dice();
-        deck.gangAfford(dice);
+        trunk().feed(deck.gangAfford(dice));
     }
 
     public void lastDealNext() {
@@ -125,18 +126,22 @@ public class Board {
                 break;
             case GANG:
                 trunk.gang(piece);
+                gangAfford();
                 break;
             case XUGANG:
                 trunk.xugang(piece);
                 break;
             case ANGANG:
                 trunk.angang(piece);
+                gangAfford();
                 break;
             case HONGZHONG_GANG:
                 trunk.hongzhongGang();
+                gangAfford();
                 break;
             case LAIZI_GANG:
                 trunk.laiziGang();
+                gangAfford();
         }
     }
 
