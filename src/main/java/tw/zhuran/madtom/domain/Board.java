@@ -224,7 +224,7 @@ public class Board {
 
     private Result makeResult(Event event) {
         int winner = event.getPlayer();
-        List<Trunk> trunks = otherTrunks(winner);
+        List<Trunk> otherTrunks = otherTrunks(winner);
         Trunk winnerTrunk = trunks.get(winner);
         Score score = new Score();
         Action action = event.getAction();
@@ -232,7 +232,7 @@ public class Board {
         assert plot != null;
 
         int winnerPoint = 0;
-        for (Trunk trunk : trunks) {
+        for (Trunk trunk : otherTrunks) {
             int point = score(winnerTrunk, trunk, action);
             score.put(trunk.player(), -point);
             winnerPoint += point;
