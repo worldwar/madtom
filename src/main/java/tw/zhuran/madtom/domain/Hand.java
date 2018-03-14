@@ -130,6 +130,7 @@ public class Hand {
         hand.fengPieces = Lists.newArrayList(fengPieces);
         hand.tiaoPieces = Lists.newArrayList(tiaoPieces);
         hand.tongPieces = Lists.newArrayList(tongPieces);
+        hand.hongzhongPieces = Lists.newArrayList(hongzhongPieces);
         return hand;
     }
 
