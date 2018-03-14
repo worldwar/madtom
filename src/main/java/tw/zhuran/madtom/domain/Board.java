@@ -65,6 +65,7 @@ public class Board {
 
     public void dispatch() {
         trunk().feed(deck.afford());
+        trunk().setTriggerType(TriggerType.SELF);
         if (bottom()) {
             trunk().setTriggerType(TriggerType.BOTTOM);
         }
@@ -73,6 +74,7 @@ public class Board {
     public void gangAfford() {
         int dice = R.dice();
         trunk().feed(deck.gangAfford(dice));
+        trunk().setTriggerType(TriggerType.FIRE);
     }
 
     public void lastDealNext() {
