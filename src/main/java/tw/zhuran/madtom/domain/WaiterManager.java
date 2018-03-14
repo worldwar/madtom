@@ -33,9 +33,11 @@ public class WaiterManager {
         Action action = event.getAction();
         reset();
         winners = initConfirmation(WinWaitRule.instance.waiters(board, action));
-        pengWaiters = initConfirmation(PengWaitRule.instance.waiters(board, action));
-        gangWaiters = initConfirmation(GangWaitRule.instance.waiters(board, action));
-        chiWaiters = initConfirmation(ChiWaitRule.instance.waiters(board, action));
+        if (action.getType() == ActionType.DISCARD) {
+            pengWaiters = initConfirmation(PengWaitRule.instance.waiters(board, action));
+            gangWaiters = initConfirmation(GangWaitRule.instance.waiters(board, action));
+            chiWaiters = initConfirmation(ChiWaitRule.instance.waiters(board, action));
+        }
         this.waitAction = action;
         this.waitEvent = event;
     }

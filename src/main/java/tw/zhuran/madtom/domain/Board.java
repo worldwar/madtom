@@ -185,13 +185,14 @@ public class Board {
     }
 
     private int score(Trunk trunk, Trunk player, Action action) {
+        Plot plot = null;
         if (action.getType() == ActionType.DISCARD) {
-            Plot plot = trunk.bestPlot(action.getPiece(), TriggerType.CAPTURE);
-            if (plot != null) {
-                return score(plot, trunk, player, true);
-            } else {
-                return 0;
-            }
+            plot = trunk.bestPlot(action.getPiece(), TriggerType.CAPTURE);
+        } else if (action.getType() == ActionType.DISCARD) {
+            plot = trunk.bestPlot(action.getPiece(), TriggerType.RUSH);
+        }
+        if (plot != null) {
+            return score(plot, trunk, player, true);
         }
         return 0;
     }
