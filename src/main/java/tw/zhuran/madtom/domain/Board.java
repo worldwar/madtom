@@ -172,7 +172,7 @@ public class Board {
     }
 
     public boolean winnable(Trunk winner, Trunk loser, Action action) {
-        int score = score(winner, loser, action);
+        int score = score(winner, loser, action, true);
         return score >= 16;
     }
 
@@ -184,7 +184,7 @@ public class Board {
         return winnable(turner.current());
     }
 
-    private int score(Trunk trunk, Trunk player, Action action) {
+    private int score(Trunk trunk, Trunk player, Action action, boolean isTrigger) {
         Plot plot = null;
         if (action.getType() == ActionType.DISCARD) {
             plot = trunk.bestPlot(action.getPiece(), TriggerType.CAPTURE);
@@ -192,7 +192,11 @@ public class Board {
             plot = trunk.bestPlot(action.getPiece(), TriggerType.RUSH);
         }
         if (plot != null) {
-            return score(plot, trunk, player, true);
+            if (isTrigger) {
+                return score(plot, trunk, player, true);
+            } else {
+                return score(plot, trunk, player, false);
+            }
         }
         return 0;
     }
@@ -233,7 +237,7 @@ public class Board {
 
         int winnerPoint = 0;
         for (Trunk trunk : otherTrunks) {
-            int point = score(winnerTrunk, trunk, action);
+            int point = score(winnerTrunk, trunk, action, trunk.player() == event.getPlayer());
             score.put(trunk.player(), -point);
             winnerPoint += point;
         }
