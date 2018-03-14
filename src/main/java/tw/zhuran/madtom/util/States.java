@@ -14,6 +14,7 @@ public class States {
         states.add(new WaitBoardState(board));
         states.add(new DispatchBoardState(board));
         states.add(new BottomBoardState(board));
+        states.add(new CloseBoardState(board));
         return states;
     }
 }
