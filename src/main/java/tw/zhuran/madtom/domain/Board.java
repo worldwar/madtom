@@ -1,6 +1,7 @@
 package tw.zhuran.madtom.domain;
 
 import com.github.underscore.$;
+import com.google.common.collect.Lists;
 import tw.zhuran.madtom.event.Event;
 import tw.zhuran.madtom.event.EventType;
 import tw.zhuran.madtom.rule.Rules;
@@ -102,7 +103,12 @@ public class Board {
     }
 
     public boolean shouldWait(Action action) {
-        List<WaitRule> waitRules = Rules.discardWaitRules();
+        List<WaitRule> waitRules = Lists.newArrayList();
+        if (action.getType() == ActionType.DISCARD) {
+            waitRules = Rules.discardWaitRules();
+        } else if (action.getType() == ActionType.XUGANG){
+            waitRules = Rules.xugangWaitRules();
+        }
         return $.any(waitRules, rule -> rule.shouldWait(this, action));
     }
 
