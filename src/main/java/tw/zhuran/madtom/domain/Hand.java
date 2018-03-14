@@ -124,6 +124,8 @@ public class Hand {
 
     public Hand copy() {
         Hand hand = new Hand();
+        hand.wildcard = wildcard;
+        hand.wildcards = Lists.newArrayList(wildcards);
         hand.wanPieces = Lists.newArrayList(wanPieces);
         hand.fengPieces = Lists.newArrayList(fengPieces);
         hand.tiaoPieces = Lists.newArrayList(tiaoPieces);
@@ -220,6 +222,10 @@ public class Hand {
 
     public boolean chiable(Piece piece) {
         return chiableSequences(piece).size() > 0;
+    }
+
+    public boolean chiable(Piece piece, Group group) {
+        return chiableSequences(piece).contains(group);
     }
 
     public List<Group> chiableSequences(Piece piece) {

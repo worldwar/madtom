@@ -81,11 +81,13 @@ public class WaiterManager {
                 pass(pengWaiters, player);
                 pass(chiWaiters, player);
             } else if (actionType == ActionType.CHI) {
-                confirm(chiWaiters, player);
-                pass(winners, player);
-                pass(pengWaiters, player);
-                pass(gangWaiters, player);
-                chiAction = action;
+                if (board.trunk(player).chiable(action.getPiece(), action.getGroup())) {
+                    confirm(chiWaiters, player);
+                    pass(winners, player);
+                    pass(pengWaiters, player);
+                    pass(gangWaiters, player);
+                    chiAction = action;
+                }
             }
         } else if (eventType == EventType.WAIT_TIMEOUT) {
             timeout = true;
@@ -238,6 +240,13 @@ public class WaiterManager {
         builder.append("peng waiter: " + F.string(pengWaiters, ";") + "\n");
         builder.append("chi waiter: " + F.string(chiWaiters, ";"));
         return builder.toString();
+    }
+
+    public Piece waitPiece() {
+        if (waitAction != null) {
+            return waitAction.getPiece();
+        }
+        return null;
     }
 
     class Confirmation {

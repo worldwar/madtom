@@ -92,6 +92,10 @@ public class Trunk {
         return hand.chiable(piece);
     }
 
+    public boolean chiable(Piece piece, Group group) {
+        return hand.chiable(piece, group);
+    }
+
     public void chi(Piece piece, Group group) {
         hand.chi(piece, group);
         actions.add(Actions.chi(piece, group));
@@ -276,7 +280,7 @@ public class Trunk {
         builder.append("hongzhong: " + Pieces.string(hand.getHongzhongPieces()) + "\n");
         builder.append("=========\n");
         List<Action> a = $.filter(this.actions, action -> action.getType() != ActionType.DISCARD);
-        builder.append(Actions.string(a) + "\n");
+        builder.append(Actions.string(a));
         return builder.toString();
     }
 }

@@ -33,14 +33,18 @@ public class Events {
                         return null;
                     }
                 case "confirm":
+                    Piece piece = board.waitPiece();
+                    if (piece == null) {
+                        return null;
+                    }
                     switch (parts.get(1)) {
                         case "peng":
-                            return Events.action(Integer.valueOf(parts.get(2)), Actions.peng(Pieces.YIWAN));
+                            return Events.action(Integer.valueOf(parts.get(2)), Actions.peng(piece));
                         case "chi":
                             return Events.action(Integer.valueOf(parts.get(2)),
-                                    Actions.chi(Pieces.YIWAN, Pieces.sequence(Pieces.WUWAN, Integer.valueOf(parts.get(3)))));
+                                    Actions.chi(piece, Pieces.sequence(piece, Integer.valueOf(parts.get(3)))));
                         case "gang":
-                            return Events.action(Integer.valueOf(parts.get(2)), Actions.gang(Pieces.YIWAN));
+                            return Events.action(Integer.valueOf(parts.get(2)), Actions.gang(piece));
                         case "win":
                             return Events.win(Integer.valueOf(parts.get(2)));
                     }
@@ -48,7 +52,7 @@ public class Events {
                     return Events.pass(Integer.valueOf(parts.get(1)));
 
                 case "gang":
-                    Piece piece = Pieces.find(parts.get(1));
+                    piece = Pieces.find(parts.get(1));
                     if (piece == null) {
                         return null;
                     }

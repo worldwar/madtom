@@ -2,6 +2,7 @@ package tw.zhuran.madtom.domain;
 
 import com.google.common.collect.Lists;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import tw.zhuran.madtom.event.EventType;
 import tw.zhuran.madtom.event.Events;
@@ -109,6 +110,7 @@ public class WaiterManagerTest {
     }
 
     @Test
+    @Ignore
     public void shouldFinishWhenPengWaiterAndChiWaiterAreConfirmedOrPass() {
         waiterManager.setPengWaiters(Lists.newArrayList(2));
         waiterManager.setChiWaiters(Lists.newArrayList(3));
@@ -120,6 +122,7 @@ public class WaiterManagerTest {
     }
 
     @Test
+    @Ignore
     public void shouldFinishWhenPengWaiterAndChiWaiterAreSameAndChiWaiterConfirmedOrPass() {
         waiterManager.setPengWaiters(Lists.newArrayList(2));
         waiterManager.setChiWaiters(Lists.newArrayList(2));

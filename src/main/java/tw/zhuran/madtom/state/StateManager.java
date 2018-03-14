@@ -29,7 +29,7 @@ public class StateManager<A, T, X extends State<A, T>> {
         current.begin(action);
     }
 
-    private X state(T s) {
+    protected X state(T s) {
         List<X> result = $.filter(states, state -> state.type() == s);
         if (result.size() > 0) {
             return result.get(0);

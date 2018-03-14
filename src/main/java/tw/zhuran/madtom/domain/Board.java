@@ -52,6 +52,10 @@ public class Board {
         return trunks.get(turner.current());
     }
 
+    public Trunk trunk(int player) {
+        return trunks.get(player);
+    }
+
     public void dealNext() {
         List<Piece> pieces = deck.deal();
         trunk().deal(pieces);
@@ -126,22 +130,18 @@ public class Board {
                 break;
             case GANG:
                 trunk.gang(piece);
-                gangAfford();
                 break;
             case XUGANG:
                 trunk.xugang(piece);
                 break;
             case ANGANG:
                 trunk.angang(piece);
-                gangAfford();
                 break;
             case HONGZHONG_GANG:
                 trunk.hongzhongGang();
-                gangAfford();
                 break;
             case LAIZI_GANG:
                 trunk.laiziGang();
-                gangAfford();
         }
     }
 
@@ -155,6 +155,12 @@ public class Board {
 
     public List<Trunk> otherTrunks(int player) {
         return $.chain(trunks.entrySet()).filter(entry -> entry.getKey() != player).map(entry -> entry.getValue()).value();
+    }
+
+    public List<Trunk> otherOrderedTrunks() {
+        List<Integer> players = turner.ordered();
+        players.remove(0);
+        return $.map(players, player -> trunks.get(player));
     }
 
     public boolean winnable(Trunk winner, Trunk loser, Action action) {
@@ -198,6 +204,9 @@ public class Board {
             if (Actions.intercept(action.getType())) {
                 turner.turnTo(event.getPlayer());
                 execute(action);
+                if (action.getType() == ActionType.GANG) {
+                    gangAfford();
+                }
             } else if (action.getType() == ActionType.XUGANG) {
                 gangAfford();
             }
@@ -236,8 +245,18 @@ public class Board {
         result = Results.draw();
     }
 
+    public Piece waitPiece() {
+        if (stateManager.currentState() == BoardStateType.WAIT) {
+            return stateManager.waitPiece();
+        }
+        return null;
+    }
     @Override
     public String toString() {
-        return stateManager.toString();
+        StringBuilder builder = new StringBuilder();
+        builder.append("癞子: " + wildcard.toString() + "\n");
+        builder.append("剩余墩数: " + deck.remainPillars() + "\n");
+        builder.append(stateManager.toString());
+        return builder.toString();
     }
 }

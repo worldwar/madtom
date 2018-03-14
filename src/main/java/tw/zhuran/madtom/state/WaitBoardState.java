@@ -1,9 +1,6 @@
 package tw.zhuran.madtom.state;
 
-import tw.zhuran.madtom.domain.Action;
-import tw.zhuran.madtom.domain.ActionType;
-import tw.zhuran.madtom.domain.Board;
-import tw.zhuran.madtom.domain.WaiterManager;
+import tw.zhuran.madtom.domain.*;
 import tw.zhuran.madtom.event.Event;
 
 public class WaitBoardState extends BoardState {
@@ -48,6 +45,9 @@ public class WaitBoardState extends BoardState {
         }
     }
 
+    public Piece waitPiece() {
+        return waiterManager.waitPiece();
+    }
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();

@@ -54,7 +54,7 @@ public class FreeBoardState extends BoardState {
         StringBuilder builder = new StringBuilder();
         builder.append("state: Free\n");
         builder.append("current: " + owner.turn() + "\n");
-        builder.append(owner.trunk().toString() + "\n");
+        builder.append(owner.trunk().toString());
         return builder.toString();
     }
 }

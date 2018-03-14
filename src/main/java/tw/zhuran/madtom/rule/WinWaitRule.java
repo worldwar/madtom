@@ -18,7 +18,7 @@ public class WinWaitRule implements WaitRule{
     @Override
     public List<Integer> waiters(Board board, Action action) {
         Trunk player = board.trunk();
-        List<Trunk> trunks = board.otherTrunks();
+        List<Trunk> trunks = board.otherOrderedTrunks();
         return $.chain(trunks).filter(trunk -> board.winnable(trunk, player, action)).map(Trunk::player).value();
     }
 }

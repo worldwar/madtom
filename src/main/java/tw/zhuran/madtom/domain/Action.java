@@ -48,6 +48,9 @@ public class Action {
             case DISCARD:
                 build.append("打");
                 break;
+            case CHI:
+                build.append("吃");
+                break;
             case PENG:
                 build.append("碰");
                 break;
