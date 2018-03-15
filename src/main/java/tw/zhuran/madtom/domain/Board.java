@@ -188,6 +188,9 @@ public class Board {
 
     private int score(Trunk winner, Trunk loser) {
         Plot plot = trunk().bestPlot(null, null);
+        if (plot == null) {
+            return 0;
+        }
         return score(plot, winner, loser, false);
     }
 

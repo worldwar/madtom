@@ -55,6 +55,9 @@ public class FreeBoardState extends BoardState {
         builder.append("state: Free\n");
         builder.append("current: " + owner.turn() + "\n");
         builder.append(owner.trunk().toString());
+        if (owner.currentWinnable()) {
+            builder.append("\n可以胡牌");
+        }
         return builder.toString();
     }
 }

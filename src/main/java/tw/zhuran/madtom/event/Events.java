@@ -22,9 +22,14 @@ public class Events {
     public static Event parse(String command, Board board) {
         try {
             int turn = board.turn();
-
             ArrayList<String> parts = Lists.newArrayList(Splitter.on(" ").split(command));
             switch (parts.get(0)) {
+                case "win":
+                    if (board.currentWinnable()) {
+                        return Events.win(board.turn());
+                    } else {
+                        return null;
+                    }
                 case "discard":
                     Optional<Piece> o = $.find(Pieces.ALL, piece -> piece.toString().equals(parts.get(1)));
                     if (o.isPresent()) {
