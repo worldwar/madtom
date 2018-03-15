@@ -63,7 +63,8 @@ public class Wall {
     }
 
     public boolean gangAffordable(int point) {
-        return end - (point - 1) >= 0;
+        int i = end - (point - 1);
+        return i >= 0 && pillars.get(i).notEmpty();
     }
 
     private Pillar start() {
