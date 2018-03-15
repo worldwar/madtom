@@ -4,10 +4,7 @@ import com.github.underscore.$;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Lists;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class F {
     public static <T> List<T> repeat(T v, int count) {
@@ -63,6 +60,10 @@ public class F {
     }
 
     public static <T> String string(List<T> list, String splitter) {
+        return $.foldl(list, (a, b) -> a + b + splitter, "");
+    }
+
+    public static <T> String string(Set<T> list, String splitter) {
         return $.foldl(list, (a, b) -> a + b + splitter, "");
     }
 }

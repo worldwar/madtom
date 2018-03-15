@@ -177,11 +177,18 @@ public class Board {
     }
 
     public boolean winnable(int player) {
-        return true;
+        Trunk winner = trunk(player);
+        List<Trunk> otherTrunks = otherTrunks(player);
+        return $.any(otherTrunks, loser -> score(winner, loser) >= 16);
     }
 
     public boolean currentWinnable() {
         return winnable(turner.current());
+    }
+
+    private int score(Trunk winner, Trunk loser) {
+        Plot plot = trunk().bestPlot(null, null);
+        return score(plot, winner, loser, false);
     }
 
     private int score(Trunk trunk, Trunk player, Action action, boolean isTrigger) {
@@ -212,7 +219,7 @@ public class Board {
     public void intercept(Event event) {
         Action action = event.getAction();
         if (event.getEventType() == EventType.WIN) {
-            result = makeResult(event);
+            settle(event);
         } else if (action != null) {
             if (Actions.intercept(action.getType())) {
                 turner.turnTo(event.getPlayer());
@@ -225,6 +232,7 @@ public class Board {
             }
         }
     }
+
 
     private Result makeResult(Event event) {
         int winner = event.getPlayer();
@@ -251,11 +259,33 @@ public class Board {
     }
 
     public void settle() {
+        int winner = turn();
+        List<Trunk> otherTrunks = otherTrunks(winner);
+        Trunk winnerTrunk = trunks.get(winner);
+        Score score = new Score();
+        Plot plot = winnerTrunk.bestPlot(null, null);
+        assert plot != null;
 
+        int winnerPoint = 0;
+        for (Trunk trunk : otherTrunks) {
+            int point = score(winnerTrunk, trunk);
+            score.put(trunk.player(), -point);
+            winnerPoint += point;
+        }
+        score.put(winner, winnerPoint);
+        result = Results.win(winner, plot, score);
+    }
+
+    public void settle(Event event) {
+        result = makeResult(event);
     }
 
     public void draw() {
         result = Results.draw();
+    }
+
+    public Result getResult() {
+        return result;
     }
 
     public Piece waitPiece() {

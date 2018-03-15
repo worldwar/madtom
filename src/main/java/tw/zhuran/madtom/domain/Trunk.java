@@ -206,10 +206,11 @@ public class Trunk {
         if (hand.getHongzhongPieces().size() != 0) {
             return plots;
         }
-
         Hand copy = hand.copy();
-        hand.feed(piece);
-        this.triggerType = triggerType;
+        if (piece != null) {
+            hand.feed(piece);
+            this.triggerType = triggerType;
+        }
         plots = plots();
         if (plots.size() != 0) {
             plots = $.filter(plots, plot -> plot.featured() || plot.countOfWildcards() <= 1);
@@ -231,7 +232,9 @@ public class Trunk {
                 plots.add(plot);
             }
         }
-        hand = copy;
+        if (piece != null) {
+            hand = copy;
+        }
         return plots;
     }
 

@@ -46,4 +46,18 @@ public class Result {
     public void setPlot(Plot plot) {
         this.plot = plot;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        if (resultType == ResultType.WIN) {
+            builder.append("赢家: " + winner + "\n");
+            builder.append("牌型: " + plot.toString() + "\n");
+            builder.append("得分: \n");
+            builder.append(score.toString());
+        } else {
+            builder.append("平局: " + winner);
+        }
+        return builder.toString();
+    }
 }

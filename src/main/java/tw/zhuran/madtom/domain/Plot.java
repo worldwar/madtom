@@ -8,6 +8,7 @@ import java.util.List;
 
 public class Plot {
     private boolean self;
+    private boolean capture;
     private boolean hard;
     private boolean peng;
     private boolean suit;
@@ -37,7 +38,8 @@ public class Plot {
     }
 
     public void trigger(TriggerType triggerType) {
-        self = Pieces.self(triggerType);
+        self = triggerType == TriggerType.SELF;
+        capture = !Pieces.self(triggerType);
         bottom = triggerType == TriggerType.BOTTOM;
         rush = triggerType == TriggerType.RUSH;
         fire = triggerType == TriggerType.FIRE;
@@ -113,6 +115,14 @@ public class Plot {
 
     public void setSelf(boolean self) {
         this.self = self;
+    }
+
+    public boolean isCapture() {
+        return capture;
+    }
+
+    public void setCapture(boolean capture) {
+        this.capture = capture;
     }
 
     public boolean isHard() {
@@ -209,5 +219,53 @@ public class Plot {
         } else {
             return hand.getWildcards().size();
         }
+    }
+
+    @Override
+    public String toString() {
+        List<String> titles = Lists.newArrayList();
+        List<String> names = Lists.newArrayList();
+        if (featured()) {
+            if (isPeng()) {
+                names.add("碰碰胡");
+            }
+            if (isSuit()) {
+                if (isFeng()) {
+                    names.add("风一色");
+                } else {
+                    names.add("清一色");
+                }
+            }
+            if (isJiang()) {
+                names.add("将一色");
+            }
+            if (isBeg()) {
+                names.add("全求人");
+            }
+            if (isBottom()) {
+                names.add("海底捞");
+            }
+            if (isFire()) {
+                names.add("杠上开");
+            }
+            if (isRush()) {
+                names.add("抢杠");
+            }
+        } else {
+            names.add("屁胡");
+        }
+        if (isHard()) {
+            titles.add("硬胡");
+        } else {
+            titles.add("软胡");
+        }
+        if (isSelf()) {
+            titles.add("自摸");
+        }
+        if (isCapture()) {
+            titles.add("放冲");
+        }
+        titles.addAll(names);
+        return F.string(titles, " ");
     }
 }
