@@ -248,7 +248,7 @@ public class Board {
 
         int winnerPoint = 0;
         for (Trunk trunk : otherTrunks) {
-            int point = score(winnerTrunk, trunk, action, trunk.player() == event.getPlayer());
+            int point = score(winnerTrunk, trunk, action, trunk.player() == turn());
             score.put(trunk.player(), -point);
             winnerPoint += point;
         }
