@@ -13,8 +13,7 @@ import java.util.Scanner;
 public class Console {
     public static void main(String[] args) {
         Board board = new Board(4);
-        board.setDealer(2);
-        board.cut(1, 1);
+        board.shuffle();
         while (true) {
             System.out.print(board);
             Scanner scanner = new Scanner(System.in);
@@ -24,6 +23,9 @@ public class Console {
             String c = commands.get(0);
 
             switch (c) {
+                case "shuffle":
+                    board.shuffle();
+                    break;
                 case "print":
                     if (commands.size() > 1) {
                         Integer player = Integer.valueOf(commands.get(1));

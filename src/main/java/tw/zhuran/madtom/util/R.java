@@ -13,4 +13,8 @@ public class R {
     public static int dice() {
         return number(1, 6);
     }
+
+    public static int dealer() {
+        return number(1, 4);
+    }
 }

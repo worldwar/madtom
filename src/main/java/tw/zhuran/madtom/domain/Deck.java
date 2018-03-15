@@ -17,7 +17,7 @@ public class Deck {
 
     public Deck(int size) {
         List<Piece> deck = Pieces.deck();
-        Collections.shuffle(deck);
+        F.times(() -> Collections.shuffle(deck), 10);
         List<List<Pillar>> pillarsList = $.chain(deck).chunk(2).map(list -> new Pillar(list)).chunk(deck.size() / 2 / size)
                 .value();
         walls = F.index($.map(pillarsList, Wall::new));

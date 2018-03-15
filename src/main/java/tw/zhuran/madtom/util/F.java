@@ -28,6 +28,13 @@ public class F {
         }
     }
 
+    public static void times(Runnable runnable, int count) {
+        if (count != 0) {
+            runnable.run();
+            times(runnable, count - 1);
+        }
+    }
+
     public static <T> List<T> add(final List<T> first, final List<T> second) {
         List<T> copies = Lists.newArrayList(first);
         copies.addAll(second);

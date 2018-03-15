@@ -36,6 +36,24 @@ public class Board {
         this.turner = new NaturalTurner(players);
     }
 
+    public void shuffle() {
+        result = null;
+        deck = new Deck(players);
+        $.each(F.list($.range(1, 5)), index -> {
+            Trunk trunk = new Trunk(index);
+            trunks.put(index, trunk);
+        });
+
+        int dealer = R.dealer();
+        setDealer(dealer);
+        int one = R.dice();
+        int two = R.dice();
+
+        int start = (one + two) % players + 1;
+        int index = Math.max(one, two);
+        cut(start, index);
+    }
+
     public void setDealer(int dealer) {
         turner.turnTo(dealer);
     }
