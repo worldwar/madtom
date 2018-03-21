@@ -21,13 +21,13 @@ public class GameContext {
         notify(packet, hub.all());
     }
 
-    private void notify(Packet packet, List<Connection> connections) {
+    public void notify(Packet packet, List<Connection> connections) {
         connections.stream()
                 .filter(connection -> connection != null)
                 .forEach(connection -> notify(packet, connection));
     }
 
-    private void notify(Packet packet, Connection connection) {
+    public void notify(Packet packet, Connection connection) {
         connection.send(packet.bytes());
     }
 

@@ -4,5 +4,6 @@ public enum EventType {
     ACTION,
     PASS,
     WIN,
-    WAIT_TIMEOUT
+    WAIT_TIMEOUT,
+    INFO
 }

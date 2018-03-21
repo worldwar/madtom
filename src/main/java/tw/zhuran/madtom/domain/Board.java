@@ -4,6 +4,7 @@ import com.github.underscore.$;
 import com.google.common.collect.Lists;
 import tw.zhuran.madtom.event.Event;
 import tw.zhuran.madtom.event.EventType;
+import tw.zhuran.madtom.event.Info;
 import tw.zhuran.madtom.rule.Rules;
 import tw.zhuran.madtom.rule.WaitRule;
 import tw.zhuran.madtom.state.BoardStateManager;
@@ -25,6 +26,7 @@ public class Board {
     private NaturalTurner turner;
     private BoardStateManager stateManager = new BoardStateManager(this);
     private Result result;
+    private int dealer;
 
     public Board(int players) {
         this.players = players;
@@ -55,6 +57,7 @@ public class Board {
     }
 
     public void setDealer(int dealer) {
+        this.dealer = dealer;
         turner.turnTo(dealer);
     }
 
@@ -138,6 +141,10 @@ public class Board {
 
     public int turn() {
         return turner.current();
+    }
+
+    public int dealer() {
+        return dealer;
     }
 
     public void execute(Action action) {
@@ -254,7 +261,6 @@ public class Board {
         }
     }
 
-
     private Result makeResult(Event event) {
         int winner = event.getPlayer();
         List<Trunk> otherTrunks = otherTrunks(winner);
@@ -315,6 +321,28 @@ public class Board {
         }
         return null;
     }
+
+    public Info info(int player) {
+        Info info = new Info();
+        Trunk playerTrunk = trunk(player);
+        info.setActions(playerTrunk.getActions());
+        info.setPieces(playerTrunk.getHand().all());
+
+        Map<Integer, List<Action>> otherActions = new HashMap<>();
+        Map<Integer, Integer> otherHandCounts = new HashMap<>();
+        $.each(otherTrunks(), trunk -> otherActions.put(trunk.player(), trunk.getActions()));
+        $.each(otherTrunks(), trunk -> otherHandCounts.put(trunk.player(), trunk.getHand().size()));
+        info.setOtherActions(otherActions);
+        info.setOtherHandCounts(otherHandCounts);
+
+        info.setDealer(dealer);
+        info.setRemainPillars(deck.remainPillars());
+        info.setSelf(player);
+        info.setTurn(turn());
+        info.setWildcard(wildcard);
+        return info;
+    }
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();

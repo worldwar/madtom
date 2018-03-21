@@ -327,4 +327,16 @@ public class Hand {
     public boolean laiziGangable() {
         return wildcards.size() > 0;
     }
+
+    public List<Piece> all() {
+        List<Piece> all = Lists.newArrayList();
+        all.addAll(hongzhongPieces);
+        all.addAll(wildcards);
+        all.addAll(pieces());
+        return all;
+    }
+
+    public int size() {
+        return hongzhongPieces.size() + wildcards.size() + pieces().size();
+    }
 }
