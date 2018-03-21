@@ -14,9 +14,9 @@ public abstract class GameServer {
     private ConcurrentMap<Long, GameContext> connectionContexts;
     private ScheduledExecutorService executor = Executors.newScheduledThreadPool(8);
     private GameHub hub = new GameHub();
+    private HandlerFactory handlerFactory;
 
-    public GameServer(HandlerFactory factory) {
-        listener = new Listener(factory);
+    public GameServer() {
         contexts = new ConcurrentHashMap<>();
         connectionContexts = new ConcurrentHashMap<>();
     }
@@ -27,6 +27,7 @@ public abstract class GameServer {
 
     public void start(int port) {
         try {
+            listener = new Listener(handlerFactory);
             ChannelFuture future = listener.listen(port);
             initTasks();
             future.channel().closeFuture().sync();
@@ -34,6 +35,9 @@ public abstract class GameServer {
         }
     }
 
+    public void setHandlerFactory(HandlerFactory handlerFactory) {
+        this.handlerFactory = handlerFactory;
+    }
     public void initTasks() {
         submit(new GameMatcher(this, 4));
     }
