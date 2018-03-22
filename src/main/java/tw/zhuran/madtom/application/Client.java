@@ -79,6 +79,7 @@ public class Client {
                 Event content = eventPacket.getContent();
                 if (content.getEventType() == ACTION) {
                     Action action = content.getAction();
+                    System.out.println("玩家" +  content.getPlayer() + action.toString());
                     if (action.getType() == ActionType.DISCARD) {
                         waitPiece = action.getPiece();
                     }
@@ -90,6 +91,7 @@ public class Client {
                 hand = construct(info);
                 player = info.getSelf();
                 wildcard = info.getWildcard();
+                System.out.println(instance.toString());
                 break;
         }
     }

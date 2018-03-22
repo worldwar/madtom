@@ -195,6 +195,7 @@ public class Board {
             case LAIZI_GANG:
                 trunk.laiziGang();
         }
+        notifyEvent(Events.action(turn(), action));
     }
 
     public BoardStateType state() {

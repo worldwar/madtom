@@ -47,14 +47,14 @@ public class Events {
                 }
                 switch (parts.get(1)) {
                     case "peng":
-                        return Events.action(Integer.valueOf(parts.get(2)), Actions.peng(piece));
+                        return Events.action(player, Actions.peng(piece));
                     case "chi":
-                        return Events.action(Integer.valueOf(parts.get(2)),
-                                Actions.chi(piece, Pieces.sequence(piece, Integer.valueOf(parts.get(3)))));
+                        return Events.action(player,
+                                Actions.chi(piece, Pieces.sequence(piece, Integer.valueOf(parts.get(2)))));
                     case "gang":
-                        return Events.action(Integer.valueOf(parts.get(2)), Actions.gang(piece));
+                        return Events.action(player, Actions.gang(piece));
                     case "win":
-                        return Events.win(Integer.valueOf(parts.get(2)));
+                        return Events.win(player);
                 }
             case "pass":
                 return Events.pass(Integer.valueOf(parts.get(1)));
