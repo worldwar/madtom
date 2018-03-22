@@ -5,7 +5,7 @@ import tw.zhuran.madtom.server.packet.MadPacket;
 import tw.zhuran.madtom.server.packet.PacketType;
 
 public class EventPacket extends MadPacket<Event> {
-    public EventPacket(Event event) {
-        super(PacketType.EVENT, event);
+    public EventPacket(Event content) {
+        super(PacketType.EVENT, content);
     }
 }

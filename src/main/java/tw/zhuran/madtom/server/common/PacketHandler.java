@@ -2,11 +2,11 @@ package tw.zhuran.madtom.server.common;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.ByteToMessageDecoder;
+import io.netty.handler.codec.MessageToMessageDecoder;
 
 import java.util.List;
 
-public class PacketHandler extends ByteToMessageDecoder {
+public class PacketHandler extends MessageToMessageDecoder<ByteBuf> {
     private GameServer gameServer;
     private PacketFactory packetFactory;
 

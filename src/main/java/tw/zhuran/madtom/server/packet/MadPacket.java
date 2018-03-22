@@ -23,8 +23,16 @@ public class MadPacket<T> implements Packet {
         return content;
     }
 
+    public void setType(PacketType type) {
+        this.type = type;
+    }
+
+    public void setContent(T content) {
+        this.content = content;
+    }
+
     @Override
     public byte[] bytes() {
-        return JSON.toJSONString(this, SerializerFeature.DisableCircularReferenceDetect).getBytes();
+        return JSON.toJSONString(this, SerializerFeature.DisableCircularReferenceDetect, SerializerFeature.WriteNonStringKeyAsString).getBytes();
     }
 }

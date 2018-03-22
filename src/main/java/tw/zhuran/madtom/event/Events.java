@@ -29,6 +29,58 @@ public class Events {
         return new GangAffordEvent(player, piece);
     }
 
+    public static Event parse(String command, int player, Piece waitPiece, Hand hand) {
+        ArrayList<String> parts = Lists.newArrayList(Splitter.on(" ").split(command));
+        switch (parts.get(0)) {
+            case "discard":
+                Optional<Piece> o = $.find(Pieces.ALL, piece -> piece.toString().equals(parts.get(1)));
+                if (o.isPresent()) {
+                    return Events.action(player, Actions.discard(o.get()));
+                } else {
+                    return null;
+                }
+
+            case "confirm":
+                Piece piece = waitPiece;
+                if (piece == null) {
+                    return null;
+                }
+                switch (parts.get(1)) {
+                    case "peng":
+                        return Events.action(Integer.valueOf(parts.get(2)), Actions.peng(piece));
+                    case "chi":
+                        return Events.action(Integer.valueOf(parts.get(2)),
+                                Actions.chi(piece, Pieces.sequence(piece, Integer.valueOf(parts.get(3)))));
+                    case "gang":
+                        return Events.action(Integer.valueOf(parts.get(2)), Actions.gang(piece));
+                    case "win":
+                        return Events.win(Integer.valueOf(parts.get(2)));
+                }
+            case "pass":
+                return Events.pass(Integer.valueOf(parts.get(1)));
+            case "gang":
+                piece = Pieces.find(parts.get(1));
+                if (piece == null) {
+                    return null;
+                }
+
+                Action action = null;
+                if (piece.equals(Pieces.HONGZHONG)) {
+                    action = Actions.hongzhongGang();
+                } else {
+                    if (Pieces.count(hand.pieces(), piece) == 4) {
+                        action = Actions.angang(piece);
+                    } else if (hand.getWildcards().contains(piece)) {
+                        action = Actions.laiziGang(piece);
+                    }
+                }
+                if (action != null) {
+                    return Events.action(player, action);
+                }
+        }
+        return null;
+    }
+
     public static Event parse(String command, Board board) {
         try {
             int turn = board.turn();

@@ -1,6 +1,7 @@
 package tw.zhuran.madtom.server;
 
 import io.netty.handler.codec.ByteToMessageDecoder;
+import io.netty.handler.codec.MessageToMessageDecoder;
 import io.netty.handler.codec.json.JsonObjectDecoder;
 import tw.zhuran.madtom.server.common.GameServer;
 import tw.zhuran.madtom.server.common.HandlerFactory;
@@ -17,7 +18,7 @@ public class MadHandlerFactory extends HandlerFactory {
     }
 
     @Override
-    public ByteToMessageDecoder newHandler() {
+    public MessageToMessageDecoder newHandler() {
         return new PacketHandler(gameServer, packetFactory);
     }
 
