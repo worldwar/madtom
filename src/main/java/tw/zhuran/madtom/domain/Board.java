@@ -111,7 +111,7 @@ public class Board {
         notifyEvent(Events.gangAfford(turn(), piece));
     }
 
-    protected void notifyEvent(Object event) {
+    public void notifyEvent(Object event) {
         if (observer != null) {
             observer.update(null, event);
         }

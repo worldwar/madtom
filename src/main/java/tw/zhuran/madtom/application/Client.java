@@ -19,6 +19,7 @@ import tw.zhuran.madtom.domain.Piece;
 import tw.zhuran.madtom.event.Event;
 import tw.zhuran.madtom.event.Events;
 import tw.zhuran.madtom.event.Info;
+import tw.zhuran.madtom.event.InterceptEvent;
 import tw.zhuran.madtom.server.EventPacket;
 import tw.zhuran.madtom.server.MadPacketFactory;
 import tw.zhuran.madtom.server.Packets;
@@ -32,6 +33,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import static tw.zhuran.madtom.event.EventType.ACTION;
+import static tw.zhuran.madtom.event.EventType.INTERCEPT;
 
 public class Client {
     public static Client instance = new Client();
@@ -83,6 +85,8 @@ public class Client {
                     if (action.getType() == ActionType.DISCARD) {
                         waitPiece = action.getPiece();
                     }
+                } else if (content.getEventType() == INTERCEPT) {
+                    System.out.println((InterceptEvent)content);
                 }
                 break;
             case INFO:

@@ -1,6 +1,7 @@
 package tw.zhuran.madtom.util;
 
 import com.github.underscore.$;
+import com.google.common.base.Joiner;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Lists;
 
@@ -67,10 +68,10 @@ public class F {
     }
 
     public static <T> String string(List<T> list, String splitter) {
-        return $.foldl(list, (a, b) -> a + b + splitter, "");
+        return Joiner.on(splitter).join(list);
     }
 
     public static <T> String string(Set<T> list, String splitter) {
-        return $.foldl(list, (a, b) -> a + b + splitter, "");
+        return Joiner.on(splitter).join(list);
     }
 }

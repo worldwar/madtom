@@ -4,6 +4,8 @@ import tw.zhuran.madtom.domain.*;
 import tw.zhuran.madtom.event.DispatchEvent;
 import tw.zhuran.madtom.event.Event;
 import tw.zhuran.madtom.event.GangAffordEvent;
+import tw.zhuran.madtom.event.InterceptEvent;
+import tw.zhuran.madtom.server.packet.InterceptPacket;
 import tw.zhuran.madtom.server.packet.MadPacket;
 import tw.zhuran.madtom.server.packet.PacketType;
 import tw.zhuran.madtom.server.packet.StartPacket;
@@ -27,8 +29,11 @@ public class Packets {
                 return gangAfford(event, receiver);
             case ACTION:
                 return action(event, receiver);
+            case INTERCEPT:
+                return new InterceptPacket((InterceptEvent) event);
+            default:
+                return new EventPacket(event);
         }
-        return null;
     }
 
     private static EventPacket action(Event event, int receiver) {

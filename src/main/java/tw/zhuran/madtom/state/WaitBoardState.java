@@ -1,7 +1,11 @@
 package tw.zhuran.madtom.state;
 
+import com.github.underscore.$;
 import tw.zhuran.madtom.domain.*;
 import tw.zhuran.madtom.event.Event;
+import tw.zhuran.madtom.event.InterceptEvent;
+
+import java.util.List;
 
 public class WaitBoardState extends BoardState {
     private WaiterManager waiterManager;
@@ -42,6 +46,8 @@ public class WaitBoardState extends BoardState {
         Action action = event.getAction();
         if (action != null) {
             waiterManager.findWaiters(event);
+            List<InterceptEvent> interceptEvents = waiterManager.interceptEvents();
+            $.each(interceptEvents, intercept -> owner.notifyEvent(intercept));
         }
     }
 
