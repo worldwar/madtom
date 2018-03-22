@@ -37,21 +37,23 @@ public class GameHub extends CompositeHub<MatcherState> {
         return hubable(connection) == inGame();
     }
 
-    public void enterMatching(Connection connection) {
+    public boolean enterMatching(Connection connection) {
         synchronized (this) {
             if (isFree(connection)) {
                 free().remove(connection);
                 matching().add(connection);
             }
+            return isMatching(connection);
         }
     }
 
-    public void leaveMatching(Connection connection) {
+    public boolean leaveMatching(Connection connection) {
         synchronized (this) {
             if (isMatching(connection)) {
                 matching().remove(connection);
                 free().add(connection);
             }
+            return !isMatching(connection);
         }
     }
 
@@ -70,7 +72,7 @@ public class GameHub extends CompositeHub<MatcherState> {
             Hubable inGame = inGame();
             if (matching.size() >= size) {
                 List<Connection> list = new ArrayList<>();
-                while (list.size() <= size) {
+                while (list.size() < size) {
                     Connection c = matching.take();
                     inGame.add(c);
                     list.add(c);
@@ -97,5 +99,9 @@ public class GameHub extends CompositeHub<MatcherState> {
         synchronized (this) {
             remove(id);
         }
+    }
+
+    public int matchingSize() {
+        return matching().size();
     }
 }

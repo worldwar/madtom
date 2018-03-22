@@ -94,12 +94,12 @@ public abstract class GameServer {
 
     public abstract void dispatch(long id, Packet packet);
 
-    private void ready(Connection connection) {
-        hub.enterMatching(connection);
+    protected boolean ready(Connection connection) {
+        return hub.enterMatching(connection);
     }
 
-    private void unready(Connection connection) {
-        hub.leaveMatching(connection);
+    protected boolean unready(Connection connection) {
+        return hub.leaveMatching(connection);
     }
 
     public void close(GameContext gameContext) {

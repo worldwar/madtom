@@ -14,7 +14,7 @@ public class MadPacket<T> implements Packet {
         this.content = content;
     }
 
-    public PacketType type() {
+    public PacketType getType() {
         return type;
     }
 

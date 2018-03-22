@@ -15,6 +15,11 @@ public class MadPacketFactory extends PacketFactory {
     }
 
     public Packet packet(String json) {
-        return JSON.parseObject(json, MadPacket.class);
+        MadPacket madPacket = JSON.parseObject(json, MadPacket.class);
+        switch (madPacket.getType()) {
+            case EVENT:
+                return JSON.parseObject(json, EventPacket.class);
+        }
+        return madPacket;
     }
 }

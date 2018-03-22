@@ -23,7 +23,7 @@ public class GameMatcher implements Callable<Void> {
     @Override
     public Void call() throws Exception {
         GameHub gameHub = gameServer.gameHub();
-        if (gameHub.size() >= size) {
+        if (gameHub.matchingSize() >= size) {
             List<Connection> connections = gameHub.enterInGame(size);
             gameServer.newGame(connections);
         }

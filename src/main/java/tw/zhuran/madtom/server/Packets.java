@@ -4,6 +4,8 @@ import tw.zhuran.madtom.domain.*;
 import tw.zhuran.madtom.event.DispatchEvent;
 import tw.zhuran.madtom.event.Event;
 import tw.zhuran.madtom.event.GangAffordEvent;
+import tw.zhuran.madtom.server.packet.MadPacket;
+import tw.zhuran.madtom.server.packet.PacketType;
 import tw.zhuran.madtom.server.packet.StartPacket;
 
 import java.util.HashMap;
@@ -57,5 +59,13 @@ public class Packets {
             dispatchEvent.setPiece(Pieces.HONGZHONG);
             return new EventPacket(dispatchEvent);
         }
+    }
+
+    public static MadPacket ready() {
+        return new MadPacket(PacketType.READY, null);
+    }
+
+    public static MadPacket unready() {
+        return new MadPacket(PacketType.UNREADY, null);
     }
 }
