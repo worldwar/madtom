@@ -1,6 +1,7 @@
 package tw.zhuran.madtom.server.packet;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import tw.zhuran.madtom.server.common.Packet;
 
 public class MadPacket<T> implements Packet {
@@ -24,6 +25,6 @@ public class MadPacket<T> implements Packet {
 
     @Override
     public byte[] bytes() {
-        return JSON.toJSONString(this).getBytes();
+        return JSON.toJSONString(this, SerializerFeature.DisableCircularReferenceDetect).getBytes();
     }
 }
