@@ -76,6 +76,10 @@ public abstract class GameServer {
         connectionContexts.remove(id);
     }
 
+    protected GameContext findGameContextByConnection(long id) {
+        return connectionContexts.get(id);
+    }
+
     public void come(Connection connection) {
         hub.come(connection);
     }

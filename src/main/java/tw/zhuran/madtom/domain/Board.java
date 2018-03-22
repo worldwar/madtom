@@ -4,6 +4,7 @@ import com.github.underscore.$;
 import com.google.common.collect.Lists;
 import tw.zhuran.madtom.event.Event;
 import tw.zhuran.madtom.event.EventType;
+import tw.zhuran.madtom.event.Events;
 import tw.zhuran.madtom.event.Info;
 import tw.zhuran.madtom.rule.Rules;
 import tw.zhuran.madtom.rule.WaitRule;
@@ -17,6 +18,7 @@ import tw.zhuran.madtom.util.Results;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Observer;
 
 public class Board {
     private Deck deck;
@@ -27,6 +29,7 @@ public class Board {
     private BoardStateManager stateManager = new BoardStateManager(this);
     private Result result;
     private int dealer;
+    private Observer observer;
 
     public Board(int players) {
         this.players = players;
@@ -65,7 +68,7 @@ public class Board {
         deck.cut(start, index);
         Pieces.times(this::dealNext, 3 * players);
         Pieces.times(this::lastDealNext, players);
-        dispatch();
+        dispatch0();
         declareWildcard();
         stateManager.init(BoardStateType.FREE);
     }
@@ -84,18 +87,34 @@ public class Board {
         turner.turnNext();
     }
 
-    public void dispatch() {
-        trunk().feed(deck.afford());
+    private Piece dispatch0() {
+        Piece piece = deck.afford();
+        trunk().feed(piece);
         trunk().setTriggerType(TriggerType.SELF);
         if (bottom()) {
             trunk().setTriggerType(TriggerType.BOTTOM);
         }
+        return piece;
+    }
+
+    public void dispatch() {
+        Piece piece = dispatch0();
+        Event dispatch = Events.dispatch(turn(), piece);
+        notifyEvent(dispatch);
     }
 
     public void gangAfford() {
         int dice = R.dice();
-        trunk().feed(deck.gangAfford(dice));
+        Piece piece = deck.gangAfford(dice);
+        trunk().feed(piece);
         trunk().setTriggerType(TriggerType.FIRE);
+        notifyEvent(Events.gangAfford(turn(), piece));
+    }
+
+    protected void notifyEvent(Object event) {
+        if (observer != null) {
+            observer.update(null, event);
+        }
     }
 
     public void lastDealNext() {
@@ -341,6 +360,10 @@ public class Board {
         info.setTurn(turn());
         info.setWildcard(wildcard);
         return info;
+    }
+
+    public void register(Observer observer) {
+        this.observer = observer;
     }
 
     @Override

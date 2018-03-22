@@ -5,5 +5,7 @@ public enum EventType {
     PASS,
     WIN,
     WAIT_TIMEOUT,
-    INFO
+    INFO,
+    DISPATCH,
+    GANG_AFFOARD
 }

@@ -14,6 +14,14 @@ public class MadPacket<T> implements Packet {
         this.content = content;
     }
 
+    public PacketType type() {
+        return type;
+    }
+
+    public T getContent() {
+        return content;
+    }
+
     @Override
     public byte[] bytes() {
         return JSON.toJSONString(this).getBytes();

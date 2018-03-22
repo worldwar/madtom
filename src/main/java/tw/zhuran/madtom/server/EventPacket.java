@@ -1,18 +1,11 @@
 package tw.zhuran.madtom.server;
 
-import com.alibaba.fastjson.JSON;
 import tw.zhuran.madtom.event.Event;
-import tw.zhuran.madtom.server.common.Packet;
+import tw.zhuran.madtom.server.packet.MadPacket;
+import tw.zhuran.madtom.server.packet.PacketType;
 
-public class EventPacket implements Packet {
-    private Event event;
-
+public class EventPacket extends MadPacket<Event> {
     public EventPacket(Event event) {
-        this.event = event;
-    }
-
-    @Override
-    public byte[] bytes() {
-        return JSON.toJSONString(event).getBytes();
+        super(PacketType.EVENT, event);
     }
 }
