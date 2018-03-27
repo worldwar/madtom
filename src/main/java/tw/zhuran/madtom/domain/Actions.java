@@ -1,6 +1,7 @@
 package tw.zhuran.madtom.domain;
 
 import com.github.underscore.$;
+import com.github.underscore.FunctionAccum;
 
 import java.util.List;
 
@@ -66,6 +67,11 @@ public class Actions {
     }
 
     public static String string(List<Action> actions) {
-        return $.foldl(actions, (a, b) -> a + b + "\n", "");
+        return $.foldl(actions, new FunctionAccum<String, Action>() {
+            @Override
+            public String apply(String a, Action b) {
+                return a + b + "\n";
+            }
+        }, "");
     }
 }

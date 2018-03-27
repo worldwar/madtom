@@ -1,6 +1,8 @@
 package tw.zhuran.madtom.domain;
 
 import com.github.underscore.$;
+import com.github.underscore.Function1;
+import com.github.underscore.Predicate;
 import com.google.common.collect.Lists;
 import tw.zhuran.madtom.util.F;
 
@@ -30,7 +32,17 @@ public class Plot {
     }
 
     public List<Group> actionGroups() {
-        return $.chain(actions).filter(Pieces::hasGroup).map(Action::getGroup).value();
+        return $.chain(actions).filter(new Predicate<Action>() {
+            @Override
+            public Boolean apply(Action action) {
+                return Pieces.hasGroup(action);
+            }
+        }).map(new Function1<Action, Group>() {
+            @Override
+            public Group apply(Action action) {
+                return action.getGroup();
+            }
+        }).value();
     }
 
     public List<Group> allGroups() {
@@ -50,11 +62,21 @@ public class Plot {
     }
 
     public int featuredCount() {
-        return $.filter(Lists.newArrayList(peng, suit, feng, jiang, beg, bottom, rush, fire), state -> state).size();
+        return $.filter(Lists.newArrayList(peng, suit, feng, jiang, beg, bottom, rush, fire), new Predicate<Boolean>() {
+            @Override
+            public Boolean apply(Boolean state) {
+                return state;
+            }
+        }).size();
     }
 
     public Group pair() {
-        List<Group> pairs = $.filter(form.getGroups(), group -> group.getGroupType() == GroupType.PAIR);
+        List<Group> pairs = $.filter(form.getGroups(), new Predicate<Group>() {
+            @Override
+            public Boolean apply(Group group) {
+                return group.getGroupType() == GroupType.PAIR;
+            }
+        });
         if (pairs.size() > 0) {
             return pairs.get(0);
         }

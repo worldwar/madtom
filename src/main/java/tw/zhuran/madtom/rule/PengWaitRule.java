@@ -1,6 +1,8 @@
 package tw.zhuran.madtom.rule;
 
 import com.github.underscore.$;
+import com.github.underscore.Function1;
+import com.github.underscore.Predicate;
 import tw.zhuran.madtom.domain.Action;
 import tw.zhuran.madtom.domain.Board;
 import tw.zhuran.madtom.domain.Piece;
@@ -19,7 +21,17 @@ public class PengWaitRule implements WaitRule {
     @Override
     public List<Integer> waiters(Board board, Action action) {
         List<Trunk> trunks = board.otherTrunks();
-        Piece piece = action.getPiece();
-        return $.chain(trunks).filter(trunk -> trunk.pengable(piece)).map(Trunk::player).value();
+        final Piece piece = action.getPiece();
+        return $.chain(trunks).filter(new Predicate<Trunk>() {
+            @Override
+            public Boolean apply(Trunk trunk) {
+                return trunk.pengable(piece);
+            }
+        }).map(new Function1<Trunk, Integer>() {
+            @Override
+            public Integer apply(Trunk trunk) {
+                return trunk.player();
+            }
+        }).value();
     }
 }

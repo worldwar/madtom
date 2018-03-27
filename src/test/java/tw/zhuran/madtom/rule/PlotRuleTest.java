@@ -1,6 +1,7 @@
 package tw.zhuran.madtom.rule;
 
 import com.github.underscore.$;
+import com.github.underscore.Predicate;
 import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,21 +29,41 @@ public class PlotRuleTest {
         trunk.setWildcard(Pieces.ERTIAO);
         List<Plot> plots = trunk.plots();
         assertTrue(plots.size() > 0);
-        assertTrue($.all(plots, Plot::isHard));
+        assertTrue($.all(plots, new Predicate<Plot>() {
+            @Override
+            public Boolean apply(Plot plot) {
+                return plot.isHard();
+            }
+        }));
 
         trunk.discard(Pieces.SANTIAO);
         trunk.feed(Pieces.ERTIAO);
 
         plots = trunk.plots();
         assertTrue(plots.size() > 0);
-        assertTrue($.any(plots, Plot::isHard));
-        assertFalse($.all(plots, Plot::isHard));
+        assertTrue($.any(plots, new Predicate<Plot>() {
+            @Override
+            public Boolean apply(Plot plot) {
+                return plot.isHard();
+            }
+        }));
+        assertFalse($.all(plots, new Predicate<Plot>() {
+            @Override
+            public Boolean apply(Plot plot) {
+                return plot.isHard();
+            }
+        }));
 
         trunk.discard(Pieces.SANTIAO);
         trunk.feed(Pieces.YITIAO);
         plots = trunk.plots();
         assertTrue(plots.size() > 0);
-        assertFalse($.any(plots, Plot::isHard));
+        assertFalse($.any(plots, new Predicate<Plot>() {
+            @Override
+            public Boolean apply(Plot plot) {
+                return plot.isHard();
+            }
+        }));
     }
 
     @Test
@@ -57,14 +78,24 @@ public class PlotRuleTest {
         trunk.feed(Pieces.YITONG);
         List<Plot> plots = trunk.plots();
         assertTrue(plots.size() > 0);
-        assertTrue($.all(plots, Plot::isPeng));
+        assertTrue($.all(plots, new Predicate<Plot>() {
+            @Override
+            public Boolean apply(Plot plot) {
+                return plot.isPeng();
+            }
+        }));
 
         trunk.discard(Pieces.YITONG);
         trunk.peng(Pieces.YITONG);
 
         plots = trunk.plots();
         assertTrue(plots.size() > 0);
-        assertTrue($.all(plots, Plot::isPeng));
+        assertTrue($.all(plots, new Predicate<Plot>() {
+            @Override
+            public Boolean apply(Plot plot) {
+                return plot.isPeng();
+            }
+        }));
 
         trunk.discard(Pieces.SANTIAO);
         trunk.gang(Pieces.JIUTIAO);
@@ -72,21 +103,36 @@ public class PlotRuleTest {
 
         plots = trunk.plots();
         assertTrue(plots.size() > 0);
-        assertTrue($.all(plots, Plot::isPeng));
+        assertTrue($.all(plots, new Predicate<Plot>() {
+            @Override
+            public Boolean apply(Plot plot) {
+                return plot.isPeng();
+            }
+        }));
 
         trunk.discard(Pieces.SANTIAO);
         trunk.feed(Pieces.ERTIAO);
 
         plots = trunk.plots();
         assertTrue(plots.size() > 0);
-        assertFalse($.any(plots, Plot::isPeng));
+        assertFalse($.any(plots, new Predicate<Plot>() {
+            @Override
+            public Boolean apply(Plot plot) {
+                return plot.isPeng();
+            }
+        }));
 
         trunk.discard(Pieces.ERTIAO);
         trunk.chi(Pieces.ERTIAO, Pieces.sequence(Pieces.ERTIAO, 1));
 
         plots = trunk.plots();
         assertTrue(plots.size() > 0);
-        assertFalse($.any(plots, Plot::isPeng));
+        assertFalse($.any(plots, new Predicate<Plot>() {
+            @Override
+            public Boolean apply(Plot plot) {
+                return plot.isPeng();
+            }
+        }));
     }
 
     @Test
@@ -100,19 +146,34 @@ public class PlotRuleTest {
         trunk.setWildcard(Pieces.DONGFENG);
         List<Plot> plots = trunk.plots();
         assertTrue(plots.size() > 0);
-        assertTrue($.all(plots, Plot::isSuit));
+        assertTrue($.all(plots, new Predicate<Plot>() {
+            @Override
+            public Boolean apply(Plot plot) {
+                return plot.isSuit();
+            }
+        }));
 
         trunk.discard(Pieces.JIUTIAO);
         trunk.feed(Pieces.DONGFENG);
         plots = trunk.plots();
         assertTrue(plots.size() > 0);
-        assertTrue($.all(plots, Plot::isSuit));
+        assertTrue($.all(plots, new Predicate<Plot>() {
+            @Override
+            public Boolean apply(Plot plot) {
+                return plot.isSuit();
+            }
+        }));
 
         trunk.laiziGang();
         trunk.feed(Pieces.JIUTIAO);
         plots = trunk.plots();
         assertTrue(plots.size() > 0);
-        assertTrue($.all(plots, Plot::isSuit));
+        assertTrue($.all(plots, new Predicate<Plot>() {
+            @Override
+            public Boolean apply(Plot plot) {
+                return plot.isSuit();
+            }
+        }));
 
         trunk.discard(Pieces.JIUTIAO);
         trunk.feed(Pieces.YIWAN);
@@ -122,25 +183,45 @@ public class PlotRuleTest {
         trunk.feed(Pieces.DONGFENG);
         plots = trunk.plots();
         assertTrue(plots.size() > 0);
-        assertFalse($.any(plots, Plot::isSuit));
+        assertFalse($.any(plots, new Predicate<Plot>() {
+            @Override
+            public Boolean apply(Plot plot) {
+                return plot.isSuit();
+            }
+        }));
 
         trunk.laiziGang();
         trunk.feed(Pieces.SANTIAO);
         plots = trunk.plots();
         assertTrue(plots.size() > 0);
-        assertFalse($.any(plots, Plot::isSuit));
+        assertFalse($.any(plots, new Predicate<Plot>() {
+            @Override
+            public Boolean apply(Plot plot) {
+                return plot.isSuit();
+            }
+        }));
 
         trunk.discard(Pieces.SITIAO);
         trunk.peng(Pieces.SITIAO);
         plots = trunk.plots();
         assertTrue(plots.size() > 0);
-        assertFalse($.any(plots, Plot::isSuit));
+        assertFalse($.any(plots, new Predicate<Plot>() {
+            @Override
+            public Boolean apply(Plot plot) {
+                return plot.isSuit();
+            }
+        }));
 
         trunk.discard(Pieces.QITIAO);
         trunk.peng(Pieces.YIWAN);
         plots = trunk.plots();
         assertTrue(plots.size() > 0);
-        assertFalse($.any(plots, Plot::isSuit));
+        assertFalse($.any(plots, new Predicate<Plot>() {
+            @Override
+            public Boolean apply(Plot plot) {
+                return plot.isSuit();
+            }
+        }));
     }
 
     @Test
@@ -154,7 +235,12 @@ public class PlotRuleTest {
         trunk.setWildcard(Pieces.WUTONG);
         List<Plot> plots = trunk.plots();
         assertTrue(plots.size() > 0);
-        assertFalse($.any(plots, Plot::isFeng));
+        assertFalse($.any(plots, new Predicate<Plot>() {
+            @Override
+            public Boolean apply(Plot plot) {
+                return plot.isFeng();
+            }
+        }));
 
         trunk.discard(Pieces.YIWAN);
         trunk.peng(Pieces.DONGFENG);
@@ -165,7 +251,12 @@ public class PlotRuleTest {
 
         plots = trunk.plots();
         assertTrue(plots.size() > 0);
-        assertTrue($.all(plots, Plot::isFeng));
+        assertTrue($.all(plots, new Predicate<Plot>() {
+            @Override
+            public Boolean apply(Plot plot) {
+                return plot.isFeng();
+            }
+        }));
 
         trunk.discard(Pieces.NANFENG);
         trunk.feed(Pieces.ERWAN);
@@ -176,7 +267,12 @@ public class PlotRuleTest {
 
         plots = trunk.plots();
         assertTrue(plots.size() > 0);
-        assertFalse($.any(plots, Plot::isFeng));
+        assertFalse($.any(plots, new Predicate<Plot>() {
+            @Override
+            public Boolean apply(Plot plot) {
+                return plot.isFeng();
+            }
+        }));
     }
 
     @Test
@@ -190,14 +286,24 @@ public class PlotRuleTest {
         trunk.setWildcard(Pieces.DONGFENG);
         List<Plot> plots = trunk.plots();
         assertTrue(plots.size() > 0);
-        assertTrue($.all(plots, Plot::isJiang));
+        assertTrue($.all(plots, new Predicate<Plot>() {
+            @Override
+            public Boolean apply(Plot plot) {
+                return plot.isJiang();
+            }
+        }));
 
         trunk.discard(Pieces.ERTONG);
         trunk.peng(Pieces.ERWAN);
 
         plots = trunk.plots();
         assertTrue(plots.size() > 0);
-        assertTrue($.all(plots, Plot::isJiang));
+        assertTrue($.all(plots, new Predicate<Plot>() {
+            @Override
+            public Boolean apply(Plot plot) {
+                return plot.isJiang();
+            }
+        }));
 
         trunk.discard(Pieces.ERTONG);
         trunk.feed(Pieces.SANTONG);
@@ -206,14 +312,24 @@ public class PlotRuleTest {
 
         plots = trunk.plots();
         assertTrue(plots.size() > 0);
-        assertFalse($.any(plots, Plot::isJiang));
+        assertFalse($.any(plots, new Predicate<Plot>() {
+            @Override
+            public Boolean apply(Plot plot) {
+                return plot.isJiang();
+            }
+        }));
 
         trunk.discard(Pieces.WUWAN);
         trunk.peng(Pieces.SANTONG);
 
         plots = trunk.plots();
         assertTrue(plots.size() > 0);
-        assertFalse($.any(plots, Plot::isJiang));
+        assertFalse($.any(plots, new Predicate<Plot>() {
+            @Override
+            public Boolean apply(Plot plot) {
+                return plot.isJiang();
+            }
+        }));
     }
 
     @Test
@@ -227,7 +343,12 @@ public class PlotRuleTest {
         trunk.setWildcard(Pieces.DONGFENG);
         List<Plot> plots = trunk.plots();
         assertTrue(plots.size() > 0);
-        assertFalse($.any(plots, Plot::isBeg));
+        assertFalse($.any(plots, new Predicate<Plot>() {
+            @Override
+            public Boolean apply(Plot plot) {
+                return plot.isBeg();
+            }
+        }));
 
         trunk.discard(Pieces.WUWAN);
         trunk.peng(Pieces.ERWAN);
@@ -236,7 +357,12 @@ public class PlotRuleTest {
 
         plots = trunk.plots();
         assertTrue(plots.size() > 0);
-        assertFalse($.any(plots, Plot::isBeg));
+        assertFalse($.any(plots, new Predicate<Plot>() {
+            @Override
+            public Boolean apply(Plot plot) {
+                return plot.isBeg();
+            }
+        }));
 
         trunk.discard(Pieces.ERTONG);
         trunk.gang(Pieces.ERTIAO);
@@ -251,7 +377,12 @@ public class PlotRuleTest {
 
         plots = trunk.plots();
         assertTrue(plots.size() > 0);
-        assertTrue($.all(plots, Plot::isBeg));
+        assertTrue($.all(plots, new Predicate<Plot>() {
+            @Override
+            public Boolean apply(Plot plot) {
+                return plot.isBeg();
+            }
+        }));
     }
 
     @Test
@@ -265,7 +396,12 @@ public class PlotRuleTest {
         trunk.setWildcard(Pieces.DONGFENG);
         List<Plot> plots = trunk.plots();
         assertTrue(plots.size() > 0);
-        assertFalse($.any(plots, Plot::isBeg));
+        assertFalse($.any(plots, new Predicate<Plot>() {
+            @Override
+            public Boolean apply(Plot plot) {
+                return plot.isBeg();
+            }
+        }));
 
         trunk.discard(Pieces.ERWAN);
         trunk.feed(Pieces.WUWAN);
@@ -283,6 +419,11 @@ public class PlotRuleTest {
         trunk.feed(Pieces.ERWAN);
         plots = trunk.plots();
         assertTrue(plots.size() > 0);
-        assertFalse($.any(plots, Plot::isBeg));
+        assertFalse($.any(plots, new Predicate<Plot>() {
+            @Override
+            public Boolean apply(Plot plot) {
+                return plot.isBeg();
+            }
+        }));
     }
 }

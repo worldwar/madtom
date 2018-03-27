@@ -1,6 +1,9 @@
 package tw.zhuran.madtom.domain;
 
 import com.github.underscore.$;
+import com.github.underscore.Block;
+import com.github.underscore.Function1;
+import com.github.underscore.Predicate;
 import com.google.common.collect.Lists;
 import tw.zhuran.madtom.util.F;
 
@@ -77,15 +80,23 @@ public class Hand {
         if (combinations.size() == 0) {
             return complete();
         }
-        return $.any(combinations, pieces -> {
-            Hand hand = copy();
-            hand.shift(pieces);
-            return hand.complete();
+        return $.any(combinations, new Predicate<List<Piece>>() {
+            @Override
+            public Boolean apply(List<Piece> pieces) {
+                Hand hand = Hand.this.copy();
+                hand.shift(pieces);
+                return hand.complete();
+            }
         });
     }
 
     private void shift(List<Piece> pieces) {
-        $.each(pieces, this::add);
+        $.each(pieces, new Block<Piece>() {
+            @Override
+            public void apply(Piece piece) {
+                Hand.this.add(piece);
+            }
+        });
     }
 
     private boolean well() {
@@ -157,8 +168,13 @@ public class Hand {
         return null;
     }
 
-    public boolean discardable(Piece piece) {
-        return !(piece.equals(wildcard) || piece.equals(Pieces.HONGZHONG)) && $.any(pieces(), piece::equals);
+    public boolean discardable(final Piece piece) {
+        return !(piece.equals(wildcard) || piece.equals(Pieces.HONGZHONG)) && $.any(pieces(), new Predicate<Piece>() {
+            @Override
+            public Boolean apply(Piece o) {
+                return piece.equals(o);
+            }
+        });
     }
 
     public void discard(Piece piece) {
@@ -229,9 +245,14 @@ public class Hand {
         return chiableSequences(piece).contains(group);
     }
 
-    public List<Group> chiableSequences(Piece piece) {
+    public List<Group> chiableSequences(final Piece piece) {
         List<Group> groups = Pieces.possibleSequences(piece);
-        return $.filter(groups, group -> Pieces.contains(suit(piece.getKind()), group.partners(piece)));
+        return $.filter(groups, new Predicate<Group>() {
+            @Override
+            public Boolean apply(Group group) {
+                return Pieces.contains(Hand.this.suit(piece.getKind()), group.partners(piece));
+            }
+        });
     }
 
     public boolean pengable(Piece piece) {
@@ -254,14 +275,24 @@ public class Hand {
         return Pieces.countLargeThan(pieces(), 3);
     }
 
-    public void setWildcard(Piece wildcard) {
+    public void setWildcard(final Piece wildcard) {
         this.wildcard = wildcard;
-        wildcards = $.filter(pieces(), piece -> piece.equals(wildcard));
+        wildcards = $.filter(pieces(), new Predicate<Piece>() {
+            @Override
+            public Boolean apply(Piece piece) {
+                return piece.equals(wildcard);
+            }
+        });
         Pieces.exclude(suit(wildcard.getKind()), wildcards);
     }
 
     public List<Piece> partners() {
-        return $.chain(pieces()).map(piece -> Pieces.partners(piece)).flatten().uniq().value();
+        return $.chain(pieces()).map(new Function1<Piece, Object>() {
+            @Override
+            public Object apply(Piece piece) {
+                return Pieces.partners(piece);
+            }
+        }).flatten().uniq().value();
     }
 
     public List<Form> forms() {
@@ -282,13 +313,21 @@ public class Hand {
             return forms();
         }
 
-        return $.chain(combinations).map(combination -> {
-            Hand hand = copy();
-            hand.shift(combination);
-            Shift shift = new Shift(wildcard, combination);
-            List<Form> forms = hand.forms();
-            $.each(forms, form -> form.setShift(shift));
-            return forms;
+        return $.chain(combinations).map(new Function1<List<Piece>, Object>() {
+            @Override
+            public Object apply(List<Piece> combination) {
+                Hand hand = Hand.this.copy();
+                hand.shift(combination);
+                final Shift shift = new Shift(wildcard, combination);
+                List<Form> forms = hand.forms();
+                $.each(forms, new Block<Form>() {
+                    @Override
+                    public void apply(Form form) {
+                        form.setShift(shift);
+                    }
+                });
+                return forms;
+            }
         }).flatten().value();
     }
 

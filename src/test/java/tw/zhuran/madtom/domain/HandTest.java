@@ -1,12 +1,15 @@
 package tw.zhuran.madtom.domain;
 
 import com.github.underscore.$;
+import com.github.underscore.Block;
+import com.github.underscore.Function1;
 import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import tw.zhuran.madtom.util.F;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.hamcrest.core.Is.is;
@@ -184,7 +187,8 @@ public class HandTest {
         assertFalse(hand.chiable(wuwan));
         List<Group> groups = hand.chiableSequences(qiwan);
         assertThat(groups.size(), is(3));
-        assertThat(hand.chiableSequences(erwan), is(Lists.newArrayList(Pieces.sequence(erwan, 2))));
+        List<Group> value = Lists.newArrayList(Pieces.sequence(erwan, 2));
+        assertThat(hand.chiableSequences(erwan), is(value));
 
         hand.setFengPieces(Lists.newArrayList(dongfeng, dongfeng, nanfeng));
         assertFalse(hand.chiable(dongfeng));
@@ -223,7 +227,8 @@ public class HandTest {
         hand.setTiaoPieces(Lists.newArrayList(santiao, santiao, santiao));
         hand.setFengPieces(Lists.newArrayList(dongfeng, nanfeng,  xifeng, facai, baiban));
         assertTrue(hand.angangable());
-        assertThat(hand.angangablePieces(), is(Lists.newArrayList(erwan)));
+        List<Piece> value = Lists.newArrayList(erwan);
+        assertThat(hand.angangablePieces(), is(value));
 
         hand.feed(santiao);
         List<Piece> pieces = hand.angangablePieces();
@@ -272,7 +277,12 @@ public class HandTest {
     @Test
     public void testMostFormsOfHand() {
         List<List<Piece>> lists = Pieces.uniqueCombinations(14, $
-                .chain(Pieces.WAN).map(piece -> F.repeat(piece, 4)).flatten().value());
+                .chain(Pieces.WAN).map(new Function1<Piece, Object>() {
+                    @Override
+                    public Object apply(Piece piece) {
+                        return F.repeat(piece, 4);
+                    }
+                }).flatten().value());
         int forms = 0;
         int countOfMax = 0;
         List<Piece> target = Lists.newArrayList();
@@ -293,9 +303,17 @@ public class HandTest {
         System.out.println("个数: " + forms);
         System.out.println("最大变形个数: " + countOfMax);
 
-        targets.forEach(t -> {
-            t.forEach(System.out::print);
-            System.out.println();
+        $.each(targets, new Block<List<Piece>>() {
+            @Override
+            public void apply(List<Piece> t) {
+                $.each(t, new Block<Piece>() {
+                    @Override
+                    public void apply(Piece obj) {
+                        System.out.print(obj);
+                    }
+                });
+                System.out.println();
+            }
         });
     }
 
@@ -303,7 +321,12 @@ public class HandTest {
     @Ignore
     public void testMostFormsOfHandWithOneWildcard() {
         List<List<Piece>> lists = Pieces.uniqueCombinations(13, $
-                .chain(Pieces.WAN).map(piece -> F.repeat(piece, 4)).flatten().value());
+                .chain(Pieces.WAN).map(new Function1<Piece, Object>() {
+                    @Override
+                    public Object apply(Piece piece) {
+                        return F.repeat(piece, 4);
+                    }
+                }).flatten().value());
         int forms = 0;
         int countOfMax = 0;
         List<Piece> target = Lists.newArrayList();
@@ -326,9 +349,17 @@ public class HandTest {
         System.out.println("个数: " + forms);
         System.out.println("最大变形个数: " + countOfMax);
 
-        targets.forEach(t -> {
-            t.forEach(System.out::print);
-            System.out.println();
+        $.each(targets, new Block<List<Piece>>() {
+            @Override
+            public void apply(List<Piece> t) {
+                $.each(t, new Block<Piece>() {
+                    @Override
+                    public void apply(Piece obj) {
+                        System.out.print(obj);
+                    }
+                });
+                System.out.println();
+            }
         });
     }
 
@@ -336,7 +367,12 @@ public class HandTest {
     @Ignore
     public void testMostFormsOfHandWithTwoWildcard() {
         List<List<Piece>> lists = Pieces.uniqueCombinations(12, $
-                .chain(Pieces.WAN).map(piece -> F.repeat(piece, 4)).flatten().value());
+                .chain(Pieces.WAN).map(new Function1<Piece, Object>() {
+                    @Override
+                    public Object apply(Piece piece) {
+                        return F.repeat(piece, 4);
+                    }
+                }).flatten().value());
         int forms = 0;
         int countOfMax = 0;
         List<Piece> target = Lists.newArrayList();
@@ -359,9 +395,17 @@ public class HandTest {
         System.out.println("个数: " + forms);
         System.out.println("最大变形个数: " + countOfMax);
 
-        targets.forEach(t -> {
-            t.forEach(System.out::print);
-            System.out.println();
+        $.each(targets, new Block<List<Piece>>() {
+            @Override
+            public void apply(List<Piece> t) {
+                $.each(t, new Block<Piece>() {
+                    @Override
+                    public void apply(Piece obj) {
+                        System.out.print(obj);
+                    }
+                });
+                System.out.println();
+            }
         });
     }
 }

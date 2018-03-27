@@ -1,5 +1,8 @@
 package tw.zhuran.madtom.server.common;
 
+import com.github.underscore.$;
+import com.github.underscore.Block;
+import com.github.underscore.Predicate;
 import tw.zhuran.madtom.server.common.hub.Hubable;
 
 import java.util.List;
@@ -21,10 +24,21 @@ public class GameContext {
         notify(packet, hub.all());
     }
 
-    public void notify(Packet packet, List<Connection> connections) {
-        connections.stream()
-                .filter(connection -> connection != null)
-                .forEach(connection -> notify(packet, connection));
+    public void notify(final Packet packet, List<Connection> connections) {
+        final GameContext that = this;
+        $.chain(connections)
+                .filter(new Predicate<Connection>() {
+                    @Override
+                    public Boolean apply(Connection connection) {
+                        return connection != null;
+                    }
+                })
+                .forEach(new Block<Connection>() {
+                    @Override
+                    public void apply(Connection connection) {
+                        that.notify(packet, connection);
+                    }
+                });
     }
 
     public void notify(Packet packet, Connection connection) {

@@ -45,6 +45,16 @@ public class WaitBoardState extends BoardState {
         }
     }
 
+    @Override
+    public void end(Event action) {
+
+    }
+
+    @Override
+    public boolean instant() {
+        return false;
+    }
+
     public Piece waitPiece() {
         return waiterManager.waitPiece();
     }

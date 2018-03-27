@@ -1,5 +1,7 @@
 package tw.zhuran.madtom.server.common;
 
+import com.github.underscore.$;
+import com.github.underscore.Block;
 import io.netty.channel.ChannelFuture;
 import tw.zhuran.madtom.server.common.hub.GameHub;
 import tw.zhuran.madtom.server.common.hub.ReferenceHub;
@@ -55,7 +57,12 @@ public abstract class GameServer {
             final GameContext context = newGameContext(connections);
             GameContext gameContext = contexts.putIfAbsent(context.getId(), context);
             if (gameContext == null) {
-                connections.forEach(c -> connectionInContext(c.getId(), context));
+                $.each(connections, new Block<Connection>() {
+                    @Override
+                    public void apply(Connection c) {
+                        GameServer.this.connectionInContext(c.getId(), context);
+                    }
+                });
                 context.start();
                 break;
             }

@@ -1,12 +1,13 @@
 package tw.zhuran.madtom.server.common.hub;
 
+import com.github.underscore.$;
+import com.github.underscore.Function1;
 import tw.zhuran.madtom.server.common.Connection;
 
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
-public class CompositeHub<T> implements Hubable {
+public class CompositeHub<T> extends Hubable {
     protected ConcurrentHashMap<T, Hubable> hubs = new ConcurrentHashMap<T, Hubable>();
 
     private Hub defaultHub = new Hub();
@@ -68,7 +69,12 @@ public class CompositeHub<T> implements Hubable {
 
     @Override
     public List<Connection> all() {
-        List<Connection> collect = hubs.values().stream().map(Hubable::all).flatMap(List::stream).collect(Collectors.toList());
+        List<Connection> collect = $.chain(hubs.values()).map(new Function1<Hubable, Object>() {
+            @Override
+            public Object apply(Hubable hubable) {
+                return hubable.all();
+            }
+        }).flatten().value();
         collect.addAll(defaultHub.all());
         return collect;
     }

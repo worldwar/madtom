@@ -1,38 +1,45 @@
 package tw.zhuran.madtom.server.common.hub;
 
+import com.github.underscore.$;
+import com.github.underscore.Block;
 import tw.zhuran.madtom.server.common.Connection;
 
 import java.util.List;
 
-public interface Hubable {
-    void add(Connection connection);
+public abstract class Hubable {
+    public abstract void add(Connection connection);
 
-    default void addAll(List<Connection> connections) {
-        connections.forEach(this::add);
+    public void addAll(List<Connection> connections) {
+        $.each(connections, new Block<Connection>() {
+            @Override
+            public void apply(Connection connection) {
+                Hubable.this.add(connection);
+            }
+        });
     }
 
-    default void remove(Connection connection) {
+    public void remove(Connection connection) {
         if (connection != null) {
             remove(connection.getId());
         }
     }
 
-    void remove(long id);
+    public abstract void remove(long id);
 
-    default boolean contains(Connection connection) {
+    public boolean contains(Connection connection) {
         if (connection != null) {
             return contains(connection.getId());
         }
         return false;
     }
 
-    boolean contains(long id);
+    public abstract boolean contains(long id);
 
-    Connection get(long id);
+    public abstract Connection get(long id);
 
-    Connection take();
+    public abstract Connection take();
 
-    List<Connection> all();
+    public abstract List<Connection> all();
 
-    int size();
+    public abstract int size();
 }

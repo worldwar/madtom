@@ -67,7 +67,12 @@ public class Pieces {
     }
 
     public static List<Piece> deck() {
-        return $.chain(ALL).map(piece -> F.repeat(piece, 4)).flatten().value();
+        return $.chain(ALL).map(new Function1<Piece, Object>() {
+            @Override
+            public Object apply(Piece piece) {
+                return F.repeat(piece, 4);
+            }
+        }).flatten().value();
     }
 
     private boolean paired(List<Piece> pieces) {
@@ -118,13 +123,18 @@ public class Pieces {
         return subtract(pieces, Lists.newArrayList(piece));
     }
 
-    public static List<Group> headSentences(List<Piece> pieces) {
+    public static List<Group> headSentences(final List<Piece> pieces) {
         List<Group> sentences = new ArrayList<>();
         if (pieces.size() < 3) {
             return sentences;
         }
         List<Group> possibleSentences = possibleSentences(pieces.get(0));
-        return $.filter(possibleSentences, (sentence) -> contains(pieces, sentence.getPieces()));
+        return $.filter(possibleSentences, new Predicate<Group>() {
+            @Override
+            public Boolean apply(Group sentence) {
+                return contains(pieces, sentence.getPieces());
+            }
+        });
     }
 
     public static  List<Group> possibleSentences(Piece piece) {
@@ -148,14 +158,34 @@ public class Pieces {
     }
 
     public static List<Group> pairs(List<Piece> pieces) {
-        return $.map(countLargeThan(pieces, 1), Pieces::pair);
+        return $.map(countLargeThan(pieces, 1), new Function1<Piece, Group>() {
+            @Override
+            public Group apply(Piece piece) {
+                return pair(piece);
+            }
+        });
     }
 
-    public static List<Piece> countLargeThan(List<Piece> pieces, int count) {
+    public static List<Piece> countLargeThan(List<Piece> pieces, final int count) {
         Map<Piece, List<Piece>> value =
-                $.groupBy(pieces, arg -> arg);
+                $.groupBy(pieces, new Function1<Piece, Piece>() {
+                    @Override
+                    public Piece apply(Piece arg) {
+                        return arg;
+                    }
+                });
         return $.chain(value.entrySet())
-                .filter((entry) -> entry.getValue().size() > count).map(Map.Entry::getKey).value();
+                .filter(new Predicate<Map.Entry<Piece, List<Piece>>>() {
+                    @Override
+                    public Boolean apply(Map.Entry<Piece, List<Piece>> entry) {
+                        return entry.getValue().size() > count;
+                    }
+                }).map(new Function1<Map.Entry<Piece, List<Piece>>, Piece>() {
+                    @Override
+                    public Piece apply(Map.Entry<Piece, List<Piece>> pieceListEntry) {
+                        return pieceListEntry.getKey();
+                    }
+                }).value();
     }
 
     private boolean tripled(List<Piece> pieces) {
@@ -208,9 +238,14 @@ public class Pieces {
         return true;
     }
 
-    public static boolean exclude(List<Piece> pieces, List<Piece> part) {
+    public static boolean exclude(final List<Piece> pieces, List<Piece> part) {
         int originalSize = pieces.size();
-        $.each(part, piece -> exclude(pieces, piece));
+        $.each(part, new Block<Piece>() {
+            @Override
+            public void apply(Piece piece) {
+                exclude(pieces, piece);
+            }
+        });
         return pieces.size() == originalSize - part.size();
     }
 
@@ -231,7 +266,17 @@ public class Pieces {
     }
 
     public static List<Piece> suit(final List<Piece> pieces, final Kind kind) {
-        return $.chain(pieces).filter(piece -> piece.getKind() == kind).sortBy(Piece::getIndex).value();
+        return $.chain(pieces).filter(new Predicate<Piece>() {
+            @Override
+            public Boolean apply(Piece piece) {
+                return piece.getKind() == kind;
+            }
+        }).sortBy(new Function1<Piece, Comparable>() {
+            @Override
+            public Comparable apply(Piece piece) {
+                return piece.getIndex();
+            }
+        }).value();
     }
 
     public static List<Piece> suit(final Kind kind) {
@@ -273,7 +318,8 @@ public class Pieces {
     }
 
     public static List<List<Piece>> permutations(int count, List<Piece> pool) {
-        return permutations(count, pool, F.repeat(Lists.newArrayList(), 1));
+        List<Piece> v = Lists.newArrayList();
+        return permutations(count, pool, F.repeat(v, 1));
     }
 
     public static List<List<Piece>> permutations(int count) {
@@ -299,7 +345,8 @@ public class Pieces {
     }
 
     public static List<List<Piece>> combinations(int count, List<Piece> pool) {
-        return combinations(count, pool, F.repeat(Lists.newArrayList(), 1));
+        List<Piece> v = new ArrayList<>();
+        return combinations(count, pool, F.repeat(v, 1));
     }
 
     public static List<List<Piece>> combinations(int count) {
@@ -307,11 +354,17 @@ public class Pieces {
     }
 
     public static List<Piece> partners(Piece piece) {
-        return $.chain(possibleSentences(piece)).map(group -> group.getPieces()).flatten().uniq().value();
+        return $.chain(possibleSentences(piece)).map(new Function1<Group, Object>() {
+            @Override
+            public Object apply(Group group) {
+                return group.getPieces();
+            }
+        }).flatten().uniq().value();
     }
 
     public static List<List<Piece>> uniqueCombinations(int i, List<Piece> pool) {
-        return uniqueCombinations(i, Lists.newArrayList(pool), Lists.newArrayList());
+        List<Piece> objects = Lists.newArrayList();
+        return uniqueCombinations(i, Lists.newArrayList(pool), objects);
     }
 
     public static List<List<Piece>> uniqueCombinations(int i, List<Piece> pool, List<Piece> base) {
@@ -360,8 +413,13 @@ public class Pieces {
         if (groups.size() == 0) {
             return true;
         }
-        Group first = groups.get(0);
-        return $.all(groups, group -> group.getKind() == first.getKind());
+        final Group first = groups.get(0);
+        return $.all(groups, new Predicate<Group>() {
+            @Override
+            public Boolean apply(Group group) {
+                return group.getKind() == first.getKind();
+            }
+        });
     }
 
     public static boolean isJiang(Piece piece) {
@@ -385,10 +443,20 @@ public class Pieces {
     }
 
     public static String string(List<Piece> pieces) {
-        return $.foldl(pieces, (a, b) -> a + b, "");
+        return $.foldl(pieces, new FunctionAccum<String, Piece>() {
+            @Override
+            public String apply(String a, Piece b) {
+                return a + b;
+            }
+        }, "");
     }
 
-    public static Piece find(String name) {
-        return $.find(Pieces.ALL, piece -> piece.toString().equals(name)).orNull();
+    public static Piece find(final String name) {
+        return $.find(Pieces.ALL, new Predicate<Piece>() {
+            @Override
+            public Boolean apply(Piece piece) {
+                return piece.toString().equals(name);
+            }
+        }).orNull();
     }
 }

@@ -1,6 +1,7 @@
 package tw.zhuran.madtom.domain;
 
 import com.github.underscore.$;
+import com.github.underscore.Predicate;
 import com.google.common.collect.Lists;
 
 import java.util.List;
@@ -19,7 +20,12 @@ public class Shift {
     }
 
     public boolean hard() {
-        return $.all(pieces, piece -> piece.equals(wildcard));
+        return $.all(pieces, new Predicate<Piece>() {
+            @Override
+            public Boolean apply(Piece piece) {
+                return piece.equals(wildcard);
+            }
+        });
     }
 
     public int size() {

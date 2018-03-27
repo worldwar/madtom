@@ -4,7 +4,7 @@ import tw.zhuran.madtom.server.common.Connection;
 
 import java.util.List;
 
-public class ProxyHub implements Hubable {
+public class ProxyHub extends Hubable {
     private Hubable hubable;
 
     public ProxyHub(Hubable hubable) {

@@ -1,6 +1,8 @@
 package tw.zhuran.madtom.rule;
 
 import com.github.underscore.$;
+import com.github.underscore.Function1;
+import com.github.underscore.Predicate;
 import tw.zhuran.madtom.domain.Action;
 import tw.zhuran.madtom.domain.Board;
 import tw.zhuran.madtom.domain.Trunk;
@@ -16,9 +18,19 @@ public class WinWaitRule implements WaitRule{
     }
 
     @Override
-    public List<Integer> waiters(Board board, Action action) {
-        Trunk player = board.trunk();
+    public List<Integer> waiters(final Board board, final Action action) {
+        final Trunk player = board.trunk();
         List<Trunk> trunks = board.otherOrderedTrunks();
-        return $.chain(trunks).filter(trunk -> board.winnable(trunk, player, action)).map(Trunk::player).value();
+        return $.chain(trunks).filter(new Predicate<Trunk>() {
+            @Override
+            public Boolean apply(Trunk trunk) {
+                return board.winnable(trunk, player, action);
+            }
+        }).map(new Function1<Trunk, Integer>() {
+            @Override
+            public Integer apply(Trunk trunk) {
+                return trunk.player();
+            }
+        }).value();
     }
 }

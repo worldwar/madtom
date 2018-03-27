@@ -1,6 +1,5 @@
 package tw.zhuran.madtom.util;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public interface Turner<T> {
@@ -9,5 +8,5 @@ public interface Turner<T> {
     T previous();
     void turnTo(T t);
     void turnNext();
-    default List<T> ordered() {return new ArrayList<>();}
+    List<T> ordered();
 }

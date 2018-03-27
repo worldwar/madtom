@@ -1,5 +1,7 @@
 package tw.zhuran.madtom.server.common.hub;
 
+import com.github.underscore.$;
+import com.github.underscore.Block;
 import com.google.common.collect.Lists;
 import tw.zhuran.madtom.server.common.Connection;
 
@@ -8,7 +10,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-public class Hub implements Hubable {
+public class Hub extends Hubable {
     private ConcurrentMap<Long, Connection> connections = new ConcurrentHashMap<>();
 
     public void add(Connection connection) {
@@ -16,7 +18,12 @@ public class Hub implements Hubable {
     }
 
     public void addAll(List<Connection> connections) {
-        connections.forEach(this::add);
+        $.each(connections, new Block<Connection>() {
+            @Override
+            public void apply(Connection connection) {
+                Hub.this.add(connection);
+            }
+        });
     }
 
     public void remove(Connection connection) {

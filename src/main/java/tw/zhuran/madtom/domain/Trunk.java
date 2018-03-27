@@ -1,6 +1,9 @@
 package tw.zhuran.madtom.domain;
 
 import com.github.underscore.$;
+import com.github.underscore.Block;
+import com.github.underscore.Function1;
+import com.github.underscore.Predicate;
 import com.google.common.collect.Lists;
 import tw.zhuran.madtom.rule.*;
 import tw.zhuran.madtom.util.F;
@@ -127,8 +130,13 @@ public class Trunk {
         }
     }
 
-    public Action findPeng(Piece piece) {
-        List<Action> actions = $.filter(filterActions(ActionType.PENG), action -> action.getPiece().equals(piece));
+    public Action findPeng(final Piece piece) {
+        List<Action> actions = $.filter(filterActions(ActionType.PENG), new Predicate<Action>() {
+            @Override
+            public Boolean apply(Action action) {
+                return action.getPiece().equals(piece);
+            }
+        });
         if (actions.size() == 0) {
             return null;
         } else {
@@ -136,8 +144,13 @@ public class Trunk {
         }
     }
 
-    public List<Action> filterActions(ActionType type) {
-        return $.filter(this.actions, action -> action.getType() == type);
+    public List<Action> filterActions(final ActionType type) {
+        return $.filter(this.actions, new Predicate<Action>() {
+            @Override
+            public Boolean apply(Action action) {
+                return action.getType() == type;
+            }
+        });
     }
 
     public boolean angangable(Piece piece) {
@@ -168,21 +181,41 @@ public class Trunk {
     }
 
     public List<Piece> xugangablePieces() {
-        List<Piece> pieces = hand.pieces();
-        return $.chain(filterActions(ActionType.PENG)).map(Action::getPiece).filter(pieces::contains).value();
+        final List<Piece> pieces = hand.pieces();
+        return $.chain(filterActions(ActionType.PENG)).map(new Function1<Action, Piece>() {
+            @Override
+            public Piece apply(Action action) {
+                return action.getPiece();
+            }
+        }).filter(new Predicate<Piece>() {
+            @Override
+            public Boolean apply(Piece o) {
+                return pieces.contains(o);
+            }
+        }).value();
     }
 
     public Plot plot(Form form) {
-        Plot plot = new Plot();
+        final Plot plot = new Plot();
         plot.setForm(form);
         plot.setActions(actions);
         plot.trigger(triggerType);
-        $.each(rules(), rule -> rule.apply(plot));
+        $.each(rules(), new Block<PlotRule>() {
+            @Override
+            public void apply(PlotRule rule) {
+                rule.apply(plot);
+            }
+        });
         return plot;
     }
 
     public List<Plot> plots() {
-        return $.map(hand.shiftForms(), this::plot);
+        return $.map(hand.shiftForms(), new Function1<Form, Plot>() {
+            @Override
+            public Plot apply(Form form) {
+                return Trunk.this.plot(form);
+            }
+        });
     }
 
     private List<PlotRule> rules() {
@@ -190,11 +223,21 @@ public class Trunk {
     }
 
     public void deal(List<Piece> pieces) {
-        $.each(pieces, piece -> hand.feed(piece));
+        $.each(pieces, new Block<Piece>() {
+            @Override
+            public void apply(Piece piece) {
+                hand.feed(piece);
+            }
+        });
     }
 
     public boolean opened() {
-        return $.any(actions, Pieces::opened);
+        return $.any(actions, new Predicate<Action>() {
+            @Override
+            public Boolean apply(Action action) {
+                return Pieces.opened(action);
+            }
+        });
     }
 
     public List<Plot> activePlots(Piece piece, TriggerType triggerType) {
@@ -213,8 +256,18 @@ public class Trunk {
         }
         plots = plots();
         if (plots.size() != 0) {
-            plots = $.filter(plots, plot -> plot.featured() || plot.countOfWildcards() <= 1);
-            plots = $.filter(plots, plot -> plot.isFeng() || plot.isJiang() || plot.isPeng() || plot.isSuit() || Pieces.isJiang(plot.pair().getPieces().get(0)));
+            plots = $.filter(plots, new Predicate<Plot>() {
+                @Override
+                public Boolean apply(Plot plot) {
+                    return plot.featured() || plot.countOfWildcards() <= 1;
+                }
+            });
+            plots = $.filter(plots, new Predicate<Plot>() {
+                @Override
+                public Boolean apply(Plot plot) {
+                    return plot.isFeng() || plot.isJiang() || plot.isPeng() || plot.isSuit() || Pieces.isJiang(plot.pair().getPieces().get(0));
+                }
+            });
         } else {
             if (feng()) {
                 Plot plot = new Plot();
@@ -243,23 +296,63 @@ public class Trunk {
         if (plots.size() == 0) {
             return null;
         }
-        return $.max(plots, plot -> plot.base());
+        return $.max(plots, new Function1<Plot, Comparable>() {
+            @Override
+            public Comparable apply(Plot plot) {
+                return plot.base();
+            }
+        });
     }
 
     public List<Group> actionGroups() {
-        return $.chain(actions).filter(Pieces::hasGroup).map(Action::getGroup).value();
+        return $.chain(actions).filter(new Predicate<Action>() {
+            @Override
+            public Boolean apply(Action action) {
+                return Pieces.hasGroup(action);
+            }
+        }).map(new Function1<Action, Group>() {
+            @Override
+            public Group apply(Action action) {
+                return action.getGroup();
+            }
+        }).value();
     }
 
     public boolean feng() {
-        return $.all(hand.pieces(), p -> p.getKind() == Kind.FENG) && $.all(actionGroups(), group -> group.getKind() == Kind.FENG);
+        return $.all(hand.pieces(), new Predicate<Piece>() {
+            @Override
+            public Boolean apply(Piece p) {
+                return p.getKind() == Kind.FENG;
+            }
+        }) && $.all(actionGroups(), new Predicate<Group>() {
+            @Override
+            public Boolean apply(Group group) {
+                return group.getKind() == Kind.FENG;
+            }
+        });
     }
 
     public boolean jiang() {
-        return $.all(hand.pieces(), Pieces::isJiang) && $.all(groupActions(), action -> Pieces.isJiang(action.getPiece()));
+        return $.all(hand.pieces(), new Predicate<Piece>() {
+            @Override
+            public Boolean apply(Piece piece) {
+                return Pieces.isJiang(piece);
+            }
+        }) && $.all(groupActions(), new Predicate<Action>() {
+            @Override
+            public Boolean apply(Action action) {
+                return Pieces.isJiang(action.getPiece());
+            }
+        });
     }
 
     public List<Action> groupActions() {
-        return $.filter(actions, Pieces::hasGroup);
+        return $.filter(actions, new Predicate<Action>() {
+            @Override
+            public Boolean apply(Action action) {
+                return Pieces.hasGroup(action);
+            }
+        });
     }
 
     public int score() {
@@ -267,8 +360,18 @@ public class Trunk {
         if (opened()) {
             exponent++;
         }
-        exponent += $.filter(actions, action -> Actions.genericPublicGang(action.getType())).size();
-        exponent += $.filter(actions, action -> action.getType() == ActionType.ANGANG).size() * 2;
+        exponent += $.filter(actions, new Predicate<Action>() {
+            @Override
+            public Boolean apply(Action action) {
+                return Actions.genericPublicGang(action.getType());
+            }
+        }).size();
+        exponent += $.filter(actions, new Predicate<Action>() {
+            @Override
+            public Boolean apply(Action action) {
+                return action.getType() == ActionType.ANGANG;
+            }
+        }).size() * 2;
         return F.power(2, exponent);
     }
 
@@ -287,7 +390,12 @@ public class Trunk {
         builder.append("wildcard: " + Pieces.string(hand.getWildcards()) + "\n");
         builder.append("hongzhong: " + Pieces.string(hand.getHongzhongPieces()) + "\n");
         builder.append("=========\n");
-        List<Action> a = $.filter(this.actions, action -> action.getType() != ActionType.DISCARD);
+        List<Action> a = $.filter(this.actions, new Predicate<Action>() {
+            @Override
+            public Boolean apply(Action action) {
+                return action.getType() != ActionType.DISCARD;
+            }
+        });
         builder.append(Actions.string(a));
         return builder.toString();
     }

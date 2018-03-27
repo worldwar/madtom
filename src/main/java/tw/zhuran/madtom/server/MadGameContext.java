@@ -1,5 +1,7 @@
 package tw.zhuran.madtom.server;
 
+import com.github.underscore.$;
+import com.github.underscore.Block;
 import tw.zhuran.madtom.domain.Board;
 import tw.zhuran.madtom.event.Event;
 import tw.zhuran.madtom.server.common.Connection;
@@ -26,9 +28,20 @@ public class MadGameContext extends GameContext implements Observer {
 
     @Override
     public void start() {
-        int dealer = board.dealer();
-        players.entrySet().forEach(player -> notify(Packets.start(player.getKey(), dealer), player.getValue()));
-        players.entrySet().forEach(player -> notify(new InfoPacket(board.info(player.getKey())), player.getValue()));
+        final int dealer = board.dealer();
+        final MadGameContext that = this;
+        $.each(players.entrySet(), new Block<Map.Entry<Integer, Connection>>() {
+            @Override
+            public void apply(Map.Entry<Integer, Connection> player) {
+                that.notify(Packets.start(player.getKey(), dealer), player.getValue());
+            }
+        });
+        $.each(players.entrySet(), new Block<Map.Entry<Integer, Connection>>() {
+            @Override
+            public void apply(Map.Entry<Integer, Connection> player) {
+                that.notify(new InfoPacket(board.info(player.getKey())), player.getValue());
+            }
+        });
     }
 
     public void perform(Event event) {

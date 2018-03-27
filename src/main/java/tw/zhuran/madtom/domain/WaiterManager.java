@@ -1,7 +1,9 @@
 package tw.zhuran.madtom.domain;
 
 import com.github.underscore.$;
+import com.github.underscore.Function1;
 import com.github.underscore.Optional;
+import com.github.underscore.Predicate;
 import com.google.common.collect.Lists;
 import tw.zhuran.madtom.event.Event;
 import tw.zhuran.madtom.event.EventType;
@@ -43,7 +45,12 @@ public class WaiterManager {
     }
 
     private List<Confirmation> initConfirmation(List<Integer> waiters) {
-        return $.map(waiters, waiter -> new Confirmation(waiter, ConfirmState.UNCONFIRM));
+        return $.map(waiters, new Function1<Integer, Confirmation>() {
+            @Override
+            public Confirmation apply(Integer waiter) {
+                return new Confirmation(waiter, ConfirmState.UNCONFIRM);
+            }
+        });
     }
 
     private void reset() {
@@ -111,7 +118,12 @@ public class WaiterManager {
                 firstWinIndex = index;
             }
             List<Confirmation> slice = winners.subList(0, firstWinIndex);
-            boolean anyUnconfirmed = $.any(slice, confirmation -> confirmation.state == ConfirmState.UNCONFIRM);
+            boolean anyUnconfirmed = $.any(slice, new Predicate<Confirmation>() {
+                @Override
+                public Boolean apply(Confirmation confirmation) {
+                    return confirmation.state == ConfirmState.UNCONFIRM;
+                }
+            });
 
             if (firstWinIndex != winners.size()) {
                 return anyUnconfirmed;
@@ -122,8 +134,18 @@ public class WaiterManager {
             }
         }
 
-        boolean shouldFinishWaitGang = $.any(gangWaiters, waiter -> waiter.state == ConfirmState.CONFIRMED);
-        boolean shouldWaitGang = $.any(gangWaiters, waiter -> waiter.state == ConfirmState.UNCONFIRM);
+        boolean shouldFinishWaitGang = $.any(gangWaiters, new Predicate<Confirmation>() {
+            @Override
+            public Boolean apply(Confirmation waiter) {
+                return waiter.state == ConfirmState.CONFIRMED;
+            }
+        });
+        boolean shouldWaitGang = $.any(gangWaiters, new Predicate<Confirmation>() {
+            @Override
+            public Boolean apply(Confirmation waiter) {
+                return waiter.state == ConfirmState.UNCONFIRM;
+            }
+        });
 
         if (shouldFinishWaitGang) {
             return false;
@@ -133,8 +155,18 @@ public class WaiterManager {
             return true;
         }
 
-        boolean shouldFinishWaitPeng = $.any(pengWaiters, waiter -> waiter.state == ConfirmState.CONFIRMED);
-        boolean shouldWaitPeng = $.any(pengWaiters, waiter -> waiter.state == ConfirmState.UNCONFIRM);
+        boolean shouldFinishWaitPeng = $.any(pengWaiters, new Predicate<Confirmation>() {
+            @Override
+            public Boolean apply(Confirmation waiter) {
+                return waiter.state == ConfirmState.CONFIRMED;
+            }
+        });
+        boolean shouldWaitPeng = $.any(pengWaiters, new Predicate<Confirmation>() {
+            @Override
+            public Boolean apply(Confirmation waiter) {
+                return waiter.state == ConfirmState.UNCONFIRM;
+            }
+        });
 
         if (shouldFinishWaitPeng) {
             return false;
@@ -144,7 +176,12 @@ public class WaiterManager {
             return true;
         }
 
-        boolean shouldWaitchi = $.any(chiWaiters, waiter -> waiter.state == ConfirmState.UNCONFIRM);
+        boolean shouldWaitchi = $.any(chiWaiters, new Predicate<Confirmation>() {
+            @Override
+            public Boolean apply(Confirmation waiter) {
+                return waiter.state == ConfirmState.UNCONFIRM;
+            }
+        });
 
         if (shouldWaitchi) {
             return true;
@@ -183,7 +220,12 @@ public class WaiterManager {
     }
 
     public Event activeEvent(List<Confirmation> waiters, EventType eventType, Action action) {
-        Optional<Confirmation> option = $.find(waiters, waiter -> waiter.state == ConfirmState.CONFIRMED);
+        Optional<Confirmation> option = $.find(waiters, new Predicate<Confirmation>() {
+            @Override
+            public Boolean apply(Confirmation waiter) {
+                return waiter.state == ConfirmState.CONFIRMED;
+            }
+        });
         if (option.isPresent()) {
             return new Event(eventType, action, option.get().player);
         }
@@ -205,8 +247,13 @@ public class WaiterManager {
         }
     }
 
-    private Confirmation findPlayer(List<Confirmation> waiters, int player) {
-        Optional<Confirmation> o = $.find(waiters, waiter -> waiter.player == player);
+    private Confirmation findPlayer(List<Confirmation> waiters, final int player) {
+        Optional<Confirmation> o = $.find(waiters, new Predicate<Confirmation>() {
+            @Override
+            public Boolean apply(Confirmation waiter) {
+                return waiter.player == player;
+            }
+        });
         return o.orNull();
     }
 

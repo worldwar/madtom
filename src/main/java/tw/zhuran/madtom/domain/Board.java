@@ -1,6 +1,9 @@
 package tw.zhuran.madtom.domain;
 
 import com.github.underscore.$;
+import com.github.underscore.Block;
+import com.github.underscore.Function1;
+import com.github.underscore.Predicate;
 import com.google.common.collect.Lists;
 import tw.zhuran.madtom.event.Event;
 import tw.zhuran.madtom.event.EventType;
@@ -34,9 +37,12 @@ public class Board {
     public Board(int players) {
         this.players = players;
         deck = new Deck(players);
-        $.each(F.list($.range(1, 5)), index -> {
-            Trunk trunk = new Trunk(index);
-            trunks.put(index, trunk);
+        $.each(F.list($.range(1, 5)), new Block<Integer>() {
+            @Override
+            public void apply(Integer index) {
+                Trunk trunk = new Trunk(index);
+                trunks.put(index, trunk);
+            }
         });
         this.turner = new NaturalTurner(players);
     }
@@ -44,9 +50,12 @@ public class Board {
     public void shuffle() {
         result = null;
         deck = new Deck(players);
-        $.each(F.list($.range(1, 5)), index -> {
-            Trunk trunk = new Trunk(index);
-            trunks.put(index, trunk);
+        $.each(F.list($.range(1, 5)), new Block<Integer>() {
+            @Override
+            public void apply(Integer index) {
+                Trunk trunk = new Trunk(index);
+                trunks.put(index, trunk);
+            }
         });
 
         int dealer = R.dealer();
@@ -66,8 +75,18 @@ public class Board {
 
     public void cut(int start, int index) {
         deck.cut(start, index);
-        Pieces.times(this::dealNext, 3 * players);
-        Pieces.times(this::lastDealNext, players);
+        Pieces.times(new Runnable() {
+            @Override
+            public void run() {
+                Board.this.dealNext();
+            }
+        }, 3 * players);
+        Pieces.times(new Runnable() {
+            @Override
+            public void run() {
+                Board.this.lastDealNext();
+            }
+        }, players);
         dispatch0();
         declareWildcard();
         stateManager.init(BoardStateType.FREE);
@@ -125,7 +144,12 @@ public class Board {
     public void declareWildcard() {
         Piece piece = deck.afford();
         wildcard = Pieces.wildcard(piece);
-        $.each(trunks.values(), (trunk) -> trunk.setWildcard(wildcard));
+        $.each(trunks.values(), new Block<Trunk>() {
+            @Override
+            public void apply(Trunk trunk) {
+                trunk.setWildcard(wildcard);
+            }
+        });
     }
 
     public int score(Plot plot, Trunk winner, Trunk loser, boolean capture) {
@@ -144,14 +168,19 @@ public class Board {
         stateManager.perform(event);
     }
 
-    public boolean shouldWait(Action action) {
+    public boolean shouldWait(final Action action) {
         List<WaitRule> waitRules = Lists.newArrayList();
         if (action.getType() == ActionType.DISCARD) {
             waitRules = Rules.discardWaitRules();
         } else if (action.getType() == ActionType.XUGANG){
             waitRules = Rules.xugangWaitRules();
         }
-        return $.any(waitRules, rule -> rule.shouldWait(this, action));
+        return $.any(waitRules, new Predicate<WaitRule>() {
+            @Override
+            public Boolean apply(WaitRule rule) {
+                return rule.shouldWait(Board.this, action);
+            }
+        });
     }
 
     public void turnNext() {
@@ -206,14 +235,29 @@ public class Board {
         return otherTrunks(turn());
     }
 
-    public List<Trunk> otherTrunks(int player) {
-        return $.chain(trunks.entrySet()).filter(entry -> entry.getKey() != player).map(entry -> entry.getValue()).value();
+    public List<Trunk> otherTrunks(final int player) {
+        return $.chain(trunks.entrySet()).filter(new Predicate<Map.Entry<Integer, Trunk>>() {
+            @Override
+            public Boolean apply(Map.Entry<Integer, Trunk> entry) {
+                return entry.getKey() != player;
+            }
+        }).map(new Function1<Map.Entry<Integer, Trunk>, Trunk>() {
+            @Override
+            public Trunk apply(Map.Entry<Integer, Trunk> entry) {
+                return entry.getValue();
+            }
+        }).value();
     }
 
     public List<Trunk> otherOrderedTrunks() {
         List<Integer> players = turner.ordered();
         players.remove(0);
-        return $.map(players, player -> trunks.get(player));
+        return $.map(players, new Function1<Integer, Trunk>() {
+            @Override
+            public Trunk apply(Integer player) {
+                return trunks.get(player);
+            }
+        });
     }
 
     public boolean winnable(Trunk winner, Trunk loser, Action action) {
@@ -222,9 +266,14 @@ public class Board {
     }
 
     public boolean winnable(int player) {
-        Trunk winner = trunk(player);
+        final Trunk winner = trunk(player);
         List<Trunk> otherTrunks = otherTrunks(player);
-        return $.any(otherTrunks, loser -> score(winner, loser) >= 16);
+        return $.any(otherTrunks, new Predicate<Trunk>() {
+            @Override
+            public Boolean apply(Trunk loser) {
+                return Board.this.score(winner, loser) >= 16;
+            }
+        });
     }
 
     public boolean currentWinnable() {
@@ -348,10 +397,20 @@ public class Board {
         info.setActions(playerTrunk.getActions());
         info.setPieces(playerTrunk.getHand().all());
 
-        Map<Integer, List<Action>> otherActions = new HashMap<>();
-        Map<Integer, Integer> otherHandCounts = new HashMap<>();
-        $.each(otherTrunks(), trunk -> otherActions.put(trunk.player(), trunk.getActions()));
-        $.each(otherTrunks(), trunk -> otherHandCounts.put(trunk.player(), trunk.getHand().size()));
+        final Map<Integer, List<Action>> otherActions = new HashMap<>();
+        final Map<Integer, Integer> otherHandCounts = new HashMap<>();
+        $.each(otherTrunks(), new Block<Trunk>() {
+            @Override
+            public void apply(Trunk trunk) {
+                otherActions.put(trunk.player(), trunk.getActions());
+            }
+        });
+        $.each(otherTrunks(), new Block<Trunk>() {
+            @Override
+            public void apply(Trunk trunk) {
+                otherHandCounts.put(trunk.player(), trunk.getHand().size());
+            }
+        });
         info.setOtherActions(otherActions);
         info.setOtherHandCounts(otherHandCounts);
 

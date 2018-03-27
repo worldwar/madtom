@@ -1,6 +1,9 @@
 package tw.zhuran.madtom.domain;
 
 import com.github.underscore.$;
+import com.github.underscore.Function1;
+import com.github.underscore.FunctionAccum;
+import com.google.common.base.Supplier;
 import tw.zhuran.madtom.util.F;
 import tw.zhuran.madtom.util.NaturalTurner;
 import tw.zhuran.madtom.util.ReverseNaturalTurner;
@@ -16,19 +19,44 @@ public class Deck {
     private NaturalTurner tail;
 
     public Deck(int size) {
-        List<Piece> deck = Pieces.deck();
-        F.times(() -> Collections.shuffle(deck), 10);
-        List<List<Pillar>> pillarsList = $.chain(deck).chunk(2).map(list -> new Pillar(list)).chunk(deck.size() / 2 / size)
+        final List<Piece> deck = Pieces.deck();
+        F.times(new Runnable() {
+            @Override
+            public void run() {
+                Collections.shuffle(deck);
+            }
+        }, 10);
+        List<List<Pillar>> pillarsList = $.chain(deck).chunk(2).map(new Function1<List<Piece>, Pillar>() {
+            @Override
+            public Pillar apply(List<Piece> list) {
+                return new Pillar(list);
+            }
+        }).chunk(deck.size() / 2 / size)
                 .value();
-        walls = F.index($.map(pillarsList, Wall::new));
+        walls = F.index($.map(pillarsList, new Function1<List<Pillar>, Wall>() {
+            @Override
+            public Wall apply(List<Pillar> pillars) {
+                return new Wall(pillars);
+            }
+        }));
         head = new ReverseNaturalTurner(size);
         tail = new NaturalTurner(size);
     }
 
     public Deck(List<Piece> deck, int size) {
-        List<List<Pillar>> pillarsList = $.chain(deck).chunk(2).map(list -> new Pillar(list)).chunk(deck.size() / 2 / size)
+        List<List<Pillar>> pillarsList = $.chain(deck).chunk(2).map(new Function1<List<Piece>, Pillar>() {
+            @Override
+            public Pillar apply(List<Piece> list) {
+                return new Pillar(list);
+            }
+        }).chunk(deck.size() / 2 / size)
                 .value();
-        walls = F.index($.map(pillarsList, Wall::new));
+        walls = F.index($.map(pillarsList, new Function1<List<Pillar>, Wall>() {
+            @Override
+            public Wall apply(List<Pillar> pillars) {
+                return new Wall(pillars);
+            }
+        }));
         head = new ReverseNaturalTurner(size);
         tail = new NaturalTurner(size);
     }
@@ -54,7 +82,12 @@ public class Deck {
     }
 
     public List<Piece> deal() {
-        return F.multiple(this::afford, 4);
+        return F.multiple(new Supplier<Piece>() {
+            @Override
+            public Piece get() {
+                return Deck.this.afford();
+            }
+        }, 4);
     }
 
     public Piece gangAfford(int point) {
@@ -78,6 +111,11 @@ public class Deck {
     }
 
     public int remainPillars() {
-        return $.foldl(walls.values(), (a, b) -> a + b.remainPillars(), 0);
+        return $.foldl(walls.values(), new FunctionAccum<Integer, Wall>() {
+            @Override
+            public Integer apply(Integer a, Wall b) {
+                return a + b.remainPillars();
+            }
+        }, 0);
     }
 }

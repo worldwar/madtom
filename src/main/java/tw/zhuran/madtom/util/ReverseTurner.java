@@ -1,5 +1,7 @@
 package tw.zhuran.madtom.util;
 
+import com.google.common.collect.Lists;
+
 import java.util.List;
 
 public class ReverseTurner<T> extends AbstractTurner<T> {
@@ -15,5 +17,10 @@ public class ReverseTurner<T> extends AbstractTurner<T> {
     @Override
     int previousIndex() {
         return (index + 1) % count();
+    }
+
+    @Override
+    public List<T> ordered() {
+        return Lists.newArrayList();
     }
 }

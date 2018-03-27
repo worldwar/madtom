@@ -1,6 +1,7 @@
 package tw.zhuran.madtom.state;
 
 import com.github.underscore.$;
+import com.github.underscore.Predicate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +30,13 @@ public class StateManager<A, T, X extends State<A, T>> {
         current.begin(action);
     }
 
-    protected X state(T s) {
-        List<X> result = $.filter(states, state -> state.type() == s);
+    protected X state(final T s) {
+        List<X> result = $.filter(states, new Predicate<X>() {
+            @Override
+            public Boolean apply(X state) {
+                return state.type() == s;
+            }
+        });
         if (result.size() > 0) {
             return result.get(0);
         }

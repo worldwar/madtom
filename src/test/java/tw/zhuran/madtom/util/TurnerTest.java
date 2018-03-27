@@ -9,7 +9,7 @@ public class TurnerTest {
 
     @Test
     public void testNaturalTurner() {
-        Turner turner = new NaturalTurner(8);
+        NaturalTurner turner = new NaturalTurner(8);
         assertThat(turner.current(), is(1));
         assertThat(turner.next(), is(2));
         assertThat(turner.previous(), is(8));
@@ -35,7 +35,7 @@ public class TurnerTest {
 
     @Test
     public void testReverseNaturalTurner() {
-        Turner turner = new ReverseNaturalTurner(5);
+        ReverseNaturalTurner turner = new ReverseNaturalTurner(5);
         assertThat(turner.current(), is(1));
         assertThat(turner.next(), is(5));
         assertThat(turner.previous(), is(2));

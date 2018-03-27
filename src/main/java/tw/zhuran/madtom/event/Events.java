@@ -2,6 +2,7 @@ package tw.zhuran.madtom.event;
 
 import com.github.underscore.$;
 import com.github.underscore.Optional;
+import com.github.underscore.Predicate;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import tw.zhuran.madtom.domain.*;
@@ -30,10 +31,15 @@ public class Events {
     }
 
     public static Event parse(String command, int player, Piece waitPiece, Hand hand) {
-        ArrayList<String> parts = Lists.newArrayList(Splitter.on(" ").split(command));
+        final ArrayList<String> parts = Lists.newArrayList(Splitter.on(" ").split(command));
         switch (parts.get(0)) {
             case "discard":
-                Optional<Piece> o = $.find(Pieces.ALL, piece -> piece.toString().equals(parts.get(1)));
+                Optional<Piece> o = $.find(Pieces.ALL, new Predicate<Piece>() {
+                    @Override
+                    public Boolean apply(Piece piece) {
+                        return piece.toString().equals(parts.get(1));
+                    }
+                });
                 if (o.isPresent()) {
                     return Events.action(player, Actions.discard(o.get()));
                 } else {
@@ -84,7 +90,7 @@ public class Events {
     public static Event parse(String command, Board board) {
         try {
             int turn = board.turn();
-            ArrayList<String> parts = Lists.newArrayList(Splitter.on(" ").split(command));
+            final ArrayList<String> parts = Lists.newArrayList(Splitter.on(" ").split(command));
             switch (parts.get(0)) {
                 case "win":
                     if (board.currentWinnable()) {
@@ -93,7 +99,12 @@ public class Events {
                         return null;
                     }
                 case "discard":
-                    Optional<Piece> o = $.find(Pieces.ALL, piece -> piece.toString().equals(parts.get(1)));
+                    Optional<Piece> o = $.find(Pieces.ALL, new Predicate<Piece>() {
+                        @Override
+                        public Boolean apply(Piece piece) {
+                            return piece.toString().equals(parts.get(1));
+                        }
+                    });
                     if (o.isPresent()) {
                         return Events.action(turn, Actions.discard(o.get()));
                     } else {

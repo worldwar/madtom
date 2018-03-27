@@ -1,6 +1,8 @@
 package tw.zhuran.madtom.util;
 
 import com.github.underscore.$;
+import com.github.underscore.Function1;
+import com.github.underscore.FunctionAccum;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Lists;
 
@@ -63,14 +65,29 @@ public class F {
     }
 
     public static List<Integer> list(int[] array) {
-        return $.map(array, x -> x);
+        return $.map(array, new Function1<Integer, Integer>() {
+            @Override
+            public Integer apply(Integer x) {
+                return x;
+            }
+        });
     }
 
-    public static <T> String string(List<T> list, String splitter) {
-        return $.foldl(list, (a, b) -> a + b + splitter, "");
+    public static <T> String string(List<T> list, final String splitter) {
+        return $.foldl(list, new FunctionAccum<String, T>() {
+            @Override
+            public String apply(String a, T b) {
+                return a + b + splitter;
+            }
+        }, "");
     }
 
-    public static <T> String string(Set<T> list, String splitter) {
-        return $.foldl(list, (a, b) -> a + b + splitter, "");
+    public static <T> String string(Set<T> list, final String splitter) {
+        return $.foldl(list, new FunctionAccum<String, T>() {
+            @Override
+            public String apply(String a, T b) {
+                return a + b + splitter;
+            }
+        }, "");
     }
 }

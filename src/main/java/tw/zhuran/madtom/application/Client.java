@@ -1,5 +1,7 @@
 package tw.zhuran.madtom.application;
 
+import com.github.underscore.$;
+import com.github.underscore.Block;
 import com.google.common.base.Charsets;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
@@ -97,10 +99,15 @@ public class Client {
     }
 
     public static Hand construct(Info info) {
-        Hand hand = new Hand();
+        final Hand hand = new Hand();
         hand.setWildcard(info.getWildcard());
         List<Piece> pieces = info.getPieces();
-        pieces.forEach(hand::feed);
+        $.each(pieces, new Block<Piece>() {
+            @Override
+            public void apply(Piece piece) {
+                hand.feed(piece);
+            }
+        });
         return hand;
     }
 

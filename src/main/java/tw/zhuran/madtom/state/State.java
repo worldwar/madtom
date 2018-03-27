@@ -1,9 +1,9 @@
 package tw.zhuran.madtom.state;
 
-public interface State<A, T> {
-    T type();
-    T perform(A action);
-    default void begin(A action) {}
-    default void end(A action) {}
-    default boolean instant() {return false;}
+public abstract class State<A, T> {
+    abstract T type();
+    abstract T perform(A action);
+    void begin(A action){}
+    void end(A action) {}
+    boolean instant() {return false;}
 }

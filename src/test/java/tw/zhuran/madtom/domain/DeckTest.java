@@ -1,6 +1,7 @@
 package tw.zhuran.madtom.domain;
 
 import com.github.underscore.$;
+import com.github.underscore.Function;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
@@ -35,7 +36,12 @@ public class DeckTest {
         assertFalse(startWall.affordable());
         assertTrue(nextWall.affordable());
 
-        $.times(8, () -> deck.deal());
+        $.times(8, new Function<Object>() {
+            @Override
+            public Object apply() {
+                return deck.deal();
+            }
+        });
         assertFalse(nextWall.affordable());
     }
 

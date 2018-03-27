@@ -33,7 +33,8 @@ public class PiecesTest {
         assertThat(permutations.size(), is(4));
         assertThat(permutations.get(0), is(F.repeat(Pieces.YIWAN, 2)));
         assertThat(permutations.get(1), is(pool));
-        assertThat(permutations.get(2), is(Lists.newArrayList(Pieces.ERWAN, Pieces.YIWAN)));
+        List<Piece> value = Lists.newArrayList(Pieces.ERWAN, Pieces.YIWAN);
+        assertThat(permutations.get(2), is(value));
         assertThat(permutations.get(3), is(F.repeat(Pieces.ERWAN, 2)));
     }
 

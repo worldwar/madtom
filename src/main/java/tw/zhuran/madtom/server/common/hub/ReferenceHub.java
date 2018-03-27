@@ -1,18 +1,26 @@
 package tw.zhuran.madtom.server.common.hub;
 
+import com.github.underscore.$;
+import com.github.underscore.Block;
+import com.github.underscore.Function1;
+import com.github.underscore.Predicate;
 import tw.zhuran.madtom.server.common.Connection;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class ReferenceHub extends ProxyHub {
     private Set<Long> connections = new HashSet<Long>();
 
     public ReferenceHub(Hubable hubable, Iterable<Connection> set) {
         super(hubable);
-        set.forEach(c -> this.connections.add(c.getId()));
+        $.each(set, new Block<Connection>() {
+            @Override
+            public void apply(Connection c) {
+                ReferenceHub.this.connections.add(c.getId());
+            }
+        });
     }
 
     @Override
@@ -40,7 +48,17 @@ public class ReferenceHub extends ProxyHub {
 
     @Override
     public List<Connection> all() {
-        return connections.stream().map(this::get).filter(c -> c != null).collect(Collectors.toList());
+        return $.chain(connections).map(new Function1<Long, Connection>() {
+            @Override
+            public Connection apply(Long id) {
+                return ReferenceHub.this.get(id);
+            }
+        }).filter(new Predicate<Connection>() {
+            @Override
+            public Boolean apply(Connection c) {
+                return c != null;
+            }
+        }).value();
     }
 
     @Override

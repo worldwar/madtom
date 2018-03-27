@@ -7,6 +7,8 @@ import org.junit.Test;
 import tw.zhuran.madtom.event.EventType;
 import tw.zhuran.madtom.event.Events;
 
+import java.util.List;
+
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.*;
 
@@ -72,7 +74,8 @@ public class WaiterManagerTest {
 
     @Test
     public void shouldFinishWhenThereAreNoWinner() {
-        waiterManager.setWinners(Lists.newArrayList());
+        List<Integer> objects = Lists.newArrayList();
+        waiterManager.setWinners(objects);
         assertFalse(waiterManager.shouldWait());
         assertNull(waiterManager.activeEvent());
     }

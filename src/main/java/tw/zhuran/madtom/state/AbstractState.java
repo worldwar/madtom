@@ -1,6 +1,6 @@
 package tw.zhuran.madtom.state;
 
-public abstract class AbstractState<O, A, T> implements State<A, T> {
+public abstract class AbstractState<O, A, T> extends State<A, T> {
     protected O owner;
     protected T type;
     public AbstractState(O owner, T type) {
