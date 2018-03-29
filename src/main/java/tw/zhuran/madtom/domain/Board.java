@@ -391,7 +391,7 @@ public class Board {
         return null;
     }
 
-    public Info info(int player) {
+    public Info info(final int player) {
         Info info = new Info();
         Trunk playerTrunk = trunk(player);
         info.setActions(playerTrunk.getActions());
@@ -399,16 +399,20 @@ public class Board {
 
         final Map<Integer, List<Action>> otherActions = new HashMap<>();
         final Map<Integer, Integer> otherHandCounts = new HashMap<>();
-        $.each(otherTrunks(), new Block<Trunk>() {
+        $.each(trunks.values(), new Block<Trunk>() {
             @Override
             public void apply(Trunk trunk) {
-                otherActions.put(trunk.player(), trunk.getActions());
+                if (trunk.player() != player) {
+                    otherActions.put(trunk.player(), trunk.getActions());
+                }
             }
         });
-        $.each(otherTrunks(), new Block<Trunk>() {
+        $.each(trunks.values(), new Block<Trunk>() {
             @Override
             public void apply(Trunk trunk) {
-                otherHandCounts.put(trunk.player(), trunk.getHand().size());
+                if (trunk.player() != player) {
+                    otherHandCounts.put(trunk.player(), trunk.getHand().size());
+                }
             }
         });
         info.setOtherActions(otherActions);
