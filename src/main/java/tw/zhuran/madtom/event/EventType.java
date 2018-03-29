@@ -7,5 +7,6 @@ public enum EventType {
     WAIT_TIMEOUT,
     INFO,
     DISPATCH,
-    GANG_AFFOARD
+    GANG_AFFOARD,
+    INTERCEPT
 }

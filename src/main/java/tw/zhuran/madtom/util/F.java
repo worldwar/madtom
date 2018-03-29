@@ -3,6 +3,7 @@ package tw.zhuran.madtom.util;
 import com.github.underscore.$;
 import com.github.underscore.Function1;
 import com.github.underscore.FunctionAccum;
+import com.google.common.base.Joiner;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Lists;
 
@@ -73,21 +74,11 @@ public class F {
         });
     }
 
-    public static <T> String string(List<T> list, final String splitter) {
-        return $.foldl(list, new FunctionAccum<String, T>() {
-            @Override
-            public String apply(String a, T b) {
-                return a + b + splitter;
-            }
-        }, "");
+    public static <T> String string(List<T> list, String splitter) {
+        return Joiner.on(splitter).join(list);
     }
 
-    public static <T> String string(Set<T> list, final String splitter) {
-        return $.foldl(list, new FunctionAccum<String, T>() {
-            @Override
-            public String apply(String a, T b) {
-                return a + b + splitter;
-            }
-        }, "");
+    public static <T> String string(Set<T> list, String splitter) {
+        return Joiner.on(splitter).join(list);
     }
 }

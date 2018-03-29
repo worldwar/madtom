@@ -63,7 +63,7 @@ public class Events {
                         return Events.win(player);
                 }
             case "pass":
-                return Events.pass(Integer.valueOf(parts.get(1)));
+                return Events.pass(player);
             case "gang":
                 piece = Pieces.find(parts.get(1));
                 if (piece == null) {
@@ -158,5 +158,19 @@ public class Events {
             o.printStackTrace();
             return null;
         }
+    }
+
+    public String name(InterceptType type) {
+        switch (type) {
+            case WIN:
+                return "赢";
+            case GANG:
+                return "杠";
+            case PENG:
+                return "碰";
+            case CHI:
+                return "吃";
+        }
+        return "";
     }
 }

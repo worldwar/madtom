@@ -7,13 +7,17 @@ import com.github.underscore.Predicate;
 import com.google.common.collect.Lists;
 import tw.zhuran.madtom.event.Event;
 import tw.zhuran.madtom.event.EventType;
+import tw.zhuran.madtom.event.InterceptEvent;
+import tw.zhuran.madtom.event.InterceptType;
 import tw.zhuran.madtom.rule.ChiWaitRule;
 import tw.zhuran.madtom.rule.GangWaitRule;
 import tw.zhuran.madtom.rule.PengWaitRule;
 import tw.zhuran.madtom.rule.WinWaitRule;
 import tw.zhuran.madtom.util.F;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class WaiterManager {
     private Board board;
@@ -230,6 +234,27 @@ public class WaiterManager {
             return new Event(eventType, action, option.get().player);
         }
         return null;
+    }
+
+    public List<InterceptEvent> interceptEvents() {
+        Map<Integer, InterceptEvent> players = new HashMap<>();
+        addInterceptEvent(winners, InterceptType.WIN, players);
+        addInterceptEvent(gangWaiters, InterceptType.GANG, players);
+        addInterceptEvent(pengWaiters, InterceptType.PENG, players);
+        addInterceptEvent(chiWaiters, InterceptType.CHI, players);
+        return Lists.newArrayList(players.values());
+    }
+
+    private void addInterceptEvent(List<Confirmation> list, InterceptType type, Map<Integer, InterceptEvent> players) {
+        for (Confirmation c : list) {
+            int player = c.player;
+            InterceptEvent interceptEvent = players.get(player);
+            if (interceptEvent == null) {
+                players.put(player, new InterceptEvent(player));
+                interceptEvent = players.get(player);
+            }
+            interceptEvent.add(type);
+        }
     }
 
     private void pass(List<Confirmation> winners, int player) {
