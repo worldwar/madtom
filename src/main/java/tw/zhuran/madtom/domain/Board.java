@@ -350,8 +350,8 @@ public class Board {
 
         Map<Integer, List<Action>> otherActions = new HashMap<>();
         Map<Integer, Integer> otherHandCounts = new HashMap<>();
-        $.each(otherTrunks(), trunk -> otherActions.put(trunk.player(), trunk.getActions()));
-        $.each(otherTrunks(), trunk -> otherHandCounts.put(trunk.player(), trunk.getHand().size()));
+        $.chain(trunks.values()).filter(t -> t.player() != player).forEach(trunk -> otherActions.put(trunk.player(), trunk.getActions()));
+        $.chain(trunks.values()).filter(t -> t.player() != player).forEach(trunk -> otherHandCounts.put(trunk.player(), trunk.getHand().size()));
         info.setOtherActions(otherActions);
         info.setOtherHandCounts(otherHandCounts);
 
