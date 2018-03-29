@@ -6,6 +6,8 @@ import io.netty.buffer.ByteBuf;
 import tw.zhuran.madtom.event.EventType;
 import tw.zhuran.madtom.server.common.Packet;
 import tw.zhuran.madtom.server.common.PacketFactory;
+import tw.zhuran.madtom.server.packet.DispatchEventPacket;
+import tw.zhuran.madtom.server.packet.GangAffordEventPacket;
 import tw.zhuran.madtom.server.packet.InfoPacket;
 import tw.zhuran.madtom.server.packet.InterceptPacket;
 import tw.zhuran.madtom.server.packet.MadPacket;
@@ -24,6 +26,12 @@ public class MadPacketFactory extends PacketFactory {
                 EventPacket eventPacket = JSON.parseObject(json, EventPacket.class);
                 if (eventPacket.getContent().getEventType() == EventType.INTERCEPT) {
                     return JSON.parseObject(json, InterceptPacket.class);
+                }
+                if (eventPacket.getContent().getEventType() == EventType.DISPATCH) {
+                    return JSON.parseObject(json, DispatchEventPacket.class);
+                }
+                if (eventPacket.getContent().getEventType() == EventType.GANG_AFFOARD) {
+                    return JSON.parseObject(json, GangAffordEventPacket.class);
                 }
                 return eventPacket;
             case INFO:
