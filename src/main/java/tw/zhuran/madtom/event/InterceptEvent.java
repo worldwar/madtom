@@ -15,6 +15,11 @@ public class InterceptEvent extends Event {
         this.intercepts = new ArrayList<>();
     }
 
+    public InterceptEvent(int player, List<InterceptType> intercepts) {
+        super(EventType.INTERCEPT, player);
+        this.intercepts = intercepts;
+    }
+
     public List<InterceptType> getIntercepts() {
         return intercepts;
     }
