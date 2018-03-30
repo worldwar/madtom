@@ -4,8 +4,6 @@ import tw.zhuran.madtom.domain.*;
 import tw.zhuran.madtom.event.DispatchEvent;
 import tw.zhuran.madtom.event.Event;
 import tw.zhuran.madtom.event.GangAffordEvent;
-import tw.zhuran.madtom.event.InterceptEvent;
-import tw.zhuran.madtom.server.packet.InterceptPacket;
 import tw.zhuran.madtom.server.packet.MadPacket;
 import tw.zhuran.madtom.server.packet.PacketType;
 import tw.zhuran.madtom.server.packet.StartPacket;
@@ -30,7 +28,7 @@ public class Packets {
             case ACTION:
                 return action(event, receiver);
             case INTERCEPT:
-                return new InterceptPacket((InterceptEvent) event);
+                return new EventPacket(event);
             default:
                 return new EventPacket(event);
         }
@@ -52,7 +50,7 @@ public class Packets {
                 if (event.getPlayer() != receiver) {
                     return null;
                 }
-                return new InterceptPacket((InterceptEvent) event);
+                return new EventPacket(event);
             default:
                 return new EventPacket(event);
         }
