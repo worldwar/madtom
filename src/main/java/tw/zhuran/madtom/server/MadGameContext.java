@@ -39,8 +39,10 @@ public class MadGameContext extends GameContext implements Observer {
     public void update(Observable o, Object arg) {
         Event event = (Event) arg;
         for (Map.Entry<Integer, Connection> player : players.entrySet()) {
-            EventPacket packet = Packets.event(event, player.getKey());
-            notify(packet, player.getValue());
+            EventPacket packet = Packets.serverEvent(event, player.getKey());
+            if (packet != null) {
+                notify(packet, player.getValue());
+            }
         }
     }
 }

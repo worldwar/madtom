@@ -36,6 +36,28 @@ public class Packets {
         }
     }
 
+    public static EventPacket clientEvent(Event event) {
+        return new EventPacket(event);
+    }
+
+    public static EventPacket serverEvent(Event event, int receiver) {
+        switch (event.getEventType()) {
+            case DISPATCH:
+                return dispatch(event, receiver);
+            case GANG_AFFOARD:
+                return gangAfford(event, receiver);
+            case ACTION:
+                return action(event, receiver);
+            case INTERCEPT:
+                if (event.getPlayer() != receiver) {
+                    return null;
+                }
+                return new InterceptPacket((InterceptEvent) event);
+            default:
+                return new EventPacket(event);
+        }
+    }
+
     private static EventPacket action(Event event, int receiver) {
         Action action = event.getAction();
         if (action.getType() == ActionType.ANGANG && event.getPlayer() != receiver) {
