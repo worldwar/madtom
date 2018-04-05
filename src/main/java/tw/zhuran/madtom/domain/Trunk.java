@@ -140,6 +140,10 @@ public class Trunk {
         return $.filter(this.actions, action -> action.getType() == type);
     }
 
+    public boolean angangable() {
+        return hand.angangable();
+    }
+
     public boolean angangable(Piece piece) {
         return hand.angangable(piece);
     }

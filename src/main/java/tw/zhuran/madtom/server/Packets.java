@@ -47,6 +47,7 @@ public class Packets {
             case ACTION:
                 return action(event, receiver);
             case INTERCEPT:
+            case COMMAND:
                 if (event.getPlayer() != receiver) {
                     return null;
                 }

@@ -8,5 +8,6 @@ public enum EventType {
     INFO,
     DISPATCH,
     GANG_AFFOARD,
-    INTERCEPT
+    INTERCEPT,
+    COMMAND
 }

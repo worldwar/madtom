@@ -3,7 +3,7 @@ package tw.zhuran.madtom.event;
 import tw.zhuran.madtom.domain.Action;
 
 public class Event {
-    private EventType eventType;
+    protected EventType eventType;
     private Action action;
     private int player;
 

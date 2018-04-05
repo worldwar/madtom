@@ -2,10 +2,7 @@ package tw.zhuran.madtom.domain;
 
 import com.github.underscore.$;
 import com.google.common.collect.Lists;
-import tw.zhuran.madtom.event.Event;
-import tw.zhuran.madtom.event.EventType;
-import tw.zhuran.madtom.event.Events;
-import tw.zhuran.madtom.event.Info;
+import tw.zhuran.madtom.event.*;
 import tw.zhuran.madtom.rule.Rules;
 import tw.zhuran.madtom.rule.WaitRule;
 import tw.zhuran.madtom.state.BoardStateManager;
@@ -101,6 +98,27 @@ public class Board {
         Piece piece = dispatch0();
         Event dispatch = Events.dispatch(turn(), piece);
         notifyEvent(dispatch);
+
+        CommandEvent commandEvent = commandEvent();
+        if (commandEvent != null) {
+            notifyEvent(commandEvent);
+        }
+    }
+
+    private CommandEvent commandEvent() {
+        CommandEvent commandEvent = new CommandEvent(turn());
+        if (currentWinnable()) {
+            commandEvent.add(InterceptType.WIN);
+        }
+        Trunk trunk = trunk(turn());
+        if (trunk.xugangable() || trunk.angangable() || trunk.hongzhongGangable() || trunk.laiziGangable()) {
+            commandEvent.add(InterceptType.GANG);
+        }
+
+        if (commandEvent.getIntercepts().size() == 0) {
+            return null;
+        }
+        return commandEvent;
     }
 
     public void gangAfford() {
@@ -109,6 +127,11 @@ public class Board {
         trunk().feed(piece);
         trunk().setTriggerType(TriggerType.FIRE);
         notifyEvent(Events.gangAfford(turn(), piece));
+
+        CommandEvent commandEvent = commandEvent();
+        if (commandEvent != null) {
+            notifyEvent(commandEvent);
+        }
     }
 
     public void notifyEvent(Object event) {
